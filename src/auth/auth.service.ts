@@ -54,18 +54,24 @@ export class AuthService {
   }
 
   async findAll() {
-    return await this.userRepository.findOne({ where: { id } });
+    return await this.userRepository.find();
   }
 
   async findOne(id: number) {
-    return await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) throw new UnauthorizedException();
+    return user;
   }
 
   update(id: number, updateAuthDto: UpdateUserDto) {
     return `This action updates a #${id} auth`;
   }
-  restPassword(id: number) {
-    return `This action updates a #${id} auth`;
+  async restPassword(id: number) {
+    let user = await this.findOne(id);
+    user.password = await bcrypt.hash('12345678', 10);
+    user = await this.userRepository.save(user);
+    user.password = '12345678';
+    return user;
   }
 
   async remove(id: number) {
