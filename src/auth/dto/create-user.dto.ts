@@ -23,6 +23,6 @@ export class CreateUserDto {
   @IsString()
   password: string;
   //   @IsNotEmpty()
-  @IsEnum({ Role, default: Role.STUDENT })
+  @IsEnum(Role)
   role: Role;
 }

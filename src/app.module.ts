@@ -3,6 +3,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from './auth/auth.module';
+import { PassportModule } from '@nestjs/passport';
+import { JwtModule } from '@nestjs/jwt';
+import { JwtStrategy } from './auth/jwt.strategy';
 
 @Module({
   imports: [
@@ -17,8 +20,10 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true, // will the project production is false
     }),
     AuthModule,
+    PassportModule,
+    JwtModule.register({ secret: 'secrete', signOptions: { expiresIn: '7d' } }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

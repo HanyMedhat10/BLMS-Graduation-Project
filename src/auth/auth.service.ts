@@ -1,12 +1,33 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-auth.dto';
-
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import * as bcrypt from 'bcrypt';
+import { sign } from 'jsonwebtoken';
 @Injectable()
 export class AuthService {
-  create(createAuthDto: CreateUserDto) {
-    return 'This action adds a new auth';
+  constructor(
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+  async create(createAuthDto: CreateUserDto) {
+    const userExists = await this.findUserByEmail(createAuthDto.email);
+    if (userExists) {
+      throw new BadRequestException('Email is not available.');
+    }
+    createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
+    let user = this.userRepository.create(createAuthDto);
+    user = await this.userRepository.save(user);
+    delete user.password;
+    return user;
   }
+  
 
   findAll() {
     return `This action returns all auth`;
@@ -22,5 +43,9 @@ export class AuthService {
 
   remove(id: number) {
     return `This action removes a #${id} auth`;
+  }
+
+  async findUserByEmail(email: string) {
+    return await this.userRepository.findOneBy({ email });
   }
 }
