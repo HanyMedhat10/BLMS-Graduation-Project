@@ -10,6 +10,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
+import { UserLoginDto } from './dto/user-login.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -27,7 +28,30 @@ export class AuthService {
     delete user.password;
     return user;
   }
-  
+  async login(userLoginDto: UserLoginDto) {
+    // const userExists = await this.findUserByEmail(userLoginDto.email);
+    const userExists = await this.userRepository
+      .createQueryBuilder('users')
+      .addSelect('users.password')
+      .where('users.email=:email', { email: userLoginDto.email })
+      .getOne();
+    if (!userExists) {
+      // throw new BadRequestException('Email or Password is incorrect.');
+      throw new UnauthorizedException();
+    }
+    const matchPassword = await bcrypt.compare(
+      userLoginDto.password,
+      userExists.password,
+    );
+    if (!matchPassword) {
+      // throw new BadRequestException('Email or Password is incorrect.');
+      throw new UnauthorizedException();
+    }
+
+    delete userExists.password;
+    const token = sign({ ...userExists }, 'secrete');
+    return { token, userExists };
+  }
 
   findAll() {
     return `This action returns all auth`;
