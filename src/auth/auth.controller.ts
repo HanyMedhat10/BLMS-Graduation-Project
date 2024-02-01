@@ -1,3 +1,4 @@
+import { User } from './entities/user.entity';
 import {
   Controller,
   Get,
@@ -18,6 +19,7 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { Roles } from './roles/roles.decorator';
 import { JwtAuthGuard } from './jwt.guard';
 import { RoleGuard } from './role/role.guard';
+import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -32,29 +34,37 @@ export class AuthController {
   login(@Body() userLoginDto: UserLoginDto) {
     return this.authService.login(userLoginDto);
   }
+  @Post('restPassword/:id')
+  restPassword(@Param('id') id: string) {
+    return this.authService.restPassword(+id);
+  }
 
   @Get()
   findAll() {
     return this.authService.findAll();
   }
 
-  @Get(':id')
+  @Get('singleUser/:id')
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAuthDto: UpdateUserDto) {
-    return this.authService.update(+id, updateAuthDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateAuthDto: UpdateUserDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.authService.update(+id, updateAuthDto, currentUser);
   }
-
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
   }
-  @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get()
+  @Get('profile')
   profile(@Req() req, @Res() res) {
     return res.status(HttpStatus.OK).json(req.user);
   }

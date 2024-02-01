@@ -6,7 +6,7 @@ import {
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-auth.dto';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { DeleteResult, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
@@ -53,20 +53,27 @@ export class AuthService {
     return { token, userExists };
   }
 
-  async findAll() {
+  async findAll(): Promise<User[]> {
     return await this.userRepository.find();
   }
 
-  async findOne(id: number) {
+  async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) throw new UnauthorizedException();
     return user;
   }
 
-  update(id: number, updateAuthDto: UpdateUserDto) {
-    return `This action updates a #${id} auth`;
+  async update(
+    id: number,
+    updateAuthDto: UpdateUserDto,
+    currentUser,
+  ): Promise<User> {
+    const user = await this.findOne(id);
+    if (currentUser.id != id) throw new UnauthorizedException();
+    Object.assign(user, updateAuthDto);
+    return await this.userRepository.save(user);
   }
-  async restPassword(id: number) {
+  async restPassword(id: number): Promise<User> {
     let user = await this.findOne(id);
     user.password = await bcrypt.hash('12345678', 10);
     user = await this.userRepository.save(user);
@@ -74,11 +81,11 @@ export class AuthService {
     return user;
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<DeleteResult> {
     return this.userRepository.delete(id);
   }
 
-  async findUserByEmail(email: string) {
+  async findUserByEmail(email: string): Promise<User> {
     return await this.userRepository.findOneBy({ email });
   }
 }
