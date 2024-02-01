@@ -17,7 +17,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  async create(createAuthDto: CreateUserDto) {
+  async create(createAuthDto: CreateUserDto): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
     if (userExists) {
       throw new BadRequestException('Email is not available.');
@@ -53,20 +53,23 @@ export class AuthService {
     return { token, userExists };
   }
 
-  findAll() {
-    return `This action returns all auth`;
+  async findAll() {
+    return await this.userRepository.findOne({ where: { id } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
+  async findOne(id: number) {
+    return await this.userRepository.findOne({ where: { id } });
   }
 
   update(id: number, updateAuthDto: UpdateUserDto) {
     return `This action updates a #${id} auth`;
   }
+  restPassword(id: number) {
+    return `This action updates a #${id} auth`;
+  }
 
   async remove(id: number) {
-    return `This action removes a #${id} auth`;
+    return this.userRepository.delete(id);
   }
 
   async findUserByEmail(email: string) {
