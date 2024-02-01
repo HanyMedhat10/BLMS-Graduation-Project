@@ -20,7 +20,7 @@ export class User {
   password: string;
   //   @Column({ type: 'enum', enum: Role, array: true, default: [Role.USER] })
   @Column({ type: 'enum', enum: Role })
-  roles: Role;
+  role: Role;
   @CreateDateColumn()
   createdAt: Timestamp;
   @UpdateDateColumn()
