@@ -65,7 +65,7 @@ export class AuthService {
     return `This action updates a #${id} auth`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
     return `This action removes a #${id} auth`;
   }
 

@@ -6,16 +6,24 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
+  Res,
+  HttpStatus,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-auth.dto';
 import { UserLoginDto } from './dto/user-login.dto';
+import { Roles } from './roles/roles.decorator';
+import { JwtAuthGuard } from './jwt.guard';
+import { RoleGuard } from './role/role.guard';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   create(@Body() createAuthDto: CreateUserDto) {
     return this.authService.create(createAuthDto);
@@ -43,5 +51,11 @@ export class AuthController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
+  }
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get()
+  profile(@Req() req, @Res() res) {
+    return res.status(HttpStatus.OK).json(req.user);
   }
 }
