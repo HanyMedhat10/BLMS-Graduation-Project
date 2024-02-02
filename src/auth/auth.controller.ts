@@ -4,13 +4,13 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
   Req,
   Res,
   HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -20,6 +20,7 @@ import { Roles } from './roles/roles.decorator';
 import { JwtAuthGuard } from './jwt.guard';
 import { RoleGuard } from './role/role.guard';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
+import { ChangePasswordDto } from './dto/change-password-user.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -42,14 +43,9 @@ export class AuthController {
   @Post('changePassword')
   changePassword(
     @CurrentUser() currentUser: User,
-    oldPassword: string,
-    newPassword: string,
+    @Body() changePasswordDto: ChangePasswordDto,
   ) {
-    return this.authService.changePassword(
-      currentUser,
-      oldPassword,
-      newPassword,
-    );
+    return this.authService.changePassword(currentUser, changePasswordDto);
   }
 
   @Get()
@@ -61,8 +57,9 @@ export class AuthController {
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);
   }
+  @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Patch(':id')
+  @Put(':id')
   update(
     @Param('id') id: string,
     @Body() updateAuthDto: UpdateUserDto,

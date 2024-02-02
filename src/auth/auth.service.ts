@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { UserLoginDto } from './dto/user-login.dto';
+import { ChangePasswordDto } from './dto/change-password-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -59,7 +61,7 @@ export class AuthService {
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) throw new UnauthorizedException();
+    if (!user) throw new NotFoundException('User not found.');
     return user;
   }
 
@@ -68,18 +70,36 @@ export class AuthService {
     updateAuthDto: UpdateUserDto,
     currentUser,
   ): Promise<User> {
-    const user = await this.findOne(id);
-    if (currentUser.id != id) throw new UnauthorizedException();
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .addSelect('users.password')
+      .where('users.id=:id', { id: id })
+      .getOne();
+    // if (currentUser.id != id) throw new UnauthorizedException();
+    if (updateAuthDto.password == null) {
+      console.log(updateAuthDto.password);
+      console.log('the password is null');
+      Object.assign(user, updateAuthDto);
+      return await this.userRepository.save(user);
+    }
     Object.assign(user, updateAuthDto);
-    return await this.userRepository.save(user);
+    return this.updatePassword(user, updateAuthDto.password);
+    // } else {
+    //   const len = updateAuthDto.password.length;
+    //   console.log('the password is not  null ' + len);
+    //   if (!length(updateAuthDto.password, 8)) {
+    //     throw new BadRequestException(
+    //       'password must be longer than or equal to 8 characters',
+    //     );
+    //   }
+    //   console.log(updateAuthDto.password);
+   
   }
   async restPassword(id: number): Promise<User> {
-    let user = await this.findOne(id);
-    user.password = await bcrypt.hash('12345678', 10);
-    user = await this.userRepository.save(user);
-    user.password = '12345678';
-    return user;
+    const user = await this.findOne(id);
+    return this.updatePassword(user);
   }
+
   // async changePassword(
   //   id: number,
   //   oldPassword: string,
@@ -98,15 +118,27 @@ export class AuthService {
   // }
   async changePassword(
     currentUser: User,
-    oldPassword: string,
-    newPassword: string,
+    changePasswordDto: ChangePasswordDto,
   ): Promise<User> {
-    let user = await this.findOne(currentUser.id);
-    const matchPassword = await bcrypt.compare(oldPassword, user.password);
+    const user = await this.userRepository
+      .createQueryBuilder('users')
+      .addSelect('users.password')
+      .where('users.email=:email', { email: currentUser.email })
+      .getOne();
+    const matchPassword = await bcrypt.compare(
+      changePasswordDto.oldPassword,
+      user.password,
+    );
     if (!matchPassword) {
       // throw new BadRequestException('Email or Password is incorrect.');
       throw new UnauthorizedException();
     }
+    return await this.updatePassword(user, changePasswordDto.newPassword);
+  }
+  async updatePassword(
+    user: User,
+    newPassword: string = '12345678',
+  ): Promise<User> {
     user.password = await bcrypt.hash(newPassword, 10);
     user = await this.userRepository.save(user);
     user.password = newPassword;

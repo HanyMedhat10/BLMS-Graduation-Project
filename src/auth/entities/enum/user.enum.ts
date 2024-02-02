@@ -2,9 +2,9 @@
 export enum Role {
   ADMIN = 'admin',
   STUDENT = 'student',
-  TA = 'teacherAssent',
+  TA = 'teacher assent',
   DR = 'dr',
-  HOfDE = 'headOfDepartment',
+  HOfDE = 'head Of Department',
 }
 type User = {
   id: number;
