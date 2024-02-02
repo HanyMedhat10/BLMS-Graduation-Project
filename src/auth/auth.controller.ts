@@ -28,8 +28,11 @@ export class AuthController {
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
-  create(@Body() createAuthDto: CreateUserDto) {
-    return this.authService.create(createAuthDto);
+  create(
+    @Body() createAuthDto: CreateUserDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.authService.create(createAuthDto, currentUser);
   }
   @Post('login')
   login(@Body() userLoginDto: UserLoginDto) {

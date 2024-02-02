@@ -19,13 +19,14 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  async create(createAuthDto: CreateUserDto): Promise<User> {
+  async create(createAuthDto: CreateUserDto, currentUser: User): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
     if (userExists) {
       throw new BadRequestException('Email is not available.');
     }
     createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
     let user = this.userRepository.create(createAuthDto);
+    user.addedBy = currentUser;
     user = await this.userRepository.save(user);
     delete user.password;
     return user;
@@ -56,11 +57,16 @@ export class AuthService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      relations: { addedBy: true },
+    });
   }
 
   async findOne(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      relations: { addedBy: true },
+    });
     if (!user) throw new NotFoundException('User not found.');
     return user;
   }
@@ -70,31 +76,12 @@ export class AuthService {
     updateAuthDto: UpdateUserDto,
     currentUser,
   ): Promise<User> {
-    const user = await this.userRepository
-      .createQueryBuilder('users')
-      .addSelect('users.password')
-      .where('users.id=:id', { id: id })
-      .getOne();
-    // if (currentUser.id != id) throw new UnauthorizedException();
-    if (updateAuthDto.password == null) {
-      console.log(updateAuthDto.password);
-      console.log('the password is null');
-      Object.assign(user, updateAuthDto);
-      return await this.userRepository.save(user);
-    }
+    const user = await this.findOne(id);
     Object.assign(user, updateAuthDto);
-    return this.updatePassword(user, updateAuthDto.password);
-    // } else {
-    //   const len = updateAuthDto.password.length;
-    //   console.log('the password is not  null ' + len);
-    //   if (!length(updateAuthDto.password, 8)) {
-    //     throw new BadRequestException(
-    //       'password must be longer than or equal to 8 characters',
-    //     );
-    //   }
-    //   console.log(updateAuthDto.password);
-   
+    user.addedBy = currentUser;
+    return await this.userRepository.save(user);
   }
+
   async restPassword(id: number): Promise<User> {
     const user = await this.findOne(id);
     return this.updatePassword(user);

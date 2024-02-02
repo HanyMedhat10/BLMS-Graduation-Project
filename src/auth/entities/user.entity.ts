@@ -2,6 +2,8 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
   Timestamp,
   UpdateDateColumn,
@@ -18,6 +20,9 @@ export class User {
   email: string;
   @Column({ select: false })
   password: string;
+  @OneToOne(() => User)
+  @JoinColumn()
+  addedBy: User;
   //   @Column({ type: 'enum', enum: Role, array: true, default: [Role.USER] })
   @Column({ type: 'enum', enum: Role })
   role: Role;
