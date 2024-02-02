@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { StudentModule } from './student/student.module';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
     AuthModule,
     PassportModule,
     JwtModule.register({ secret: 'secrete', signOptions: { expiresIn: '7d' } }),
+    StudentModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

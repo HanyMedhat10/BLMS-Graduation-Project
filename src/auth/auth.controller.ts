@@ -10,7 +10,7 @@ import {
   Req,
   Res,
   HttpStatus,
-  Put,
+  Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -62,7 +62,7 @@ export class AuthController {
   }
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Put(':id')
+  @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateAuthDto: UpdateUserDto,
