@@ -80,6 +80,38 @@ export class AuthService {
     user.password = '12345678';
     return user;
   }
+  // async changePassword(
+  //   id: number,
+  //   oldPassword: string,
+  //   newPassword: string,
+  // ): Promise<User> {
+  //   let user = await this.findOne(id);
+  //   const matchPassword = await bcrypt.compare(user.password, oldPassword);
+  //   if (!matchPassword) {
+  //     // throw new BadRequestException('Email or Password is incorrect.');
+  //     throw new UnauthorizedException();
+  //   }
+  //   user.password = await bcrypt.hash(newPassword, 10);
+  //   user = await this.userRepository.save(user);
+  //   user.password = newPassword;
+  //   return user;
+  // }
+  async changePassword(
+    currentUser: User,
+    oldPassword: string,
+    newPassword: string,
+  ): Promise<User> {
+    let user = await this.findOne(currentUser.id);
+    const matchPassword = await bcrypt.compare(oldPassword, user.password);
+    if (!matchPassword) {
+      // throw new BadRequestException('Email or Password is incorrect.');
+      throw new UnauthorizedException();
+    }
+    user.password = await bcrypt.hash(newPassword, 10);
+    user = await this.userRepository.save(user);
+    user.password = newPassword;
+    return user;
+  }
 
   async remove(id: number): Promise<DeleteResult> {
     return this.userRepository.delete(id);

@@ -38,6 +38,19 @@ export class AuthController {
   restPassword(@Param('id') id: string) {
     return this.authService.restPassword(+id);
   }
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('changePassword')
+  changePassword(
+    @CurrentUser() currentUser: User,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    return this.authService.changePassword(
+      currentUser,
+      oldPassword,
+      newPassword,
+    );
+  }
 
   @Get()
   findAll() {
