@@ -9,6 +9,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { Role } from './enum/user.enum';
+import { Student } from 'src/student/entities/student.entity';
 
 @Entity()
 export class User {
@@ -30,4 +31,6 @@ export class User {
   createdAt: Timestamp;
   @UpdateDateColumn()
   updatedAt: Timestamp;
+  @OneToOne(() => Student, (student) => student.user, { cascade: true })
+  student: Student;
 }
