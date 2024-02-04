@@ -12,6 +12,7 @@ import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { CreateStudentUserDto } from './dto/create-student-user-dto';
 
 @Controller('student')
 export class StudentController {
@@ -19,10 +20,10 @@ export class StudentController {
 
   @Post()
   create(
-    @Body() createStudentDto: CreateStudentDto,
+    @Body() createStudentUserDto: CreateStudentUserDto,
     @CurrentUser() currentUser: User,
   ): Promise<User> {
-    return this.studentService.create(createStudentDto, currentUser);
+    return this.studentService.create(createStudentUserDto, currentUser);
   }
 
   @Get()

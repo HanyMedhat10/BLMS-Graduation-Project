@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { User } from 'src/auth/entities/user.entity';
+import { CreateStudentUserDto } from './dto/create-student-user-dto';
 
 @Injectable()
 export class StudentService {
@@ -17,8 +18,11 @@ export class StudentService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  async create(createStudentDto: CreateStudentDto, currentUser: User) {
-    return await this.userService.createStudent(createStudentDto, currentUser);
+  async create(createStudentUserDto: CreateStudentUserDto, currentUser: User) {
+    return await this.userService.createStudent(
+      createStudentUserDto,
+      currentUser,
+    );
   }
 
   async findAll() {
