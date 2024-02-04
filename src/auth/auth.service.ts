@@ -33,22 +33,7 @@ export class AuthService {
       case Role.ADMIN:
         return await this.createUser(createAuthDto, currentUser);
       case Role.STUDENT:
-        const userObject = createAuthDto.student;
-        if (
-          (userObject.studentType == StudentType.UNDERGRADUATE &&
-            userObject.classes != null) ||
-          (userObject.studentType == StudentType.POSTGRADUATE &&
-            userObject.degreeProgram != null)
-        ) {
-          const student = await this.studentRepository.save(
-            createAuthDto.student,
-          );
-          createAuthDto.student = student;
-          return await this.createUser(createAuthDto, currentUser);
-        }
-        throw new NotFoundException(
-          'student Type is Under Graduate you must entry classes data or student type is postGraduate you must entry degree program',
-        );
+        return await this.createStudent(createAuthDto, currentUser);
       default:
         console.log('default state');
         console.log(createAuthDto);
@@ -67,6 +52,50 @@ export class AuthService {
     return user;
   }
 
+  async findOneUser(id: number, role: Role) {
+    switch (role) {
+      case Role.STUDENT:
+        const user = await this.userRepository.findOne({
+          where: { id: id, role: role },
+          relations: { student: true },
+        });
+        if (!user) throw new NotFoundException(`Student Not Found`);
+        return user;
+      // case Role.DR:
+      //   const user = await this.userRepository.findOne({
+      //     where: { id: id, role: role },
+      //     relations: { doctor: true },
+      //   });
+      //   if (!user) throw new NotFoundException(`Doctor Not Found`);
+      //   return user;
+      // case Role.HOfDE:
+      //   const user = await this.userRepository.findOne({
+      //     where: { id: id, role: role },
+      //     relations: { hOfDe: true },
+      //   });
+      //   if (!user) throw new NotFoundException(`Head of Department Not Found`);
+      //   return user;
+
+      default:
+        break;
+    }
+  }
+  async createStudent(createAuthDto, currentUser: User) {
+    const userObject = createAuthDto.student;
+    if (
+      (userObject.studentType == StudentType.UNDERGRADUATE &&
+        userObject.classes != null) ||
+      (userObject.studentType == StudentType.POSTGRADUATE &&
+        userObject.degreeProgram != null)
+    ) {
+      const student = await this.studentRepository.save(createAuthDto.student);
+      createAuthDto.student = student;
+      return await this.createUser(createAuthDto, currentUser);
+    }
+    throw new NotFoundException(
+      'student Type is Under Graduate you must entry classes data or student type is postGraduate you must entry degree program',
+    );
+  }
   async login(userLoginDto: UserLoginDto) {
     // const userExists = await this.findUserByEmail(userLoginDto.email);
     const userExists = await this.userRepository
@@ -94,6 +123,11 @@ export class AuthService {
 
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
+      select: {
+        addedBy: {
+          email: true,
+        },
+      },
       relations: { addedBy: true, student: true },
     });
   }
