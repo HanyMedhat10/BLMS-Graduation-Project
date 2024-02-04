@@ -4,8 +4,11 @@ import {
   IsNotEmpty,
   IsString,
   MinLength,
+  ValidateNested,
 } from 'class-validator';
 import { Role } from '../entities/enum/user.enum';
+import { Type } from 'class-transformer';
+import { UpdateStudentDto } from 'src/student/dto/update-student.dto';
 
 export class CreateUserDto {
   //   @IsNotEmpty({ message: 'Name can not be null ' })
@@ -25,4 +28,7 @@ export class CreateUserDto {
   //   @IsNotEmpty()
   @IsEnum(Role)
   role: Role;
+  @Type(() => UpdateStudentDto)
+  @ValidateNested()
+  student: UpdateStudentDto;
 }

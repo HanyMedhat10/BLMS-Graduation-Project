@@ -8,9 +8,9 @@ export class CreateStudentDto {
   classes: string;
   @IsString()
   degreeProgram: string;
-  @Type(() => User)
-  @ValidateNested()
-  user: User;
+//   @Type(() => User)
+//   @ValidateNested()
+//   user: User;
   @IsNotEmpty()
   @IsEnum(StudentType)
   studentType: StudentType;

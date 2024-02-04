@@ -1,3 +1,4 @@
+import { Student } from 'src/student/entities/student.entity';
 import {
   BadRequestException,
   Injectable,
@@ -13,17 +14,51 @@ import * as bcrypt from 'bcrypt';
 import { sign } from 'jsonwebtoken';
 import { UserLoginDto } from './dto/user-login.dto';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
+import { Role } from './entities/enum/user.enum';
+import { StudentType } from 'src/student/entities/enum/student.enum';
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Student)
+    private readonly studentRepository: Repository<Student>,
   ) {}
   async create(createAuthDto: CreateUserDto, currentUser: User): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
     if (userExists) {
       throw new BadRequestException('Email is not available.');
     }
+    switch (createAuthDto.role) {
+      case Role.ADMIN:
+        return await this.createUser(createAuthDto, currentUser);
+      case Role.STUDENT:
+        const userObject = createAuthDto.student;
+        if (
+          (userObject.studentType == StudentType.UNDERGRADUATE &&
+            userObject.classes != null) ||
+          (userObject.studentType == StudentType.POSTGRADUATE &&
+            userObject.degreeProgram != null)
+        ) {
+          const student = await this.studentRepository.save(
+            createAuthDto.student,
+          );
+          createAuthDto.student = student;
+          return await this.createUser(createAuthDto, currentUser);
+        }
+        throw new NotFoundException(
+          'student Type is Under Graduate you must entry classes data or student type is postGraduate you must entry degree program',
+        );
+      default:
+        console.log('default state');
+        console.log(createAuthDto);
+        throw new NotFoundException();
+        break;
+    }
+    return await this.createUser(createAuthDto, currentUser);
+  }
+
+  private async createUser(createAuthDto: CreateUserDto, currentUser: User) {
     createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
     let user = this.userRepository.create(createAuthDto);
     user.addedBy = currentUser;
@@ -31,6 +66,7 @@ export class AuthService {
     delete user.password;
     return user;
   }
+
   async login(userLoginDto: UserLoginDto) {
     // const userExists = await this.findUserByEmail(userLoginDto.email);
     const userExists = await this.userRepository
@@ -58,14 +94,14 @@ export class AuthService {
 
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
-      relations: { addedBy: true },
+      relations: { addedBy: true, student: true },
     });
   }
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: { addedBy: true },
+      relations: { addedBy: true, student: true },
     });
     if (!user) throw new NotFoundException('User not found.');
     return user;

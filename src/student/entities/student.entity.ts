@@ -20,6 +20,6 @@ export class Student {
   @Column({ type: 'enum', enum: StudentType })
   studentType: StudentType;
   @OneToOne(() => User, (user) => user.student)
-  @JoinTable()
+  @JoinColumn()
   user: User;
 }
