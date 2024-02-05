@@ -1,5 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateStudentDto } from './dto/create-student.dto';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
@@ -49,8 +48,23 @@ export class StudentService {
     return user;
   }
 
-  update(id: number, updateStudentDto: UpdateStudentDto) {
-    return `This action updates a #${id} student`;
+  async update(id: number, updateStudentDto: UpdateStudentDto) {
+    // let user = await this.findOne(id);
+    // let student = await this.studentRepository.findOne(user.student.id as any);
+    // student = Object.assign(student, updateStudentUserDto.student);
+    // student = await this.studentRepository.save(student);
+    // user = Object.assign(user, updateStudentUserDto);
+    // user.student = student;
+    // user.addedBy = currentUser;
+    // return await this.userRepository.save(user);
+    let student = await this.studentRepository.findOne({
+      where: { user: { id: id } },
+    });
+    student = Object.assign(student, updateStudentDto);
+    return await this.studentRepository.save(student);
+    // const student = await this.findOne(id);
+
+    // return await this.userService.update(id, updateStudentUserDto, currentUser);
   }
 
   async remove(id: number) {
