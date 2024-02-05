@@ -54,6 +54,8 @@ export class StudentService {
   }
 
   async remove(id: number) {
+    const student = await this.findOne(id);
+    await this.studentRepository.delete(student.student.id);
     return await this.userService.remove(id);
   }
 }
