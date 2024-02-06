@@ -2,11 +2,14 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
+  ManyToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { StudentType } from './enum/student.enum';
 import { User } from 'src/auth/entities/user.entity';
+import { Course } from 'src/course/entities/course.entity';
 
 @Entity()
 export class Student {
@@ -21,4 +24,9 @@ export class Student {
   @OneToOne(() => User, (user) => user.student)
   @JoinColumn()
   user: User;
+  @ManyToMany(() => Course, (course) => course.students, {
+    cascade: true,
+  })
+  @JoinTable()
+  courses: Course[];
 }

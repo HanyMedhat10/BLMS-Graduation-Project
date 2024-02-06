@@ -1,5 +1,6 @@
 import { User } from 'src/auth/entities/user.entity';
 import { College } from 'src/college/entities/college.entity';
+import { Course } from 'src/course/entities/course.entity';
 import {
   Column,
   Entity,
@@ -21,4 +22,6 @@ export class Department {
   //? Tomorrow
   @OneToMany(() => User, (user) => user.department)
   staff: User[];
+  @OneToMany(() => Course, (course) => course.department)
+  courses: Course[];
 }
