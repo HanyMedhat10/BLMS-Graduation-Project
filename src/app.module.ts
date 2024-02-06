@@ -9,6 +9,7 @@ import { JwtStrategy } from './auth/jwt.strategy';
 import { StudentModule } from './student/student.module';
 import { CollegeModule } from './college/college.module';
 import { DepartmentModule } from './department/department.module';
+import { CourseModule } from './course/course.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { DepartmentModule } from './department/department.module';
     StudentModule,
     CollegeModule,
     DepartmentModule,
+    CourseModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

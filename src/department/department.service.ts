@@ -42,10 +42,10 @@ export class DepartmentService {
     if (nameCollege != null) {
       const college = await this.collegeService.findOneByName(nameCollege);
       department.college = college;
-      department.name = UpdateDepartmentDto.name;
+      department.name = updateDepartmentDto.name;
       return await this.departmentRepository.save(department);
     }
-    department.name = UpdateDepartmentDto.name;
+    department.name = updateDepartmentDto.name;
     return await this.departmentRepository.save(department);
   }
 
