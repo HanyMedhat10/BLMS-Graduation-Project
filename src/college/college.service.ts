@@ -62,7 +62,7 @@ export class CollegeService {
         where: { email: updateCollegeDto.DeanOfCollege, role: Role.ADMIN },
       });
       college.name = updateCollegeDto.name;
-      college.DeanOfCollege=dean;
+      college.DeanOfCollege = dean;
       return await this.collegeRepository.save(college);
     }
     college.name = updateCollegeDto.name;

@@ -8,6 +8,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './auth/jwt.strategy';
 import { StudentModule } from './student/student.module';
 import { CollegeModule } from './college/college.module';
+import { DepartmentModule } from './department/department.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { CollegeModule } from './college/college.module';
     JwtModule.register({ secret: 'secrete', signOptions: { expiresIn: '7d' } }),
     StudentModule,
     CollegeModule,
+    DepartmentModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
