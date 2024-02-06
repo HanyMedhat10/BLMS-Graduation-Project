@@ -10,5 +10,6 @@ import { Department } from 'src/department/entities/department.entity';
   imports: [TypeOrmModule.forFeature([College, User, Department])],
   controllers: [CollegeController],
   providers: [CollegeService],
+  exports: [CollegeService],
 })
 export class CollegeModule {}

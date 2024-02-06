@@ -1,26 +1,55 @@
 import { Injectable } from '@nestjs/common';
 import { CreateDepartmentDto } from './dto/create-department.dto';
 import { UpdateDepartmentDto } from './dto/update-department.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Department } from './entities/department.entity';
+import { Repository } from 'typeorm';
+import { CollegeService } from 'src/college/college.service';
 
 @Injectable()
 export class DepartmentService {
-  create(createDepartmentDto: CreateDepartmentDto) {
-    return 'This action adds a new department';
+  constructor(
+    @InjectRepository(Department)
+    private readonly departmentRepository: Repository<Department>,
+    private readonly collegeService: CollegeService,
+  ) {}
+  async create(createDepartmentDto: CreateDepartmentDto) {
+    const college = await this.collegeService.findOneByName(
+      createDepartmentDto.college,
+    );
+    const department = new Department();
+    department.college = college;
+    department.name = createDepartmentDto.name;
+    return await this.departmentRepository.save(department);
   }
 
-  findAll() {
-    return `This action returns all department`;
+  async findAll() {
+    return await this.departmentRepository.find({
+      relations: { college: true },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} department`;
+  async findOne(id: number) {
+    return await this.departmentRepository.findOne({
+      where: { id },
+      relations: { college: true },
+    });
   }
 
-  update(id: number, updateDepartmentDto: UpdateDepartmentDto) {
-    return `This action updates a #${id} department`;
+  async update(id: number, updateDepartmentDto: UpdateDepartmentDto) {
+    const nameCollege = updateDepartmentDto.college;
+    const department = await this.findOne(id);
+    if (nameCollege != null) {
+      const college = await this.collegeService.findOneByName(nameCollege);
+      department.college = college;
+      department.name = UpdateDepartmentDto.name;
+      return await this.departmentRepository.save(department);
+    }
+    department.name = UpdateDepartmentDto.name;
+    return await this.departmentRepository.save(department);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} department`;
+    return this.departmentRepository.delete(id);
   }
 }

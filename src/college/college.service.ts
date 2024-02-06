@@ -43,6 +43,11 @@ export class CollegeService {
       relations: { DeanOfCollege: true },
     });
   }
+  async findOneByName(name: string): Promise<College> {
+    return await this.collegeRepository.findOne({
+      where: { name },
+    });
+  }
 
   async update(
     id: number,

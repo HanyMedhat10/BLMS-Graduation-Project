@@ -22,5 +22,4 @@ export class College {
   hasUser: User[];
   @OneToMany(() => Department, (department) => department.college)
   departments: Department[];
-
 }

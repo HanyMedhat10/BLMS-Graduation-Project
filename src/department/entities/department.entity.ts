@@ -18,6 +18,7 @@ export class Department {
   @ManyToOne(() => College, (college) => college.departments)
   @JoinColumn()
   college: College;
+  //? Tomorrow
   @OneToMany(() => User, (user) => user.department)
   staff: User[];
 }
