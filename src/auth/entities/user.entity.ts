@@ -13,6 +13,7 @@ import {
 import { Role } from './enum/user.enum';
 import { Student } from 'src/student/entities/student.entity';
 import { College } from '../../college/entities/college.entity';
+import { Department } from 'src/department/entities/department.entity';
 
 @Entity()
 export class User {
@@ -43,4 +44,7 @@ export class User {
   updatedAt: Timestamp;
   @OneToOne(() => Student, (student) => student.user, { cascade: true })
   student: Student;
+  @ManyToOne(() => Department, (department) => department.staff)
+  @JoinColumn()
+  department: Department;
 }
