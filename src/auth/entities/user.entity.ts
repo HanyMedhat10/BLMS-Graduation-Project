@@ -12,7 +12,7 @@ import {
 } from 'typeorm';
 import { Role } from './enum/user.enum';
 import { Student } from 'src/student/entities/student.entity';
-import { College } from './college.entity';
+import { College } from '../../college/entities/college.entity';
 
 @Entity()
 export class User {
@@ -32,7 +32,7 @@ export class User {
   role: Role;
   @OneToOne(() => College, (college) => college.DeanOfCollege)
   dean: College;
-  @ManyToOne(() => College, (college) => college.hasUser,{
+  @ManyToOne(() => College, (college) => college.hasUser, {
     cascade: true,
   })
   @JoinTable()

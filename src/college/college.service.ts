@@ -1,26 +1,78 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCollegeDto } from './dto/create-college.dto';
 import { UpdateCollegeDto } from './dto/update-college.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { College } from './entities/college.entity';
+import { Repository } from 'typeorm';
+import { User } from 'src/auth/entities/user.entity';
+import { Role } from 'src/auth/entities/enum/user.enum';
 
 @Injectable()
 export class CollegeService {
-  create(createCollegeDto: CreateCollegeDto) {
-    return 'This action adds a new college';
+  constructor(
+    @InjectRepository(College)
+    private readonly collegeRepository: Repository<College>,
+    @InjectRepository(User)
+    private readonly userRepository: Repository<User>,
+  ) {}
+  async create(createCollegeDto: CreateCollegeDto): Promise<College> {
+    const college = await this.collegeRepository.findOne({
+      where: { name: createCollegeDto.name },
+    });
+    if (college) {
+      throw new BadRequestException('the name is not available.');
+    }
+    const dean = await this.userRepository.findOne({
+      where: { email: createCollegeDto.DeanOfCollege, role: Role.ADMIN },
+    });
+    const newCollege = new College();
+    newCollege.name = createCollegeDto.name;
+    newCollege.DeanOfCollege = dean;
+    return await this.collegeRepository.save(newCollege);
   }
 
-  findAll() {
-    return `This action returns all college`;
+  async findAll(): Promise<College[]> {
+    return await this.collegeRepository.find({
+      relations: { DeanOfCollege: true },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} college`;
+  async findOne(id: number): Promise<College> {
+    return await this.collegeRepository.findOne({
+      where: { id },
+      relations: { DeanOfCollege: true },
+    });
   }
 
-  update(id: number, updateCollegeDto: UpdateCollegeDto) {
-    return `This action updates a #${id} college`;
+  async update(
+    id: number,
+    updateCollegeDto: UpdateCollegeDto,
+  ): Promise<College> {
+    const college = await this.collegeRepository.findOne({
+      where: { id },
+    });
+    const collegeDuplicate = await this.collegeRepository.findOne({
+      where: { name: updateCollegeDto.name },
+    });
+    if (collegeDuplicate) {
+      throw new BadRequestException('the name is not available.');
+    }
+    if (updateCollegeDto.DeanOfCollege != null) {
+      const dean = await this.userRepository.findOne({
+        where: { email: updateCollegeDto.DeanOfCollege, role: Role.ADMIN },
+      });
+      college.name = updateCollegeDto.name;
+      college.DeanOfCollege=dean;
+      return await this.collegeRepository.save(college);
+    }
+    college.name = updateCollegeDto.name;
+    return await this.collegeRepository.save(college);
+
+    //return `This action removes a #${name} college`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} college`;
+  async remove(id: number) {
+    return await this.collegeRepository.delete(id);
+    return `This action removes a #${name} college`;
   }
 }

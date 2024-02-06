@@ -16,8 +16,8 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
 import { Role } from './entities/enum/user.enum';
 import { StudentType } from 'src/student/entities/enum/student.enum';
-import { College } from './entities/college.entity';
-import { CreateCollege } from './dto/create-college.dto';
+import { College } from '../college/entities/college.entity';
+import { CreateCollegeDto } from '../college/dto/create-college.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -244,7 +244,7 @@ export class AuthService {
     }
     return this.collegeRepository.create({ name });
   }
-  async addCollege(createCollege: CreateCollege): Promise<College> {
+  async addCollege(createCollege: CreateCollegeDto): Promise<College> {
     const college = await this.collegeRepository.findOne({
       where: { name: createCollege.name },
     });
@@ -289,7 +289,6 @@ export class AuthService {
     throw new BadRequestException('the name is not available.');
     //return `This action removes a #${name} college`;
   }
-  async 
   async deleteCollegeByName(name: string): Promise<string> {
     const college = await this.collegeRepository.findOne({ where: { name } });
     await this.collegeRepository.delete(college.id);
