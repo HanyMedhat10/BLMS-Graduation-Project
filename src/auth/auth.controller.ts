@@ -50,7 +50,7 @@ export class AuthController {
   ) {
     return this.authService.changePassword(currentUser, changePasswordDto);
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   findAll() {
     return this.authService.findAll();

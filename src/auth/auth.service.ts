@@ -16,6 +16,8 @@ import { UserLoginDto } from './dto/user-login.dto';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
 import { Role } from './entities/enum/user.enum';
 import { StudentType } from 'src/student/entities/enum/student.enum';
+import { College } from './entities/college.entity';
+import { CreateCollege } from './dto/create-college.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -23,6 +25,8 @@ export class AuthService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    @InjectRepository(College)
+    private readonly collegeRepository: Repository<College>,
   ) {}
   async create(createAuthDto: CreateUserDto, currentUser: User): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
@@ -45,7 +49,8 @@ export class AuthService {
 
   private async createUser(createAuthDto: CreateUserDto, currentUser: User) {
     createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
-    let user = this.userRepository.create(createAuthDto);
+    const college = await this.preloadCollegeByName(createAuthDto.college);
+    let user = this.userRepository.create({ ...createAuthDto, college });
     user.addedBy = currentUser;
     user = await this.userRepository.save(user);
     delete user.password;
@@ -127,6 +132,14 @@ export class AuthService {
         addedBy: {
           email: true,
         },
+        college: {
+          id: true,
+          name: true,
+          DeanOfCollege: {
+            email: true,
+            name: true,
+          },
+        },
       },
       relations: { addedBy: true, student: true },
     });
@@ -135,6 +148,19 @@ export class AuthService {
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id },
+      select: {
+        addedBy: {
+          email: true,
+        },
+        college: {
+          id: true,
+          name: true,
+          DeanOfCollege: {
+            email: true,
+            name: true,
+          },
+        },
+      },
       relations: { addedBy: true, student: true },
     });
     if (!user) throw new NotFoundException('User not found.');
@@ -146,9 +172,11 @@ export class AuthService {
     updateAuthDto: UpdateUserDto,
     currentUser,
   ): Promise<User> {
+    const college = await this.preloadCollegeByName(updateAuthDto.college);
     const user = await this.findOne(id);
     Object.assign(user, updateAuthDto);
     user.addedBy = currentUser;
+    user.college = college;
     return await this.userRepository.save(user);
   }
 
@@ -208,5 +236,63 @@ export class AuthService {
 
   async findUserByEmail(email: string): Promise<User> {
     return await this.userRepository.findOneBy({ email });
+  }
+  async preloadCollegeByName(name: string): Promise<College> {
+    const college = await this.collegeRepository.findOne({ where: { name } });
+    if (college) {
+      return college;
+    }
+    return this.collegeRepository.create({ name });
+  }
+  async addCollege(createCollege: CreateCollege): Promise<College> {
+    const college = await this.collegeRepository.findOne({
+      where: { name: createCollege.name },
+    });
+
+    if (college) {
+      throw new BadRequestException('the name is not available.');
+    }
+    const dean = await this.userRepository.findOne({
+      where: { email: createCollege.DeanOfCollege, role: Role.ADMIN },
+    });
+    const newCollege = new College();
+    newCollege.name = createCollege.name;
+    newCollege.DeanOfCollege = dean;
+    return await this.collegeRepository.create(newCollege);
+  }
+  async addDeanOfCollegeByName(name: string, id: number): Promise<College> {
+    const college = await this.collegeRepository.findOne({ where: { name } });
+    const dean = await this.userRepository.findOne({
+      where: { id, role: Role.ADMIN },
+    });
+    if (!dean) throw new NotFoundException('Not found dean');
+    if (college) {
+      college.DeanOfCollege = dean;
+      return await this.collegeRepository.save(college);
+    } else {
+      college.name = name;
+      college.DeanOfCollege = dean;
+      return await this.collegeRepository.create(college);
+    }
+  }
+  async editCollege(oldName: string, newName: string): Promise<College> {
+    const college = await this.collegeRepository.findOne({
+      where: { name: oldName },
+    });
+    const collegeDuplicate = await this.collegeRepository.findOne({
+      where: { name: newName },
+    });
+    if (!collegeDuplicate) {
+      college.name = newName;
+      return await this.collegeRepository.save(college);
+    }
+    throw new BadRequestException('the name is not available.');
+    //return `This action removes a #${name} college`;
+  }
+  async 
+  async deleteCollegeByName(name: string): Promise<string> {
+    const college = await this.collegeRepository.findOne({ where: { name } });
+    await this.collegeRepository.delete(college.id);
+    return `This action removes a #${name} college`;
   }
 }

@@ -23,6 +23,8 @@ export class CreateStudentUserDto {
   password: string;
   @IsEnum({ Role, default: Role.STUDENT })
   role: Role;
+  @IsString({ each: true })
+  college: string;
   @Type(() => UpdateStudentDto)
   @ValidateNested()
   student: UpdateStudentDto;

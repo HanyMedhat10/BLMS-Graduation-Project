@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -11,6 +12,7 @@ import {
 } from 'typeorm';
 import { Role } from './enum/user.enum';
 import { Student } from 'src/student/entities/student.entity';
+import { College } from './college.entity';
 
 @Entity()
 export class User {
@@ -28,6 +30,13 @@ export class User {
   //   @Column({ type: 'enum', enum: Role, array: true, default: [Role.USER] })
   @Column({ type: 'enum', enum: Role })
   role: Role;
+  @OneToOne(() => College, (college) => college.DeanOfCollege)
+  dean: College;
+  @ManyToOne(() => College, (college) => college.hasUser,{
+    cascade: true,
+  })
+  @JoinTable()
+  college: College;
   @CreateDateColumn()
   createdAt: Timestamp;
   @UpdateDateColumn()
