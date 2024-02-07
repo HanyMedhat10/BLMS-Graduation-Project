@@ -31,6 +31,6 @@ export class CreateUserDto {
   @IsString({ each: true })
   college: string;
   @Type(() => UpdateStudentDto)
-  @ValidateNested()
+  @ValidateNested({ each: false })
   student: UpdateStudentDto;
 }

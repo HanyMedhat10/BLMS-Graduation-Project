@@ -1,4 +1,4 @@
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { StudentType } from '../entities/enum/student.enum';
 
 export class CreateStudentDto {
@@ -9,4 +9,7 @@ export class CreateStudentDto {
   @IsNotEmpty()
   @IsEnum(StudentType)
   studentType: StudentType;
+  @IsNumber({}, { each: true })
+  // @IsPositive()
+  courses: number[];
 }

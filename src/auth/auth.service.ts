@@ -18,6 +18,7 @@ import { Role } from './entities/enum/user.enum';
 import { StudentType } from 'src/student/entities/enum/student.enum';
 import { College } from '../college/entities/college.entity';
 import { CreateCollegeDto } from '../college/dto/create-college.dto';
+import { CourseService } from 'src/course/course.service';
 @Injectable()
 export class AuthService {
   constructor(
@@ -27,6 +28,7 @@ export class AuthService {
     private readonly studentRepository: Repository<Student>,
     @InjectRepository(College)
     private readonly collegeRepository: Repository<College>,
+    private readonly courseService: CourseService,
   ) {}
   async create(createAuthDto: CreateUserDto, currentUser: User): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
@@ -50,7 +52,11 @@ export class AuthService {
   private async createUser(createAuthDto: CreateUserDto, currentUser: User) {
     createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
     const college = await this.preloadCollegeByName(createAuthDto.college);
-    let user = this.userRepository.create({ ...createAuthDto, college });
+    let user = await this.userRepository.create({
+      ...createAuthDto,
+      student: { courses: [] },
+      college,
+    });
     user.addedBy = currentUser;
     user = await this.userRepository.save(user);
     delete user.password;
@@ -85,7 +91,7 @@ export class AuthService {
         break;
     }
   }
-  async createStudent(createAuthDto, currentUser: User) {
+  async createStudent(createAuthDto: CreateUserDto, currentUser: User) {
     const userObject = createAuthDto.student;
     if (
       (userObject.studentType == StudentType.UNDERGRADUATE &&
@@ -93,9 +99,26 @@ export class AuthService {
       (userObject.studentType == StudentType.POSTGRADUATE &&
         userObject.degreeProgram != null)
     ) {
-      const student = await this.studentRepository.save(createAuthDto.student);
-      createAuthDto.student = student;
-      return await this.createUser(createAuthDto, currentUser);
+      const courses = await Promise.all(
+        createAuthDto.student.courses.map((x) => this.courseService.findOne(x)),
+      );
+      let student = await this.studentRepository.create({
+        ...createAuthDto.student,
+        courses,
+      });
+      student = await this.studentRepository.save(student);
+      // createAuthDto.student = student;
+      createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
+      const college = await this.preloadCollegeByName(createAuthDto.college);
+      let user = await this.userRepository.create({
+        ...createAuthDto,
+        student,
+        college,
+      });
+      user.addedBy = currentUser;
+      user = await this.userRepository.save(user);
+      delete user.password;
+      return user;
     }
     throw new NotFoundException(
       'student Type is Under Graduate you must entry classes data or student type is postGraduate you must entry degree program',
