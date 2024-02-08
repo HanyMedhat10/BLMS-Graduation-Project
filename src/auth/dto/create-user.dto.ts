@@ -12,6 +12,7 @@ import {
 import { Role } from '../entities/enum/user.enum';
 import { Type } from 'class-transformer';
 import { UpdateStudentDto } from 'src/student/dto/update-student.dto';
+import { UpdateTeacherassistDto } from 'src/teacherassist/dto/update-teacherassist.dto';
 
 export class CreateUserDto {
   //   @IsNotEmpty({ message: 'Name can not be null ' })
@@ -39,4 +40,7 @@ export class CreateUserDto {
   @Type(() => UpdateStudentDto)
   @ValidateNested({ each: false })
   student: UpdateStudentDto;
+  // @Type(() => UpdateTeacherassistDto)
+  // @ValidateNested({ each: false })
+  // teacherAssistant: UpdateTeacherassistDto;
 }

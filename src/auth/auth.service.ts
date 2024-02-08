@@ -43,6 +43,9 @@ export class AuthService {
         return await this.createUser(createAuthDto, currentUser);
       case Role.STUDENT:
         return await this.createStudent(createAuthDto, currentUser);
+      case Role.TA:
+        // const userTA = createAuthDto.teacherAssistant;
+        break;
       default:
         console.log('default state');
         console.log(createAuthDto);
@@ -122,6 +125,7 @@ export class AuthService {
         student,
         college,
         department: department,
+        // teacherAssistant:null,
       });
       user.addedBy = currentUser;
       user = await this.userRepository.save(user);
