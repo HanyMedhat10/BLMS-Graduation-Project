@@ -9,7 +9,7 @@ export class CreateStudentDto {
   @IsNotEmpty()
   @IsEnum(StudentType)
   studentType: StudentType;
-  @IsNumber({}, { each: true })
+  @IsNumber({ maxDecimalPlaces: 0 }, { each: true })
   // @IsPositive()
   courses: number[];
 }

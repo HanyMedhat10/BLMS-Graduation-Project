@@ -10,11 +10,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { TeacherType } from './enum/teacher.enum';
+import { IsNotEmpty } from 'class-validator';
 
 @Entity()
 export class TeacherAssistant {
   @PrimaryGeneratedColumn()
   id: number;
+  @IsNotEmpty()
   @Column()
   degreeProgram: string;
   @Column({ type: 'enum', enum: TeacherType })

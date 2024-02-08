@@ -19,6 +19,7 @@ import { StudentType } from 'src/student/entities/enum/student.enum';
 import { College } from '../college/entities/college.entity';
 import { CreateCollegeDto } from '../college/dto/create-college.dto';
 import { CourseService } from 'src/course/course.service';
+import { Department } from 'src/department/entities/department.entity';
 @Injectable()
 export class AuthService {
   constructor(
@@ -29,6 +30,8 @@ export class AuthService {
     @InjectRepository(College)
     private readonly collegeRepository: Repository<College>,
     private readonly courseService: CourseService,
+    @InjectRepository(Department)
+    private readonly departmentRepository: Repository<Department>,
   ) {}
   async create(createAuthDto: CreateUserDto, currentUser: User): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
@@ -89,7 +92,10 @@ export class AuthService {
         break;
     }
   }
-  async createStudent(createAuthDto: CreateUserDto, currentUser: User) {
+  async createStudent(
+    createAuthDto: CreateUserDto,
+    currentUser: User,
+  ): Promise<User> {
     const userObject = createAuthDto.student;
     if (
       (userObject.studentType == StudentType.UNDERGRADUATE &&
@@ -108,10 +114,14 @@ export class AuthService {
       // createAuthDto.student = student;
       createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
       const college = await this.preloadCollegeByName(createAuthDto.college);
+      const department = await this.departmentRepository.findOne({
+        where: { id: createAuthDto.department },
+      });
       let user = await this.userRepository.create({
         ...createAuthDto,
         student,
         college,
+        department: department,
       });
       user.addedBy = currentUser;
       user = await this.userRepository.save(user);

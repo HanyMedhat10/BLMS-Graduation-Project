@@ -3,6 +3,8 @@ import {
   IsEmail,
   IsEnum,
   IsNotEmpty,
+  IsNumber,
+  IsPositive,
   IsString,
   MinLength,
   ValidateNested,
@@ -23,6 +25,9 @@ export class CreateStudentUserDto {
   password: string;
   @IsEnum({ Role, default: Role.STUDENT })
   role: Role;
+  @IsPositive()
+  @IsNumber({ maxDecimalPlaces: 0 })
+  department: number;
   @IsString({ each: true })
   college: string;
   @Type(() => UpdateStudentDto)
