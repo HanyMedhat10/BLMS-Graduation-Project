@@ -195,6 +195,7 @@ export class AuthService {
   ): Promise<User> {
     const college = await this.preloadCollegeByName(updateAuthDto.college);
     const user = await this.findOne(id);
+    delete updateAuthDto.password;
     Object.assign(user, updateAuthDto);
     user.addedBy = currentUser;
     user.college = college;

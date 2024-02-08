@@ -5,9 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Student } from './entities/student.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { User } from 'src/auth/entities/user.entity';
+import { CourseModule } from 'src/course/course.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Student, User]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([Student, User]),
+    AuthModule,
+    CourseModule,
+  ],
   controllers: [StudentController],
   providers: [StudentService],
 })

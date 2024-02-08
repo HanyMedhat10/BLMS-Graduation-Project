@@ -17,6 +17,7 @@ import { RoleGuard } from 'src/auth/role/role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { UpdateStudentDto } from './dto/update-student.dto';
 import { Student } from './entities/student.entity';
+import { UpdateStudentUserDto } from './dto/update-student-user-dto';
 
 @Controller('student')
 export class StudentController {
@@ -45,9 +46,10 @@ export class StudentController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateStudentDto: UpdateStudentDto,
-  ): Promise<Student> {
-    return this.studentService.update(+id, updateStudentDto);
+    @Body() updateStudentUserDto: UpdateStudentUserDto,
+    @CurrentUser() currentUser: User,
+  ): Promise<User> {
+    return this.studentService.update(+id, updateStudentUserDto, currentUser);
   }
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
