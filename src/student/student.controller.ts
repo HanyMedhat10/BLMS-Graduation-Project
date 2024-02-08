@@ -15,8 +15,6 @@ import { CreateStudentUserDto } from './dto/create-student-user-dto';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { UpdateStudentDto } from './dto/update-student.dto';
-import { Student } from './entities/student.entity';
 import { UpdateStudentUserDto } from './dto/update-student-user-dto';
 
 @Controller('student')
