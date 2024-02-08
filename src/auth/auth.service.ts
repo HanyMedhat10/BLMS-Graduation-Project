@@ -52,15 +52,13 @@ export class AuthService {
   private async createUser(createAuthDto: CreateUserDto, currentUser: User) {
     createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
     const college = await this.preloadCollegeByName(createAuthDto.college);
-    let user = await this.userRepository.create({
-      ...createAuthDto,
-      student: { courses: [] },
-      college,
-    });
-    user.addedBy = currentUser;
-    user = await this.userRepository.save(user);
-    delete user.password;
-    return user;
+    let normalUser = new User();
+    normalUser = Object.assign(normalUser, createAuthDto);
+    normalUser.college = college;
+    normalUser.addedBy = currentUser;
+    normalUser = await this.userRepository.save(normalUser);
+    delete normalUser.password;
+    return normalUser;
   }
 
   async findOneUser(id: number, role: Role) {

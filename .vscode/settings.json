@@ -1,5 +1,16 @@
 {
     "cSpell.words": [
         "BLMS"
+    ],
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "server": "localhost",
+            "port": 5432,
+            "driver": "PostgreSQL",
+            "name": "postgres",
+            "username": "postgres",
+            "database": "BLMS_GP"
+        }
     ]
 }
