@@ -1,7 +1,6 @@
 import {
   IsEmail,
   IsEnum,
-  IsInt,
   IsNotEmpty,
   IsNumber,
   IsPositive,
@@ -40,7 +39,7 @@ export class CreateUserDto {
   @Type(() => UpdateStudentDto)
   @ValidateNested({ each: false })
   student: UpdateStudentDto;
-  // @Type(() => UpdateTeacherassistDto)
-  // @ValidateNested({ each: false })
-  // teacherAssistant: UpdateTeacherassistDto;
+  @Type(() => UpdateTeacherassistDto)
+  @ValidateNested({ each: false })
+  teacherAssistant: UpdateTeacherassistDto;
 }

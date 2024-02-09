@@ -6,18 +6,31 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { TeacherassistService } from './teacherassist.service';
-import { CreateTeacherassistDto } from './dto/create-teacherassist.dto';
-import { UpdateTeacherassistDto } from './dto/update-teacherassist.dto';
+import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
+import { User } from 'src/auth/entities/user.entity';
+import { CreateTeacherAssistUserDto } from './dto/create-teacherassist-user.dto';
+import { Roles } from 'src/auth/roles/roles.decorator';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { RoleGuard } from 'src/auth/role/role.guard';
+import { UpdateTeacherAssistUserDto } from './dto/update-teacherassist-user.dto';
 
 @Controller('teacherassist')
 export class TeacherassistController {
   constructor(private readonly teacherassistService: TeacherassistService) {}
-
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
-  create(@Body() createTeacherassistDto: CreateTeacherassistDto) {
-    return this.teacherassistService.create(createTeacherassistDto);
+  create(
+    @Body() createTeacherassistDto: CreateTeacherAssistUserDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.teacherassistService.create(
+      createTeacherassistDto,
+      currentUser,
+    );
   }
 
   @Get()
@@ -33,7 +46,7 @@ export class TeacherassistController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateTeacherassistDto: UpdateTeacherassistDto,
+    @Body() updateTeacherassistDto: UpdateTeacherAssistUserDto,
   ) {
     return this.teacherassistService.update(+id, updateTeacherassistDto);
   }

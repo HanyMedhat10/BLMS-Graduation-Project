@@ -20,6 +20,10 @@ import { College } from '../college/entities/college.entity';
 import { CreateCollegeDto } from '../college/dto/create-college.dto';
 import { CourseService } from 'src/course/course.service';
 import { Department } from 'src/department/entities/department.entity';
+import { CreateStudentUserDto } from 'src/student/dto/create-student-user-dto';
+import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entity';
+import { TeacherType } from 'src/teacherassist/entities/enum/teacher.enum';
+import { CreateTeacherAssistUserDto } from 'src/teacherassist/dto/create-teacherassist-user.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -32,6 +36,8 @@ export class AuthService {
     private readonly courseService: CourseService,
     @InjectRepository(Department)
     private readonly departmentRepository: Repository<Department>,
+    @InjectRepository(TeacherAssistant)
+    private readonly teacherAssistantRepository: Repository<TeacherAssistant>,
   ) {}
   async create(createAuthDto: CreateUserDto, currentUser: User): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
@@ -41,10 +47,11 @@ export class AuthService {
     switch (createAuthDto.role) {
       case Role.ADMIN:
         return await this.createUser(createAuthDto, currentUser);
-      case Role.STUDENT:
-        return await this.createStudent(createAuthDto, currentUser);
-      case Role.TA:
-        // const userTA = createAuthDto.teacherAssistant;
+        // case Role.STUDENT:
+        //   return await this.createStudent(createAuthDto, currentUser);
+        // case Role.TA:
+        //   return await this.createTA(createAuthDto, currentUser);
+
         break;
       default:
         console.log('default state');
@@ -53,6 +60,50 @@ export class AuthService {
         break;
     }
     return await this.createUser(createAuthDto, currentUser);
+  }
+
+  async createTA(
+    createTeacherassistDto: CreateTeacherAssistUserDto,
+    currentUser: User,
+  ) {
+    const userExists = await this.findUserByEmail(createTeacherassistDto.email);
+    if (userExists) {
+      throw new BadRequestException('Email is not available.');
+    }
+    const userTA = createTeacherassistDto.teacherAssistant;
+    let ta = new TeacherAssistant();
+    Object.assign(ta, userTA);
+    if (
+      userTA.courses != null &&
+      userTA.teacherType == TeacherType.STUDYMASTER
+    ) {
+      const courses = await Promise.all(
+        userTA.courses.map((x) => this.courseService.findOne(x)),
+      );
+      ta.courses = courses;
+    }
+
+    ta = await this.teacherAssistantRepository.save(ta);
+    createTeacherassistDto.password = await bcrypt.hash(
+      createTeacherassistDto.password,
+      10,
+    );
+    const college = await this.preloadCollegeByName(
+      createTeacherassistDto.college,
+    );
+    const department = await this.departmentRepository.findOne({
+      where: { id: createTeacherassistDto.department },
+    });
+    let user = await this.userRepository.create({
+      ...createTeacherassistDto,
+      teacherAssistant: ta,
+      college,
+      department: department,
+    });
+    user.addedBy = currentUser;
+    user = await this.userRepository.save(user);
+    delete user.password;
+    return user;
   }
 
   private async createUser(createAuthDto: CreateUserDto, currentUser: User) {
@@ -96,10 +147,14 @@ export class AuthService {
     }
   }
   async createStudent(
-    createAuthDto: CreateUserDto,
+    createStudentUserDto: CreateStudentUserDto,
     currentUser: User,
   ): Promise<User> {
-    const userObject = createAuthDto.student;
+    const userExists = await this.findUserByEmail(createStudentUserDto.email);
+    if (userExists) {
+      throw new BadRequestException('Email is not available.');
+    }
+    const userObject = createStudentUserDto.student;
     if (
       (userObject.studentType == StudentType.UNDERGRADUATE &&
         userObject.classes != null) ||
@@ -107,21 +162,28 @@ export class AuthService {
         userObject.degreeProgram != null)
     ) {
       const courses = await Promise.all(
-        createAuthDto.student.courses.map((x) => this.courseService.findOne(x)),
+        createStudentUserDto.student.courses.map((x) =>
+          this.courseService.findOne(x),
+        ),
       );
       let student = await this.studentRepository.create({
-        ...createAuthDto.student,
+        ...createStudentUserDto.student,
         courses,
       });
       student = await this.studentRepository.save(student);
       // createAuthDto.student = student;
-      createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
-      const college = await this.preloadCollegeByName(createAuthDto.college);
+      createStudentUserDto.password = await bcrypt.hash(
+        createStudentUserDto.password,
+        10,
+      );
+      const college = await this.preloadCollegeByName(
+        createStudentUserDto.college,
+      );
       const department = await this.departmentRepository.findOne({
-        where: { id: createAuthDto.department },
+        where: { id: createStudentUserDto.department },
       });
       let user = await this.userRepository.create({
-        ...createAuthDto,
+        ...createStudentUserDto,
         student,
         college,
         department: department,
