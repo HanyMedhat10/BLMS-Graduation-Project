@@ -8,6 +8,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { CreateStudentUserDto } from './dto/create-student-user-dto';
 import { UpdateStudentUserDto } from './dto/update-student-user-dto';
 import { CourseService } from 'src/course/course.service';
+import { DepartmentService } from 'src/department/department.service';
 
 @Injectable()
 export class StudentService {
@@ -16,6 +17,7 @@ export class StudentService {
     private readonly studentRepository: Repository<Student>,
     private readonly userService: AuthService,
     private readonly courseService: CourseService,
+    private readonly departmentService: DepartmentService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
@@ -101,6 +103,12 @@ export class StudentService {
     user.student = student;
     user.addedBy = currentUser;
     user.college = college;
+    if (updateStudentUserDto.department != null) {
+      const department = await this.departmentService.findOne(
+        updateStudentUserDto.department,
+      );
+      user.department = department;
+    }
     return await this.userRepository.save(user);
     // const student = await this.findOne(id);
 

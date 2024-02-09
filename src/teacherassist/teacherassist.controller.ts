@@ -42,13 +42,19 @@ export class TeacherassistController {
   findOne(@Param('id') id: string) {
     return this.teacherassistService.findOne(+id);
   }
-
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
     @Body() updateTeacherassistDto: UpdateTeacherAssistUserDto,
+    @CurrentUser() currentUser: User,
   ) {
-    return this.teacherassistService.update(+id, updateTeacherassistDto);
+    return this.teacherassistService.update(
+      +id,
+      updateTeacherassistDto,
+      currentUser,
+    );
   }
 
   @Delete(':id')
