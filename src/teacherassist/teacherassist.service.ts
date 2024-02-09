@@ -53,7 +53,10 @@ export class TeacherassistService {
     return `This action updates a #${id} teacherassist`;
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    const ta = await this.findOne(id);
+    await this.teacherAssistantRepository.delete(ta.teacherAssistant.id);
+    return await this.userRepository.delete(id);
     return `This action removes a #${id} teacherassist`;
   }
 }
