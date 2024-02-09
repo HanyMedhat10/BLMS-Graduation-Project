@@ -6,6 +6,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { User } from 'src/auth/entities/user.entity';
 import { CreateTeacherAssistUserDto } from './dto/create-teacherassist-user.dto';
 import { UpdateTeacherAssistUserDto } from './dto/update-teacherassist-user.dto';
+import { Role } from 'src/auth/entities/enum/user.enum';
 
 @Injectable()
 export class TeacherassistService {
@@ -23,12 +24,26 @@ export class TeacherassistService {
     return await this.userService.createTA(createTeacherassistDto, currentUser);
   }
 
-  findAll() {
-    return `This action returns all teacherassist`;
+  async findAll() {
+    return await this.userRepository.find({
+      where: { role: Role.TA },
+      relations: {
+        teacherAssistant: { courses: true },
+        college: true,
+        department: true,
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} teacherassist`;
+  async findOne(id: number) {
+    return await this.userRepository.findOne({
+      where: { id, role: Role.TA },
+      relations: {
+        teacherAssistant: { courses: true },
+        college: true,
+        department: true,
+      },
+    });
   }
 
   update(
