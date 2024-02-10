@@ -21,6 +21,5 @@ export class Course {
   @ManyToOne(() => Department, (department) => department.courses)
   department: Department;
   @ManyToMany(() => User, (dr) => dr.teachingCourses)
-  @JoinTable()
   teaching: User[];
 }

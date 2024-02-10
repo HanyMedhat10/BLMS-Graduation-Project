@@ -46,9 +46,9 @@ export class DoctorService {
 
   async remove(id: number) {
     const doctor = await this.findOne(id);
-    if (doctor.teachingCourses != null) {
-      throw new BadRequestException('The Doctor teaching courses');
-    }
+    // if (doctor.teachingCourses != null) {
+    //   throw new BadRequestException('The Doctor teaching courses');
+    // }
     return await this.userRepository.delete(doctor.id);
   }
 }
