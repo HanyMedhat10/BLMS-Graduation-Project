@@ -27,6 +27,6 @@ export class TeacherAssistant {
   @ManyToMany(() => Course, (course) => course.students, {
     cascade: true,
   })
-  @JoinTable()
+  @JoinTable({ name: 'teacher_assistant_courses' })
   courses: Course[];
 }
