@@ -11,6 +11,7 @@ import { CollegeModule } from './college/college.module';
 import { DepartmentModule } from './department/department.module';
 import { CourseModule } from './course/course.module';
 import { TeacherassistModule } from './teacherassist/teacherassist.module';
+import { DoctorModule } from './doctor/doctor.module';
 
 @Module({
   imports: [
@@ -32,6 +33,7 @@ import { TeacherassistModule } from './teacherassist/teacherassist.module';
     DepartmentModule,
     CourseModule,
     TeacherassistModule,
+    DoctorModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
