@@ -116,10 +116,14 @@ export class AuthService {
     );
     createDoctorDto.password = await bcrypt.hash(createDoctorDto.password, 10);
     const college = await this.preloadCollegeByName(createDoctorDto.college);
+    const department = await this.departmentRepository.findOne({
+      where: { id: createDoctorDto.department },
+    });
     let normalUser = new User();
     normalUser = Object.assign(normalUser, createDoctorDto);
     normalUser.college = college;
     normalUser.teachingCourses = courses;
+    normalUser.department = department;
     normalUser.addedBy = currentUser;
     normalUser = await this.userRepository.save(normalUser);
     delete normalUser.password;
