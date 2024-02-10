@@ -1,8 +1,10 @@
+import { User } from 'src/auth/entities/user.entity';
 import { Department } from 'src/department/entities/department.entity';
 import { Student } from 'src/student/entities/student.entity';
 import {
   Column,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -18,4 +20,7 @@ export class Course {
   students: Student[];
   @ManyToOne(() => Department, (department) => department.courses)
   department: Department;
+  @ManyToMany(() => User, (dr) => dr.teachingCourse)
+  @JoinTable()
+  teaching: User[];
 }

@@ -4,6 +4,7 @@ import {
   Entity,
   JoinColumn,
   JoinTable,
+  ManyToMany,
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -15,6 +16,7 @@ import { Student } from 'src/student/entities/student.entity';
 import { College } from '../../college/entities/college.entity';
 import { Department } from 'src/department/entities/department.entity';
 import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entity';
+import { Course } from 'src/course/entities/course.entity';
 
 @Entity()
 export class User {
@@ -52,4 +54,6 @@ export class User {
   @ManyToOne(() => Department, (department) => department.staff)
   @JoinColumn()
   department: Department;
+  @ManyToMany(() => Course, (course) => course.teaching)
+  teachingCourse: Course[];
 }
