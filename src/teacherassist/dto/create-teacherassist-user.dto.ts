@@ -30,6 +30,8 @@ export class CreateTeacherAssistUserDto {
   department: number;
   @IsString({ each: true })
   college: string;
+  @IsNumber({}, { each: true })
+  teachingCourses: number[];
   @Type(() => UpdateTeacherassistDto)
   @ValidateNested()
   teacherAssistant: UpdateTeacherassistDto;

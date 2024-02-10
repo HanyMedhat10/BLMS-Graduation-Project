@@ -95,11 +95,17 @@ export class AuthService {
     const department = await this.departmentRepository.findOne({
       where: { id: createTeacherassistDto.department },
     });
+    const coursesTeaching = await Promise.all(
+      createTeacherassistDto.teachingCourses.map((x) =>
+        this.courseService.findOne(x),
+      ),
+    );
     let user = await this.userRepository.create({
       ...createTeacherassistDto,
       teacherAssistant: ta,
       college,
       department: department,
+      teachingCourses: coursesTeaching,
     });
     user.addedBy = currentUser;
     user = await this.userRepository.save(user);

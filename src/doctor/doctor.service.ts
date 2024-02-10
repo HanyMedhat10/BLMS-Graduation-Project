@@ -1,4 +1,3 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -6,6 +5,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/entities/enum/user.enum';
+import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class DoctorService {

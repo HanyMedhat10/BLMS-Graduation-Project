@@ -4,7 +4,6 @@ import { Student } from 'src/student/entities/student.entity';
 import {
   Column,
   Entity,
-  JoinTable,
   ManyToMany,
   ManyToOne,
   PrimaryGeneratedColumn,
