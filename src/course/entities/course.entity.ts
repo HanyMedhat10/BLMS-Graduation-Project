@@ -20,7 +20,7 @@ export class Course {
   students: Student[];
   @ManyToOne(() => Department, (department) => department.courses)
   department: Department;
-  @ManyToMany(() => User, (dr) => dr.teachingCourse)
+  @ManyToMany(() => User, (dr) => dr.teachingCourses)
   @JoinTable()
   teaching: User[];
 }

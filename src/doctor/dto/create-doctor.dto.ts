@@ -27,5 +27,7 @@ export class CreateDoctorDto {
   department: number;
   @IsString({ each: true })
   college: string;
-  courses: number[];
+//   @IsPositive()
+  @IsNumber({}, { each: true })
+  teachingCourses: number[];
 }

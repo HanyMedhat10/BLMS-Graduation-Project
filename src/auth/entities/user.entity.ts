@@ -55,5 +55,5 @@ export class User {
   @JoinColumn()
   department: Department;
   @ManyToMany(() => Course, (course) => course.teaching)
-  teachingCourse: Course[];
+  teachingCourses: Course[];
 }
