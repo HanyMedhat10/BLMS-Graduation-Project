@@ -12,16 +12,16 @@ import { DepartmentModule } from './department/department.module';
 import { CourseModule } from './course/course.module';
 import { TeacherassistModule } from './teacherassist/teacherassist.module';
 import { DoctorModule } from './doctor/doctor.module';
-
+import { ConfigModule } from '@nestjs/config';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: 'localhost',
-      port: 5432,
-      username: 'postgres',
-      password: 'pass123',
-      database: 'BLMS_GP',
+      host: process.env.PGHOST,
+      port: Number(process.env.PGPORT),
+      username: process.env.PGUSER,
+      password: process.env.PGPASSWORD,
+      database: process.env.PGDATABASE,
       autoLoadEntities: true,
       synchronize: true, // will the project production is false
     }),
@@ -34,6 +34,7 @@ import { DoctorModule } from './doctor/doctor.module';
     CourseModule,
     TeacherassistModule,
     DoctorModule,
+    ConfigModule.forRoot(),
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
