@@ -41,8 +41,12 @@ export class DoctorController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDoctorDto: UpdateDoctorDto) {
-    return this.doctorService.update(+id, updateDoctorDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateDoctorDto: UpdateDoctorDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.doctorService.update(+id, updateDoctorDto, currentUser);
   }
 
   @Delete(':id')

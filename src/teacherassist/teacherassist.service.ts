@@ -92,6 +92,14 @@ export class TeacherassistService {
     user.teacherAssistant = teacherAssistant;
     user.addedBy = currentUser;
     user.college = college;
+    if (updateTeacherAssistUserDto.teachingCourses != null) {
+      const teachingCourses = await Promise.all(
+        updateTeacherAssistUserDto.teachingCourses.map((x) =>
+          this.courseService.findOne(x),
+        ),
+      );
+      user.teachingCourses = teachingCourses;
+    }
     if (updateTeacherAssistUserDto.department != null) {
       const department = await this.departmentService.findOne(
         updateTeacherAssistUserDto.department,

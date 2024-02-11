@@ -5,7 +5,9 @@ import { User } from 'src/auth/entities/user.entity';
 import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/entities/enum/user.enum';
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
+import { DepartmentService } from 'src/department/department.service';
+import { CourseService } from 'src/course/course.service';
 
 @Injectable()
 export class DoctorService {
@@ -13,6 +15,8 @@ export class DoctorService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly userService: AuthService,
+    private readonly departmentService: DepartmentService,
+    private readonly courseService: CourseService,
   ) {}
   async create(createDoctorDto: CreateDoctorDto, currentUser: User) {
     return await this.userService.createDR(createDoctorDto, currentUser);
@@ -40,10 +44,41 @@ export class DoctorService {
     });
   }
 
-  update(id: number, updateDoctorDto: UpdateDoctorDto) {
-    return `This action updates a #${id} doctor`;
-  }
+  async update(
+    id: number,
+    updateDoctorDto: UpdateDoctorDto,
+    currentUser: User,
+  ) {
+    const doctor = await this.findOne(id);
+    if (!doctor) {
+      throw new NotFoundException(`This id: ${id} not found `);
+    }
 
+    // doctor = await this.userRepository.save(doctor);
+    const college = await this.userService.preloadCollegeByName(
+      updateDoctorDto.college,
+    );
+    // const user = await this.findOne(id);
+    delete updateDoctorDto.password;
+    Object.assign(doctor, updateDoctorDto);
+    doctor.addedBy = currentUser;
+    doctor.college = college;
+    if (updateDoctorDto.teachingCourses != null) {
+      const teachingCourses = await Promise.all(
+        updateDoctorDto.teachingCourses.map((x) =>
+          this.courseService.findOne(x),
+        ),
+      );
+      doctor.teachingCourses = teachingCourses;
+    }
+    if (updateDoctorDto.department != null) {
+      const department = await this.departmentService.findOne(
+        updateDoctorDto.department,
+      );
+      doctor.department = department;
+    }
+    return await this.userRepository.save(doctor);
+  }
   async remove(id: number) {
     const doctor = await this.findOne(id);
     // if (doctor.teachingCourses != null) {

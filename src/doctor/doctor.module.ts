@@ -4,9 +4,16 @@ import { DoctorController } from './doctor.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { DepartmentModule } from 'src/department/department.module';
+import { CourseModule } from 'src/course/course.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]), AuthModule],
+  imports: [
+    TypeOrmModule.forFeature([User]),
+    AuthModule,
+    DepartmentModule,
+    CourseModule,
+  ],
   controllers: [DoctorController],
   providers: [DoctorService],
 })
