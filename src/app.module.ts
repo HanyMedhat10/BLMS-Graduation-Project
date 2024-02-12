@@ -13,6 +13,7 @@ import { CourseModule } from './course/course.module';
 import { TeacherassistModule } from './teacherassist/teacherassist.module';
 import { DoctorModule } from './doctor/doctor.module';
 import { ConfigModule } from '@nestjs/config';
+import { HeadOfDepartmentModule } from './head-of-department/head-of-department.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -35,6 +36,7 @@ import { ConfigModule } from '@nestjs/config';
     TeacherassistModule,
     DoctorModule,
     ConfigModule.forRoot(),
+    HeadOfDepartmentModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

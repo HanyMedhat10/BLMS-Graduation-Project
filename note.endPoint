@@ -36,3 +36,4 @@
 {/doctor/:id, GET} 
 {/doctor/:id, PATCH} 
 {/doctor/:id, DELETE} 
+https://blms-api.up.railway.app
