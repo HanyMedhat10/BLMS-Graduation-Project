@@ -12,7 +12,10 @@ export class HeadOfDepartmentService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
-  create(createHeadOfDepartmentDto: CreateHeadOfDepartmentDto) {
+  create(
+    createHeadOfDepartmentDto: CreateHeadOfDepartmentDto,
+    currentUser: User,
+  ) {
     return 'This action adds a new headOfDepartment';
   }
 

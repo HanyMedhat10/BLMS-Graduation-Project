@@ -25,6 +25,7 @@ import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entit
 import { TeacherType } from 'src/teacherassist/entities/enum/teacher.enum';
 import { CreateTeacherAssistUserDto } from 'src/teacherassist/dto/create-teacherassist-user.dto';
 import { CreateDoctorDto } from 'src/doctor/dto/create-doctor.dto';
+import { CreateHeadOfDepartmentDto } from 'src/head-of-department/dto/create-head-of-department.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -125,6 +126,33 @@ export class AuthService {
     const department = await this.departmentRepository.findOne({
       where: { id: createDoctorDto.department },
     });
+    let normalUser = new User();
+    normalUser = Object.assign(normalUser, createDoctorDto);
+    normalUser.college = college;
+    normalUser.teachingCourses = courses;
+    normalUser.department = department;
+    normalUser.addedBy = currentUser;
+    normalUser = await this.userRepository.save(normalUser);
+    delete normalUser.password;
+    return normalUser;
+  }
+  async createHOD(
+    createDoctorDto: CreateHeadOfDepartmentDto,
+    currentUser: User,
+  ) {
+    const userExists = await this.findUserByEmail(createDoctorDto.email);
+    if (userExists) {
+      throw new BadRequestException('Email is not available.');
+    }
+    const courses = await Promise.all(
+      createDoctorDto.teachingCourses.map((x) => this.courseService.findOne(x)),
+    );
+    createDoctorDto.password = await bcrypt.hash(createDoctorDto.password, 10);
+    const college = await this.preloadCollegeByName(createDoctorDto.college);
+    const department = await this.departmentRepository.findOne({
+      where: { id: createDoctorDto.department },
+    });
+    // if(department.)
     let normalUser = new User();
     normalUser = Object.assign(normalUser, createDoctorDto);
     normalUser.college = college;

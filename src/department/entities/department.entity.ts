@@ -7,6 +7,7 @@ import {
   JoinColumn,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -22,6 +23,9 @@ export class Department {
   //? Tomorrow
   @OneToMany(() => User, (user) => user.department)
   staff: User[];
+  @OneToOne(() => User, (user) => user.headOfDepartment)
+  @JoinColumn()
+  headOfDepartment: User;
   @OneToMany(() => Course, (course) => course.department)
   courses: Course[];
 }

@@ -10,6 +10,8 @@ import {
 import { HeadOfDepartmentService } from './head-of-department.service';
 import { CreateHeadOfDepartmentDto } from './dto/create-head-of-department.dto';
 import { UpdateHeadOfDepartmentDto } from './dto/update-head-of-department.dto';
+import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
+import { User } from 'src/auth/entities/user.entity';
 
 @Controller('head-of-department')
 export class HeadOfDepartmentController {
@@ -18,8 +20,14 @@ export class HeadOfDepartmentController {
   ) {}
 
   @Post()
-  create(@Body() createHeadOfDepartmentDto: CreateHeadOfDepartmentDto) {
-    return this.headOfDepartmentService.create(createHeadOfDepartmentDto);
+  create(
+    @Body() createHeadOfDepartmentDto: CreateHeadOfDepartmentDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.headOfDepartmentService.create(
+      createHeadOfDepartmentDto,
+      currentUser,
+    );
   }
 
   @Get()

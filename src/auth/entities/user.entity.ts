@@ -54,6 +54,8 @@ export class User {
   @ManyToOne(() => Department, (department) => department.staff)
   @JoinColumn()
   department: Department;
+  @OneToOne(() => Department, (department) => department.headOfDepartment)
+  headOfDepartment: Department;
   @ManyToMany(() => Course, (course) => course.teaching, {
     cascade: true,
   })
