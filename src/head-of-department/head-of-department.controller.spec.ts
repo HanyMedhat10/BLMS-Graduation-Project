@@ -11,7 +11,9 @@ describe('HeadOfDepartmentController', () => {
       providers: [HeadOfDepartmentService],
     }).compile();
 
-    controller = module.get<HeadOfDepartmentController>(HeadOfDepartmentController);
+    controller = module.get<HeadOfDepartmentController>(
+      HeadOfDepartmentController,
+    );
   });
 
   it('should be defined', () => {
