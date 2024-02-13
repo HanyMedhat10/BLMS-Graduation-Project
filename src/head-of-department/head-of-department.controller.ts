@@ -6,50 +6,58 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
 } from '@nestjs/common';
 import { HeadOfDepartmentService } from './head-of-department.service';
 import { CreateHeadOfDepartmentDto } from './dto/create-head-of-department.dto';
 import { UpdateHeadOfDepartmentDto } from './dto/update-head-of-department.dto';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { RoleGuard } from 'src/auth/role/role.guard';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { Roles } from 'src/auth/roles/roles.decorator';
 
 @Controller('head-of-department')
 export class HeadOfDepartmentController {
   constructor(
     private readonly headOfDepartmentService: HeadOfDepartmentService,
   ) {}
-
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
-  create(
+  async create(
     @Body() createHeadOfDepartmentDto: CreateHeadOfDepartmentDto,
     @CurrentUser() currentUser: User,
   ) {
-    return this.headOfDepartmentService.create(
+    return await this.headOfDepartmentService.create(
       createHeadOfDepartmentDto,
       currentUser,
     );
   }
 
   @Get()
-  findAll() {
-    return this.headOfDepartmentService.findAll();
+  async findAll() {
+    return await this.headOfDepartmentService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.headOfDepartmentService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.headOfDepartmentService.findOne(+id);
   }
 
   @Patch(':id')
-  update(
+  async update(
     @Param('id') id: string,
     @Body() updateHeadOfDepartmentDto: UpdateHeadOfDepartmentDto,
   ) {
-    return this.headOfDepartmentService.update(+id, updateHeadOfDepartmentDto);
+    return await this.headOfDepartmentService.update(
+      +id,
+      updateHeadOfDepartmentDto,
+    );
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.headOfDepartmentService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.headOfDepartmentService.remove(+id);
   }
 }

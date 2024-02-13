@@ -149,10 +149,13 @@ export class AuthService {
     );
     createDoctorDto.password = await bcrypt.hash(createDoctorDto.password, 10);
     const college = await this.preloadCollegeByName(createDoctorDto.college);
-    const department = await this.departmentRepository.findOne({
+    let department = await this.departmentRepository.findOne({
       where: { id: createDoctorDto.department },
     });
-    // if(department.)
+    if (department.headOfDepartment != null)
+      throw new BadRequestException(
+        `this Department is busy ${JSON.stringify(department)}`,
+      );
     let normalUser = new User();
     normalUser = Object.assign(normalUser, createDoctorDto);
     normalUser.college = college;
@@ -160,8 +163,10 @@ export class AuthService {
     normalUser.department = department;
     normalUser.addedBy = currentUser;
     normalUser = await this.userRepository.save(normalUser);
+    department.headOfDepartment = normalUser;
+    department = await this.departmentRepository.save(department);
     delete normalUser.password;
-    return normalUser;
+    return JSON.stringify(normalUser);
   }
 
   private async createUser(createAuthDto: CreateUserDto, currentUser: User) {
