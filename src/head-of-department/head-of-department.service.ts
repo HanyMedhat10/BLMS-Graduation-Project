@@ -14,6 +14,7 @@ import { College } from 'src/college/entities/college.entity';
 import { Department } from 'src/department/entities/department.entity';
 import { CourseService } from 'src/course/course.service';
 import * as bcrypt from 'bcrypt';
+import { DepartmentService } from 'src/department/department.service';
 @Injectable()
 export class HeadOfDepartmentService {
   constructor(
@@ -25,7 +26,9 @@ export class HeadOfDepartmentService {
     private readonly courseService: CourseService,
     @InjectRepository(Department)
     private readonly departmentRepository: Repository<Department>,
+    private readonly departmentService: DepartmentService,
   ) {}
+
   async create(
     createHeadOfDepartmentDto: CreateHeadOfDepartmentDto,
     currentUser: User,
@@ -102,8 +105,37 @@ export class HeadOfDepartmentService {
   async update(
     id: number,
     updateHeadOfDepartmentDto: UpdateHeadOfDepartmentDto,
+    currentUser: User,
   ) {
-    return await `This action updates a #${id} headOfDepartment`;
+    const doctor = await this.findOne(id);
+    if (!doctor) {
+      throw new NotFoundException(`This id: ${id} not found `);
+    }
+
+    // doctor = await this.userRepository.save(doctor);
+    const college = await this.userService.preloadCollegeByName(
+      updateHeadOfDepartmentDto.college,
+    );
+    // const user = await this.findOne(id);
+    delete updateHeadOfDepartmentDto.password;
+    Object.assign(doctor, updateHeadOfDepartmentDto);
+    doctor.addedBy = currentUser;
+    doctor.college = college;
+    if (updateHeadOfDepartmentDto.teachingCourses != null) {
+      const teachingCourses = await Promise.all(
+        updateHeadOfDepartmentDto.teachingCourses.map((x) =>
+          this.courseService.findOne(x),
+        ),
+      );
+      doctor.teachingCourses = teachingCourses;
+    }
+    if (updateHeadOfDepartmentDto.department != null) {
+      const department = await this.departmentService.findOne(
+        updateHeadOfDepartmentDto.department,
+      );
+      doctor.department = department;
+    }
+    return await this.userRepository.save(doctor);
   }
 
   async remove(id: number) {

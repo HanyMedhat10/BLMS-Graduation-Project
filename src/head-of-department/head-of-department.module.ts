@@ -7,12 +7,14 @@ import { User } from 'src/auth/entities/user.entity';
 import { College } from 'src/college/entities/college.entity';
 import { Department } from 'src/department/entities/department.entity';
 import { CourseModule } from 'src/course/course.module';
+import { DepartmentModule } from 'src/department/department.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([User, College, Department]),
     AuthModule,
     CourseModule,
+    DepartmentModule,
   ],
   controllers: [HeadOfDepartmentController],
   providers: [HeadOfDepartmentService],
