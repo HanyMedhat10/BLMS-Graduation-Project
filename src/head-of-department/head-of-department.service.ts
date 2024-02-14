@@ -48,7 +48,7 @@ export class HeadOfDepartmentService {
     const college = await this.userService.preloadCollegeByName(
       createHeadOfDepartmentDto.college,
     );
-    const department = await this.departmentRepository.findOne({
+    let department = await this.departmentRepository.findOne({
       where: { id: createHeadOfDepartmentDto.department },
     });
     if (department.headOfDepartment != null)
@@ -62,11 +62,15 @@ export class HeadOfDepartmentService {
     normalUser.department = department;
     normalUser.addedBy = currentUser;
     normalUser = await this.userRepository.save(normalUser);
-    const departmentNew = new Department();
-    departmentNew.college = department.college;
-    departmentNew.name = department.name;
-    departmentNew.headOfDepartment = normalUser;
-    await this.departmentRepository.save(departmentNew);
+    department = this.departmentRepository.create({
+      ...department,
+      headOfDepartment: normalUser,
+    });
+    // const departmentNew = new Department();
+    // departmentNew.college = department.college;
+    // departmentNew.name = department.name;
+    // departmentNew.headOfDepartment = normalUser;
+    await this.departmentRepository.save(department);
     delete normalUser.password;
     return normalUser;
   }
