@@ -49,10 +49,12 @@ export class HeadOfDepartmentController {
   async update(
     @Param('id') id: string,
     @Body() updateHeadOfDepartmentDto: UpdateHeadOfDepartmentDto,
+    @CurrentUser() currentUser: User,
   ) {
     return await this.headOfDepartmentService.update(
       +id,
       updateHeadOfDepartmentDto,
+      currentUser,
     );
   }
 

@@ -29,7 +29,7 @@ export class CreateUserDto {
   @IsString()
   password: string;
   //   @IsNotEmpty()
-  @IsEnum(Role)
+  @IsEnum({ Role, default: Role.ADMIN })
   role: Role;
   @IsPositive()
   @IsNumber({ maxDecimalPlaces: 0 })

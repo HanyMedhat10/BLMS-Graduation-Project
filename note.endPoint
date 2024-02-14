@@ -1,39 +1,45 @@
-{/auth, POST} 
-{/auth/login, POST} 
-{/auth/restPassword/:id, POST} 
-{/auth/changePassword, POST} 
-{/auth, GET} 
-{/auth/singleUser/:id, GET} 
-{/auth/:id, PATCH} 
-{/auth/:id, DELETE} 
-{/auth/profile, GET} 
-{/course, POST} 
-{/course, GET} 
-{/course/:id, GET} 
-{/course/:id, PATCH} 
-{/course/:id, DELETE} 
-{/department, POST} 
-{/department, GET} 
-{/department/:id, GET} 
-{/department/:id, PATCH} 
-{/department/:id, DELETE} 
-{/college, POST} 
-{/college, GET} 
-{/college/:id, GET} 
-{/college/:id, PATCH} 
-{/college/:id, DELETE} 
-{/student, POST} 
-{/student, GET} 
-{/student/:id, GET} 
-{/student/:id, PATCH} 
-{/student/:id, DELETE} 
-{/teacherassist, POST} 
-{/teacherassist, GET} 
-{/teacherassist/:id, GET} 
-{/teacherassist/:id, PATCH} 
-{/doctor, POST} 
-{/doctor, GET} 
-{/doctor/:id, GET} 
-{/doctor/:id, PATCH} 
-{/doctor/:id, DELETE} 
+ {/auth, POST}  
+ {/auth/login, POST}  
+ {/auth/restPassword/:id, POST}  
+ {/auth/changePassword, POST}  
+ {/auth, GET}  
+ {/auth/singleUser/:id, GET}  
+ {/auth/:id, PATCH}  
+ {/auth/:id, DELETE}  
+ {/auth/profile, GET}
+ {/course, POST}  
+ {/course, GET}  
+ {/course/:id, GET}  
+ {/course/:id, PATCH}  
+ {/course/:id, DELETE}
+ {/department, POST}  
+ {/department, GET}  
+ {/department/:id, GET}  
+ {/department/:id, PATCH}  
+ {/department/:id, DELETE}
+ {/college, POST}  
+ {/college, GET}  
+ {/college/:id, GET}  
+ {/college/:id, PATCH}  
+ {/college/:id, DELETE}
+ {/student, POST}  
+ {/student, GET}  
+ {/student/:id, GET}  
+ {/student/:id, PATCH}  
+ {/student/:id, DELETE}
+ {/teacherassist, POST}  
+ {/teacherassist, GET}  
+ {/teacherassist/:id, GET}  
+ {/teacherassist/:id, PATCH}  
+ {/teacherassist/:id, DELETE}
+ {/doctor, POST}  
+ {/doctor, GET}  
+ {/doctor/:id, GET}  
+ {/doctor/:id, PATCH}  
+ {/doctor/:id, DELETE}  
+ {/head-of-department, POST}  
+ {/head-of-department, GET}  
+ {/head-of-department/:id, GET}  
+ {/head-of-department/:id, PATCH}  
+ {/head-of-department/:id, DELETE}
 https://blms-api.up.railway.app
