@@ -8,7 +8,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const config = new DocumentBuilder()
     .setTitle('BLMS example')
-    .setDescription('The BLMS API description')
+    .setTitle('The BLMS API description')
+    .setDescription('Develope By.Hany Medhat Gamal Mehani')
+    .setContact(
+      'Hany Medhat Gamal Mehani ',
+      'https://www.linkedin.com/in/hany-medhat-74452520a/',
+      'hany.medhat24@gmail.com',
+    )
     .setVersion('1.0')
     .addTag('BLMS')
     .build();
