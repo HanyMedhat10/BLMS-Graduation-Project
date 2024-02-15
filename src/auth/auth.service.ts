@@ -46,21 +46,6 @@ export class AuthService {
     if (userExists) {
       throw new BadRequestException('Email is not available.');
     }
-    switch (createAuthDto.role) {
-      case Role.ADMIN:
-        return await this.createUser(createAuthDto, currentUser);
-        // case Role.STUDENT:
-        //   return await this.createStudent(createAuthDto, currentUser);
-        // case Role.TA:
-        //   return await this.createTA(createAuthDto, currentUser);
-
-        break;
-      default:
-        console.log('default state');
-        console.log(createAuthDto);
-        throw new NotFoundException();
-        break;
-    }
     return await this.createUser(createAuthDto, currentUser);
   }
 

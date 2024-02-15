@@ -6,12 +6,8 @@ import {
   IsPositive,
   IsString,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
 import { Role } from '../entities/enum/user.enum';
-import { Type } from 'class-transformer';
-import { UpdateStudentDto } from 'src/student/dto/update-student.dto';
-import { UpdateTeacherassistDto } from 'src/teacherassist/dto/update-teacherassist.dto';
 import { ApiProperty } from '@nestjs/swagger';
 
 export class CreateUserDto {
@@ -43,12 +39,4 @@ export class CreateUserDto {
   @ApiProperty()
   @IsString({ each: true })
   college: string;
-  // @ApiProperty()
-  // @Type(() => UpdateStudentDto)
-  // @ValidateNested({ each: false })
-  // student: UpdateStudentDto;
-  // @ApiProperty()
-  // @Type(() => UpdateTeacherassistDto)
-  // @ValidateNested({ each: false })
-  // teacherAssistant: UpdateTeacherassistDto;
 }
