@@ -16,7 +16,8 @@ import { Roles } from 'src/auth/roles/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { UpdateTeacherAssistUserDto } from './dto/update-teacherassist-user.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Teacher Assist Module')
 @Controller('teacherassist')
 export class TeacherassistController {
   constructor(private readonly teacherassistService: TeacherassistService) {}

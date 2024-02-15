@@ -16,7 +16,8 @@ import { User } from 'src/auth/entities/user.entity';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Head Of Department Module')
 @Controller('head-of-department')
 export class HeadOfDepartmentController {
   constructor(

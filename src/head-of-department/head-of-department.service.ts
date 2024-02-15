@@ -134,6 +134,13 @@ export class HeadOfDepartmentService {
         updateHeadOfDepartmentDto.department,
       );
       doctor.department = department;
+      if (department.headOfDepartment != null) {
+        department.headOfDepartment = doctor;
+        await this.departmentRepository.save(department);
+      } else
+        throw new BadRequestException(
+          `this Department is busy ${JSON.stringify(department)}`,
+        );
     }
     return await this.userRepository.save(doctor);
   }

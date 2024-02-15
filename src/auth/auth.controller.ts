@@ -21,7 +21,8 @@ import { JwtAuthGuard } from './jwt.guard';
 import { RoleGuard } from './role/role.guard';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('Auth Module')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}

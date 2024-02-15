@@ -10,7 +10,8 @@ import {
 import { CollegeService } from './college.service';
 import { UpdateCollegeDto } from './dto/update-college.dto';
 import { CreateCollegeDto } from './dto/create-college.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+@ApiTags('College Module')
 @Controller('college')
 export class CollegeController {
   constructor(private readonly collegeService: CollegeService) {}
