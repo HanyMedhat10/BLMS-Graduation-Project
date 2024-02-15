@@ -18,5 +18,6 @@ import { DepartmentModule } from 'src/department/department.module';
   ],
   controllers: [HeadOfDepartmentController],
   providers: [HeadOfDepartmentService],
+  exports: [HeadOfDepartmentService],
 })
 export class HeadOfDepartmentModule {}

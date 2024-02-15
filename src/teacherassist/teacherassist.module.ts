@@ -17,5 +17,6 @@ import { DepartmentModule } from 'src/department/department.module';
   ],
   controllers: [TeacherassistController],
   providers: [TeacherassistService],
+  exports: [TeacherassistService],
 })
 export class TeacherassistModule {}

@@ -7,9 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Req,
-  Res,
-  HttpStatus,
   Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
@@ -79,7 +76,7 @@ export class AuthController {
   }
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('profile')
-  profile(@Req() req, @Res() res) {
-    return res.status(HttpStatus.OK).json(req.user);
+  async profile(@CurrentUser() currentUser: User) {
+    return await this.authService.profile(currentUser);
   }
 }

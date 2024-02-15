@@ -286,13 +286,14 @@ export class AuthService {
           },
         },
       },
-      relations: { addedBy: true, student: true },
+      relations: { addedBy: true },
+      where: { role: Role.ADMIN },
     });
   }
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { id },
+      where: { id, role: Role.ADMIN },
       select: {
         addedBy: {
           email: true,
@@ -439,5 +440,53 @@ export class AuthService {
     const college = await this.collegeRepository.findOne({ where: { name } });
     await this.collegeRepository.delete(college.id);
     return `This action removes a #${name} college`;
+  }
+  async profile(currentUser: User) {
+    const id = currentUser.id;
+    switch (currentUser.role) {
+      case Role.ADMIN:
+        return await this.findOne(currentUser.id);
+      case Role.STUDENT:
+        return await this.userRepository.findOne({
+          where: { id: id, role: Role.STUDENT },
+          // select: { password: false },
+          relations: {
+            student: { courses: true },
+            addedBy: true,
+            college: true,
+          },
+        });
+      case Role.DR:
+        return await this.userRepository.findOne({
+          where: { id, role: Role.DR },
+          relations: {
+            department: true,
+            college: true,
+            teachingCourses: true,
+          },
+        });
+      case Role.HOfDE:
+        return await this.userRepository.findOne({
+          where: { id: id, role: Role.HOfDE },
+          relations: {
+            department: true,
+            college: true,
+            teachingCourses: true,
+          },
+        });
+      case Role.TA:
+        return await this.userRepository.findOne({
+          where: { id, role: Role.TA },
+          relations: {
+            teacherAssistant: { courses: true },
+            college: true,
+            department: true,
+            addedBy: true,
+          },
+        });
+      default:
+        throw new NotFoundException('the User not found ');
+        break;
+    }
   }
 }

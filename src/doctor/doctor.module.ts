@@ -16,5 +16,6 @@ import { CourseModule } from 'src/course/course.module';
   ],
   controllers: [DoctorController],
   providers: [DoctorService],
+  exports: [DoctorService],
 })
 export class DoctorModule {}
