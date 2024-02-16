@@ -28,6 +28,9 @@ export class CreateStudentUserDto {
   @MinLength(8)
   @IsString()
   password: string;
+  // @ApiQuery({ name: 'role', enum: Role })
+  // async filterByRole(@Query('role') role: Role = Role.STUDENT) {}
+  @ApiProperty({ enum: ['student'] })
   @IsEnum({ Role, default: Role.STUDENT })
   role: Role;
   @IsPositive()
@@ -37,7 +40,7 @@ export class CreateStudentUserDto {
   @ApiProperty()
   @IsString({ each: true })
   college: string;
-  @ApiProperty()
+  @ApiProperty({ type: () => UpdateStudentDto })
   @Type(() => UpdateStudentDto)
   @ValidateNested()
   student: UpdateStudentDto;

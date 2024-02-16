@@ -9,7 +9,7 @@ export class CreateStudentDto {
   @ApiProperty()
   @IsString()
   degreeProgram: string;
-  @ApiProperty()
+  @ApiProperty({ enum: ['Post Graduate', 'Under Graduate'] })
   @IsNotEmpty()
   @IsEnum(StudentType)
   studentType: StudentType;
