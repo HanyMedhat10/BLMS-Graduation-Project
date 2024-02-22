@@ -310,7 +310,7 @@ export class AuthService {
           },
         },
       },
-      relations: { addedBy: true, student: true },
+      relations: { addedBy: true },
     });
     if (!user) throw new NotFoundException('User not found.');
     return user;

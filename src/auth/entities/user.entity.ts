@@ -60,6 +60,7 @@ export class User {
   headOfDepartment: Department;
   @ManyToMany(() => Course, (course) => course.teaching, {
     cascade: true,
+    // eager: true,
   })
   @JoinTable({ name: 'teaching_course' })
   teachingCourses: Course[];

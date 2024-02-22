@@ -7,10 +7,11 @@ import { AuthModule } from 'src/auth/auth.module';
 import { User } from 'src/auth/entities/user.entity';
 import { CourseModule } from 'src/course/course.module';
 import { DepartmentModule } from 'src/department/department.module';
+import { Course } from 'src/course/entities/course.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Student, User]),
+    TypeOrmModule.forFeature([Student, User, Course]),
     AuthModule,
     CourseModule,
     DepartmentModule,

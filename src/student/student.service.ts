@@ -9,12 +9,15 @@ import { CreateStudentUserDto } from './dto/create-student-user-dto';
 import { UpdateStudentUserDto } from './dto/update-student-user-dto';
 import { CourseService } from 'src/course/course.service';
 import { DepartmentService } from 'src/department/department.service';
+import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class StudentService {
   constructor(
     @InjectRepository(Student)
     private readonly studentRepository: Repository<Student>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
     private readonly userService: AuthService,
     private readonly courseService: CourseService,
     private readonly departmentService: DepartmentService,
@@ -27,7 +30,15 @@ export class StudentService {
       currentUser,
     );
   }
-
+  async addCourse(id: number, courseId: number): Promise<User> {
+    const student = await this.findOne(id);
+    const course = await this.courseRepository.findOne({
+      where: { id: courseId },
+    });
+    await student.student.courses.push(course);
+    await this.studentRepository.save(student.student);
+    return await this.findOne(id);
+  }
   async findAll() {
     // return await this.studentRepository.find({ relations: { user: true } });
     return await this.userRepository.find({
@@ -119,5 +130,14 @@ export class StudentService {
     const student = await this.findOne(id);
     await this.studentRepository.delete(student.student.id);
     return await this.userService.remove(id);
+  }
+  async removeCourse(id: number, courseId: number) {
+    const student = await this.findOne(id);
+    student.student.courses = student.student.courses.filter((course) => {
+      return course.id !== courseId;
+    });
+    await this.studentRepository.save(student.student);
+    return await this.findOne(id);
+    // return await this.studentRepository.save(student);
   }
 }
