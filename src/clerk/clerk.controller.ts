@@ -10,14 +10,19 @@ import {
 import { ClerkService } from './clerk.service';
 import { CreateClerkDto } from './dto/create-clerk.dto';
 import { UpdateClerkDto } from './dto/update-clerk.dto';
+import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
+import { User } from 'src/auth/entities/user.entity';
 
 @Controller('clerk')
 export class ClerkController {
   constructor(private readonly clerkService: ClerkService) {}
 
   @Post()
-  create(@Body() createClerkDto: CreateClerkDto) {
-    return this.clerkService.create(createClerkDto);
+  create(
+    @Body() createClerkDto: CreateClerkDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.clerkService.create(createClerkDto, currentUser);
   }
 
   @Get()
@@ -31,8 +36,12 @@ export class ClerkController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClerkDto: UpdateClerkDto) {
-    return this.clerkService.update(+id, updateClerkDto);
+  update(
+    @Param('id') id: string,
+    @Body() updateClerkDto: UpdateClerkDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.clerkService.update(+id, updateClerkDto, currentUser);
   }
 
   @Delete(':id')
