@@ -24,6 +24,7 @@ export class CreateHeadOfDepartmentDto {
   @MinLength(8)
   @IsString()
   password: string;
+  @ApiProperty({ enum: ['head Of Department'] })
   @IsEnum({ Role, default: Role.HOfDE })
   role: Role;
   @IsPositive()

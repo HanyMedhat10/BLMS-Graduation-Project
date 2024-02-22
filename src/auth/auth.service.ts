@@ -41,7 +41,10 @@ export class AuthService {
     @InjectRepository(TeacherAssistant)
     private readonly teacherAssistantRepository: Repository<TeacherAssistant>,
   ) {}
-  async create(createAuthDto: CreateAdminDto, currentUser: User): Promise<User> {
+  async create(
+    createAuthDto: CreateAdminDto,
+    currentUser: User,
+  ): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
     if (userExists) {
       throw new BadRequestException('Email is not available.');

@@ -23,7 +23,7 @@ export class CreateDoctorDto {
   @MinLength(8)
   @IsString()
   password: string;
-  @ApiProperty()
+  @ApiProperty({ enum: ['dr'] })
   @IsEnum({ Role, default: Role.DR })
   role: Role;
   @ApiProperty()

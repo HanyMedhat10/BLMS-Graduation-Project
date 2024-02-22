@@ -27,6 +27,7 @@ export class CreateTeacherAssistUserDto {
   @MinLength(8)
   @IsString()
   password: string;
+  @ApiProperty({ enum: ['teacher assist'] })
   @IsEnum({ Role, default: Role.TA })
   role: Role;
   @IsPositive()
