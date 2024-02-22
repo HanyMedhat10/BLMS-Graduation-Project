@@ -11,7 +11,7 @@ import { Role } from 'src/auth/entities/enum/user.enum';
 export class ClerkService {
   constructor(
     @InjectRepository(User)
-    private readonly clerkRepository: Repository<User>,
+    private readonly userRepository: Repository<User>,
     private readonly userService: AuthService,
   ) {}
   async create(createClerkDto: CreateClerkDto, currentUser: User) {
@@ -25,7 +25,7 @@ export class ClerkService {
   }
 
   async findAll(): Promise<User[]> {
-    return await this.clerkRepository.find({
+    return await this.userRepository.find({
       select: {
         addedBy: {
           email: true,
@@ -45,7 +45,7 @@ export class ClerkService {
   }
 
   async findOne(id: number): Promise<User> {
-    return await this.clerkRepository.findOne({
+    return await this.userRepository.findOne({
       select: {
         addedBy: {
           email: true,
@@ -64,8 +64,16 @@ export class ClerkService {
     });
   }
 
-  update(id: number, updateClerkDto: UpdateClerkDto, currentUser: User) {
-    return `This action updates a #${id} clerk`;
+  async update(id: number, updateClerkDto: UpdateClerkDto, currentUser: User) {
+    const college = await this.userService.preloadCollegeByName(
+      updateClerkDto.college,
+    );
+    const user = await this.findOne(id);
+    delete updateClerkDto.password;
+    Object.assign(user, updateClerkDto);
+    user.addedBy = currentUser;
+    user.college = college;
+    return await this.userRepository.save(user);
   }
 
   async remove(id: number) {
@@ -73,7 +81,7 @@ export class ClerkService {
     // if (doctor.teachingCourses != null) {
     //   throw new BadRequestException('The Doctor teaching courses');
     // }
-    return await this.clerkRepository.delete(clerk.id);
+    return await this.userRepository.delete(clerk.id);
   }
   private async createUser(createClerkDto: CreateClerkDto, currentUser: User) {
     createClerkDto.password = await bcrypt.hash(createClerkDto.password, 10);
@@ -84,7 +92,7 @@ export class ClerkService {
     normalUser = Object.assign(normalUser, createClerkDto);
     normalUser.college = college;
     normalUser.addedBy = currentUser;
-    normalUser = await this.clerkRepository.save(normalUser);
+    normalUser = await this.userRepository.save(normalUser);
     delete normalUser.password;
     return normalUser;
   }

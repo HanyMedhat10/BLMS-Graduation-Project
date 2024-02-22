@@ -389,10 +389,10 @@ export class AuthService {
   }
   async preloadCollegeByName(name: string): Promise<College> {
     const college = await this.collegeRepository.findOne({ where: { name } });
-    if (college) {
-      return college;
+    if (!college) {
+      throw new NotFoundException('Not Found college');
     }
-    return this.collegeRepository.create({ name });
+    return college;
   }
   async addCollege(createCollege: CreateCollegeDto): Promise<College> {
     const college = await this.collegeRepository.findOne({
