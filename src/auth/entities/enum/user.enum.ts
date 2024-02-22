@@ -4,6 +4,7 @@ export enum Role {
   TA = 'teacher assist',
   DR = 'dr',
   HOfDE = 'head Of Department',
+  CLERK = 'clerk',
 }
 type User = {
   id: number;

@@ -10,8 +10,8 @@ import {
   Patch,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-auth.dto';
+import { CreateAdminDto } from './dto/create-admin.dto';
+import { UpdateAdminDto } from './dto/update-admin.dto';
 import { UserLoginDto } from './dto/user-login.dto';
 import { Roles } from './roles/roles.decorator';
 import { JwtAuthGuard } from './jwt.guard';
@@ -27,7 +27,7 @@ export class AuthController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   create(
-    @Body() createAuthDto: CreateUserDto,
+    @Body() createAuthDto: CreateAdminDto,
     @CurrentUser() currentUser: User,
   ) {
     return this.authService.create(createAuthDto, currentUser);
@@ -63,7 +63,7 @@ export class AuthController {
   @Patch(':id')
   update(
     @Param('id') id: string,
-    @Body() updateAuthDto: UpdateUserDto,
+    @Body() updateAuthDto: UpdateAdminDto,
     @CurrentUser() currentUser: User,
   ) {
     return this.authService.update(+id, updateAuthDto, currentUser);

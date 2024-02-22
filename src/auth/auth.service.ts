@@ -5,8 +5,8 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-auth.dto';
+import { CreateAdminDto } from './dto/create-admin.dto';
+import { UpdateAdminDto } from './dto/update-admin.dto';
 import { User } from './entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -41,7 +41,7 @@ export class AuthService {
     @InjectRepository(TeacherAssistant)
     private readonly teacherAssistantRepository: Repository<TeacherAssistant>,
   ) {}
-  async create(createAuthDto: CreateUserDto, currentUser: User): Promise<User> {
+  async create(createAuthDto: CreateAdminDto, currentUser: User): Promise<User> {
     const userExists = await this.findUserByEmail(createAuthDto.email);
     if (userExists) {
       throw new BadRequestException('Email is not available.');
@@ -154,7 +154,7 @@ export class AuthService {
     return JSON.stringify(normalUser);
   }
 
-  private async createUser(createAuthDto: CreateUserDto, currentUser: User) {
+  private async createUser(createAuthDto: CreateAdminDto, currentUser: User) {
     createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
     const college = await this.preloadCollegeByName(createAuthDto.college);
     let normalUser = new User();
@@ -315,7 +315,7 @@ export class AuthService {
 
   async update(
     id: number,
-    updateAuthDto: UpdateUserDto,
+    updateAuthDto: UpdateAdminDto,
     currentUser,
   ): Promise<User> {
     const college = await this.preloadCollegeByName(updateAuthDto.college);

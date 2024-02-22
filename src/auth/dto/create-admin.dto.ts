@@ -10,7 +10,7 @@ import {
 import { Role } from '../entities/enum/user.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class CreateAdminDto {
   //   @IsNotEmpty({ message: 'Name can not be null ' })
   //   @IsString({ message: 'Name should be string ' })
   @ApiProperty()
@@ -29,7 +29,7 @@ export class CreateUserDto {
   @IsString()
   password: string;
   //   @IsNotEmpty()
-  @ApiProperty()
+  @ApiProperty({ enum: ['admin'] })
   @IsEnum({ Role, default: Role.ADMIN })
   role: Role;
   @ApiProperty()
