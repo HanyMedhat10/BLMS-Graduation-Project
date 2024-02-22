@@ -35,17 +35,17 @@ export class HeadOfDepartmentController {
       currentUser,
     );
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   async findAll() {
     return await this.headOfDepartmentService.findAll();
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return await this.headOfDepartmentService.findOne(+id);
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -58,7 +58,8 @@ export class HeadOfDepartmentController {
       currentUser,
     );
   }
-
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.headOfDepartmentService.remove(+id);

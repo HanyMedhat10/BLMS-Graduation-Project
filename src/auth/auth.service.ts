@@ -296,7 +296,7 @@ export class AuthService {
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { id, role: Role.ADMIN },
+      where: { id, role: Role.ADMIN || Role.CLERK },
       select: {
         addedBy: {
           email: true,
@@ -448,6 +448,7 @@ export class AuthService {
     const id = currentUser.id;
     switch (currentUser.role) {
       case Role.ADMIN:
+      case Role.CLERK:
         return await this.findOne(currentUser.id);
       case Role.STUDENT:
         return await this.userRepository.findOne({

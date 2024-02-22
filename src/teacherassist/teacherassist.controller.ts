@@ -21,7 +21,7 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('teacherassist')
 export class TeacherassistController {
   constructor(private readonly teacherassistService: TeacherassistService) {}
-  @Roles('admin')
+  @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   create(

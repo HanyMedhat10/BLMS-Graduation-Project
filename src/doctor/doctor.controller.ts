@@ -21,7 +21,7 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('doctor')
 export class DoctorController {
   constructor(private readonly doctorService: DoctorService) {}
-  @Roles('admin')
+  @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   create(
@@ -30,17 +30,18 @@ export class DoctorController {
   ) {
     return this.doctorService.create(createDoctorDto, currentUser);
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   findAll() {
     return this.doctorService.findAll();
   }
-
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.doctorService.findOne(+id);
   }
-
+  @Roles('admin')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -49,7 +50,7 @@ export class DoctorController {
   ) {
     return this.doctorService.update(+id, updateDoctorDto, currentUser);
   }
-
+  @Roles('admin')
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.doctorService.remove(+id);

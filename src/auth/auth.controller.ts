@@ -23,7 +23,7 @@ import { ApiTags } from '@nestjs/swagger';
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
-  @Roles('admin')
+  @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   create(
@@ -36,6 +36,7 @@ export class AuthController {
   login(@Body() userLoginDto: UserLoginDto) {
     return this.authService.login(userLoginDto);
   }
+  @Roles('admin', 'clerk')
   @Post('restPassword/:id')
   restPassword(@Param('id') id: string) {
     return this.authService.restPassword(+id);
