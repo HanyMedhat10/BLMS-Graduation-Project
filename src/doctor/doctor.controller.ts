@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
@@ -29,6 +30,15 @@ export class DoctorController {
     @CurrentUser() currentUser: User,
   ) {
     return this.doctorService.create(createDoctorDto, currentUser);
+  }
+  @Roles('admin', 'clerk')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('addCourse/:id')
+  addCourse(
+    @Param('id') id: string,
+    @Query('courseId') courseId: string,
+  ): Promise<User> {
+    return this.doctorService.addCourse(+id, +courseId);
   }
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
@@ -54,5 +64,12 @@ export class DoctorController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.doctorService.remove(+id);
+  }
+
+  @Roles('admin', 'clerk')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Delete('deleteCourse/:id')
+  removeCourse(@Param('id') id: string, @Query('courseId') courseId: string) {
+    return this.doctorService.removeCourse(+id, +courseId);
   }
 }

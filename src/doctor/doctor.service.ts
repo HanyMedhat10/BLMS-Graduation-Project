@@ -8,18 +8,31 @@ import { Role } from 'src/auth/entities/enum/user.enum';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DepartmentService } from 'src/department/department.service';
 import { CourseService } from 'src/course/course.service';
+import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class DoctorService {
+
+
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
     private readonly userService: AuthService,
     private readonly departmentService: DepartmentService,
     private readonly courseService: CourseService,
   ) {}
   async create(createDoctorDto: CreateDoctorDto, currentUser: User) {
     return await this.userService.createDR(createDoctorDto, currentUser);
+  }
+  async addCourse(id: number, courseId: number): Promise<User> {
+    const dr = await this.findOne(id);
+    const course = await this.courseRepository.findOne({
+      where: { id: courseId },
+    });
+    dr.teachingCourses.push(course);
+    return dr;
   }
 
   async findAll() {
@@ -85,5 +98,12 @@ export class DoctorService {
     //   throw new BadRequestException('The Doctor teaching courses');
     // }
     return await this.userRepository.delete(doctor.id);
+  }
+  async removeCourse(id: number, courseId: number) {
+    const dr = await this.findOne(id);
+    dr.teachingCourses = dr.teachingCourses.filter((course) => {
+      return course.id !== courseId;
+    });
+    return await this.userRepository.save(dr.student);
   }
 }
