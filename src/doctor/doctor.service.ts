@@ -12,8 +12,6 @@ import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class DoctorService {
-
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -104,6 +102,6 @@ export class DoctorService {
     dr.teachingCourses = dr.teachingCourses.filter((course) => {
       return course.id !== courseId;
     });
-    return await this.userRepository.save(dr.student);
+    return await this.userRepository.save(dr);
   }
 }

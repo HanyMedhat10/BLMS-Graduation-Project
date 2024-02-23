@@ -9,6 +9,7 @@ import { UpdateTeacherAssistUserDto } from './dto/update-teacherassist-user.dto'
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { CourseService } from 'src/course/course.service';
 import { DepartmentService } from 'src/department/department.service';
+import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class TeacherassistService {
@@ -19,6 +20,8 @@ export class TeacherassistService {
     private readonly courseService: CourseService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
     private readonly departmentService: DepartmentService,
   ) {}
   async create(
@@ -27,7 +30,17 @@ export class TeacherassistService {
   ) {
     return await this.userService.createTA(createTeacherassistDto, currentUser);
   }
-
+  async addCourse(id: number, courseId: number): Promise<User> {
+    const ta = await this.findOne(id);
+    const course = await this.courseRepository.findOne({
+      where: { id: courseId },
+    });
+    ta.teacherAssistant.courses.push(course);
+    ta.teacherAssistant = await this.teacherAssistantRepository.save(
+      ta.teacherAssistant,
+    );
+    return ta;
+  }
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
       where: { role: Role.TA },
@@ -114,5 +127,18 @@ export class TeacherassistService {
     await this.teacherAssistantRepository.delete(ta.teacherAssistant.id);
     return await this.userRepository.delete(id);
     return `This action removes a #${id} teacherassist`;
+  }
+  async removeCourse(id: number, courseId: number) {
+    const ta = await this.findOne(id);
+    ta.teacherAssistant.courses = ta.teacherAssistant.courses.filter(
+      (course) => {
+        return course.id !== courseId;
+      },
+    );
+    ta.teacherAssistant = await this.teacherAssistantRepository.save(
+      ta.teacherAssistant,
+    );
+    return ta;
+    // return await this.studentRepository.save(student);
   }
 }

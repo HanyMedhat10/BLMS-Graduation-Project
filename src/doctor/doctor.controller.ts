@@ -33,8 +33,8 @@ export class DoctorController {
   }
   @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Post('addCourse/:id')
-  addCourse(
+  @Post('addTeachingCourse/:id')
+  addTeachingCourse(
     @Param('id') id: string,
     @Query('courseId') courseId: string,
   ): Promise<User> {
@@ -68,8 +68,11 @@ export class DoctorController {
 
   @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Delete('deleteCourse/:id')
-  removeCourse(@Param('id') id: string, @Query('courseId') courseId: string) {
+  @Delete('deleteTeachingCourse/:id')
+  removeTeachingCourse(
+    @Param('id') id: string,
+    @Query('courseId') courseId: string,
+  ) {
     return this.doctorService.removeCourse(+id, +courseId);
   }
 }

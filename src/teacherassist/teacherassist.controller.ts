@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { TeacherassistService } from './teacherassist.service';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
@@ -17,10 +18,14 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { UpdateTeacherAssistUserDto } from './dto/update-teacherassist-user.dto';
 import { ApiTags } from '@nestjs/swagger';
+import { DoctorService } from 'src/doctor/doctor.service';
 @ApiTags('Teacher Assist Module')
 @Controller('teacherassist')
 export class TeacherassistController {
-  constructor(private readonly teacherassistService: TeacherassistService) {}
+  constructor(
+    private readonly teacherassistService: TeacherassistService,
+    private readonly doctorService: DoctorService,
+  ) {}
   @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
@@ -33,7 +38,24 @@ export class TeacherassistController {
       currentUser,
     );
   }
-
+  @Roles('admin', 'clerk')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('addStudyCourse/:id')
+  addStudyCourse(
+    @Param('id') id: string,
+    @Query('courseId') courseId: string,
+  ): Promise<User> {
+    return this.teacherassistService.addCourse(+id, +courseId);
+  }
+  @Roles('admin', 'clerk')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('addTeachingCourse/:id')
+  addTeachingCourse(
+    @Param('id') id: string,
+    @Query('courseId') courseId: string,
+  ): Promise<User> {
+    return this.doctorService.addCourse(+id, +courseId);
+  }
   @Get()
   findAll() {
     return this.teacherassistService.findAll();
@@ -61,5 +83,23 @@ export class TeacherassistController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.teacherassistService.remove(+id);
+  }
+  @Roles('admin', 'clerk')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Delete('deleteStudyCourse/:id')
+  removeStudyCourse(
+    @Param('id') id: string,
+    @Query('courseId') courseId: string,
+  ) {
+    return this.teacherassistService.removeCourse(+id, +courseId);
+  }
+  @Roles('admin', 'clerk')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Delete('deleteTeachingCourse/:id')
+  removeTeachingCourse(
+    @Param('id') id: string,
+    @Query('courseId') courseId: string,
+  ) {
+    return this.doctorService.removeCourse(+id, +courseId);
   }
 }
