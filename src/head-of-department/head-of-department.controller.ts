@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { HeadOfDepartmentService } from './head-of-department.service';
 import { CreateHeadOfDepartmentDto } from './dto/create-head-of-department.dto';
@@ -17,11 +18,13 @@ import { RoleGuard } from 'src/auth/role/role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { ApiTags } from '@nestjs/swagger';
+import { DoctorService } from 'src/doctor/doctor.service';
 @ApiTags('Head Of Department Module')
 @Controller('head-of-department')
 export class HeadOfDepartmentController {
   constructor(
     private readonly headOfDepartmentService: HeadOfDepartmentService,
+    private readonly doctorService: DoctorService,
   ) {}
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
@@ -34,6 +37,15 @@ export class HeadOfDepartmentController {
       createHeadOfDepartmentDto,
       currentUser,
     );
+  }
+  @Roles('admin', 'clerk')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('addTeachingCourse/:id')
+  addTeachingCourse(
+    @Param('id') id: string,
+    @Query('courseId') courseId: string,
+  ): Promise<User> {
+    return this.doctorService.addCourse(+id, +courseId);
   }
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
@@ -63,5 +75,14 @@ export class HeadOfDepartmentController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return await this.headOfDepartmentService.remove(+id);
+  }
+  @Roles('admin', 'clerk')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Delete('deleteTeachingCourse/:id')
+  removeTeachingCourse(
+    @Param('id') id: string,
+    @Query('courseId') courseId: string,
+  ) {
+    return this.doctorService.removeCourse(+id, +courseId);
   }
 }

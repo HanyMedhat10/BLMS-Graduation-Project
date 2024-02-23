@@ -8,6 +8,7 @@ import { College } from 'src/college/entities/college.entity';
 import { Department } from 'src/department/entities/department.entity';
 import { CourseModule } from 'src/course/course.module';
 import { DepartmentModule } from 'src/department/department.module';
+import { DoctorModule } from 'src/doctor/doctor.module';
 
 @Module({
   imports: [
@@ -15,6 +16,7 @@ import { DepartmentModule } from 'src/department/department.module';
     AuthModule,
     CourseModule,
     DepartmentModule,
+    DoctorModule,
   ],
   controllers: [HeadOfDepartmentController],
   providers: [HeadOfDepartmentService],
