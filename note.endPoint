@@ -47,10 +47,12 @@
 {/doctor/:id, DELETE} 
 {/doctor/deleteTeachingCourse/:id, DELETE} 
 {/head-of-department, POST} 
+{/head-of-department/addTeachingCourse/:id, POST} 
 {/head-of-department, GET} 
 {/head-of-department/:id, GET} 
 {/head-of-department/:id, PATCH} 
 {/head-of-department/:id, DELETE} 
+{/head-of-department/deleteTeachingCourse/:id, DELETE} 
 {/clerk, POST} 
 {/clerk, GET} 
 {/clerk/:id, GET} 

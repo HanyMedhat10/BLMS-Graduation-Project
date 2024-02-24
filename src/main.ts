@@ -15,6 +15,8 @@ async function bootstrap() {
       'https://www.linkedin.com/in/hany-medhat-74452520a/',
       'hany.medhat24@gmail.com',
     )
+    // .addSecurity()
+    .addBearerAuth()
     .setVersion('1.0')
     .addTag('BLMS')
     .build();

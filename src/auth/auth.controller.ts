@@ -18,11 +18,12 @@ import { JwtAuthGuard } from './jwt.guard';
 import { RoleGuard } from './role/role.guard';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 @ApiTags('Auth Module')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
+  @ApiBearerAuth()
   @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
@@ -37,10 +38,13 @@ export class AuthController {
     return this.authService.login(userLoginDto);
   }
   @Roles('admin', 'clerk')
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('restPassword/:id')
   restPassword(@Param('id') id: string) {
     return this.authService.restPassword(+id);
   }
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('changePassword')
   changePassword(
@@ -49,16 +53,18 @@ export class AuthController {
   ) {
     return this.authService.changePassword(currentUser, changePasswordDto);
   }
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   findAll() {
     return this.authService.findAll();
   }
-
+  @ApiBearerAuth()
   @Get('singleUser/:id')
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);
   }
+  @ApiBearerAuth()
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
@@ -69,12 +75,14 @@ export class AuthController {
   ) {
     return this.authService.update(+id, updateAuthDto, currentUser);
   }
+  @ApiBearerAuth()
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.authService.remove(+id);
   }
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('profile')
   async profile(@CurrentUser() currentUser: User) {
