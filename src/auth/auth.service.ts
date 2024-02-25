@@ -257,16 +257,16 @@ export class AuthService {
       .where('users.email=:email', { email: userLoginDto.email })
       .getOne();
     if (!userExists) {
-      // throw new BadRequestException('Email or Password is incorrect.');
-      throw new UnauthorizedException();
+      throw new BadRequestException('Email or Password is incorrect.');
+      // throw new UnauthorizedException();
     }
     const matchPassword = await bcrypt.compare(
       userLoginDto.password,
       userExists.password,
     );
     if (!matchPassword) {
-      // throw new BadRequestException('Email or Password is incorrect.');
-      throw new UnauthorizedException();
+      throw new BadRequestException('Email or Password is incorrect.');
+      // throw new UnauthorizedException();
     }
 
     delete userExists.password;

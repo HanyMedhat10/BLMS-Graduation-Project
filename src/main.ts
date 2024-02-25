@@ -17,6 +17,10 @@ async function bootstrap() {
     )
     // .addSecurity()
     .addBearerAuth()
+    .setLicense(
+      'License : MTI University , Supervisor :- Prof.Hesham El-Deeb',
+      'https://www.mti.edu.eg/',
+    )
     .setVersion('1.0')
     .addTag('BLMS')
     .build();

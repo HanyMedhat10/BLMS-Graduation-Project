@@ -17,7 +17,7 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
-@ApiTags('Clerk')
+@ApiTags('Clerk Module')
 @Controller('clerk')
 export class ClerkController {
   constructor(private readonly clerkService: ClerkService) {}
