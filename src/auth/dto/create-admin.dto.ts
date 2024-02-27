@@ -33,10 +33,6 @@ export class CreateAdminDto {
   @IsEnum({ Role, default: Role.ADMIN })
   role: Role;
   @ApiProperty()
-  @IsPositive()
-  @IsNumber({ maxDecimalPlaces: 0 })
-  department: number;
-  @ApiProperty()
   @IsString({ each: true })
   college: string;
 }

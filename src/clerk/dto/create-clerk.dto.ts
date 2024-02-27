@@ -28,10 +28,6 @@ export class CreateClerkDto {
   @IsEnum({ Role, default: Role.CLERK })
   role: Role;
   @ApiProperty()
-  @IsPositive()
-  @IsNumber({ maxDecimalPlaces: 0 })
-  department: number;
-  @ApiProperty()
   @IsString({ each: true })
   college: string;
 }
