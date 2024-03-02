@@ -6,6 +6,7 @@ import {
   JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
   Timestamp,
@@ -17,6 +18,7 @@ import { College } from '../../college/entities/college.entity';
 import { Department } from 'src/department/entities/department.entity';
 import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entity';
 import { Course } from 'src/course/entities/course.entity';
+import { Assignment } from 'src/assigment/entities/assignment.entity';
 
 @Entity()
 export class User {
@@ -64,4 +66,8 @@ export class User {
   })
   @JoinTable({ name: 'teaching_course' })
   teachingCourses: Course[];
+  @OneToMany(() => Assignment, (user) => user.createBy)
+  createAssignments: Assignment[];
+  @OneToMany(() => Assignment, (user) => user.correctBy)
+  correctAssignments: Assignment[];
 }

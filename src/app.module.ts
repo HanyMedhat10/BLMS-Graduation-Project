@@ -15,6 +15,7 @@ import { DoctorModule } from './doctor/doctor.module';
 import { ConfigModule } from '@nestjs/config';
 import { HeadOfDepartmentModule } from './head-of-department/head-of-department.module';
 import { ClerkModule } from './clerk/clerk.module';
+import { AssignmentModule } from './assigment/assignment.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -39,6 +40,7 @@ import { ClerkModule } from './clerk/clerk.module';
     ConfigModule.forRoot(),
     HeadOfDepartmentModule,
     ClerkModule,
+    AssignmentModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

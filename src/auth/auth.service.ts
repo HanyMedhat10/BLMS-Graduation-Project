@@ -26,6 +26,7 @@ import { TeacherType } from 'src/teacherassist/entities/enum/teacher.enum';
 import { CreateTeacherAssistUserDto } from 'src/teacherassist/dto/create-teacherassist-user.dto';
 import { CreateDoctorDto } from 'src/doctor/dto/create-doctor.dto';
 import { CreateHeadOfDepartmentDto } from 'src/head-of-department/dto/create-head-of-department.dto';
+import { CreateClerkDto } from 'src/clerk/dto/create-clerk.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -157,7 +158,10 @@ export class AuthService {
     return JSON.stringify(normalUser);
   }
 
-  private async createUser(createAuthDto: CreateAdminDto, currentUser: User) {
+  private async createUser(
+    createAuthDto: CreateAdminDto | CreateClerkDto,
+    currentUser: User,
+  ) {
     createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
     const college = await this.preloadCollegeByName(createAuthDto.college);
     let normalUser = new User();
@@ -297,6 +301,7 @@ export class AuthService {
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id, role: Role.ADMIN || Role.CLERK },
+      // where: { id, role: Or(Role.ADMIN, Role.CLERK) },
       select: {
         addedBy: {
           email: true,

@@ -10,6 +10,7 @@ import {
 import { StudentType } from './enum/student.enum';
 import { User } from 'src/auth/entities/user.entity';
 import { Course } from 'src/course/entities/course.entity';
+import { Assignment } from 'src/assigment/entities/assignment.entity';
 
 @Entity()
 export class Student {
@@ -29,4 +30,6 @@ export class Student {
   })
   @JoinTable({ name: 'student_courses' })
   courses: Course[];
+  @ManyToMany(() => Assignment, (assignment) => assignment.solves)
+  submits: Assignment[];
 }
