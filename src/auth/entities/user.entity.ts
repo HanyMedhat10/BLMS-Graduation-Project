@@ -68,6 +68,6 @@ export class User {
   teachingCourses: Course[];
   @OneToMany(() => Assignment, (user) => user.createBy)
   createAssignments: Assignment[];
-  @OneToMany(() => Assignment, (user) => user.correctBy)
-  correctAssignments: Assignment[];
+  // @OneToMany(() => Assignment, (user) => user.correctBy)
+  // correctAssignments: Assignment[];
 }

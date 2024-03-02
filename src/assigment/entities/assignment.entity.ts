@@ -14,7 +14,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-Entity();
+@Entity()
 export class Assignment {
   @PrimaryGeneratedColumn()
   id: number;
@@ -38,7 +38,7 @@ export class Assignment {
   @ManyToOne(() => User, (user) => user.createAssignments, { cascade: true })
   @JoinColumn()
   createBy: User;
-  @ManyToOne(() => User, (user) => user.correctAssignments, { cascade: true })
-  @JoinColumn()
-  correctBy: User;
+  // @ManyToOne(() => User, (user) => user.correctAssignments, { cascade: true })
+  // @JoinColumn()
+  // correctBy: User;
 }
