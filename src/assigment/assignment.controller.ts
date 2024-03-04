@@ -11,7 +11,7 @@ import { CreateAssignmentDto as CreateAssignmentDto } from './dto/create-assignm
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AssignmentService } from './assignment.service';
-@ApiTags('Auth Module')
+@ApiTags('Assignment Module')
 @Controller('assignment')
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
