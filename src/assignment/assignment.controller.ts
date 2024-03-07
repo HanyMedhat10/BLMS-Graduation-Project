@@ -6,17 +6,20 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
-import { CreateAssignmentDto as CreateAssignmentDto } from './dto/create-assignment.dto';
+import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 import { ApiTags } from '@nestjs/swagger';
 import { AssignmentService } from './assignment.service';
+import { FileInterceptor } from '@nestjs/platform-express';
 @ApiTags('Assignment Module')
 @Controller('assignment')
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
 
   @Post()
+  @UseInterceptors(FileInterceptor('file'))
   create(@Body() createAssignmentDto: CreateAssignmentDto) {
     return this.assignmentService.create(createAssignmentDto);
   }

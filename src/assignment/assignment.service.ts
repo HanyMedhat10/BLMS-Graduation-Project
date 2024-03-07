@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Assignment } from './entities/assignment.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AssignmentService {
+  constructor(
+    @InjectRepository(Assignment)
+    private readonly assignmentRepository: Repository<Assignment>,
+  ) {}
   create(createAssignmentDto: CreateAssignmentDto) {
     return 'This action adds a new assignment';
   }
