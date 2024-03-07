@@ -10,7 +10,7 @@ import {
 import { StudentType } from './enum/student.enum';
 import { User } from 'src/auth/entities/user.entity';
 import { Course } from 'src/course/entities/course.entity';
-import { Assignment } from 'src/assigment/entities/assignment.entity';
+import { Assignment } from 'src/assignment/entities/assignment.entity';
 
 @Entity()
 export class Student {

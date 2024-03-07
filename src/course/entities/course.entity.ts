@@ -1,4 +1,4 @@
-import { Assignment } from 'src/assigment/entities/assignment.entity';
+import { Assignment } from 'src/assignment/entities/assignment.entity';
 import { User } from 'src/auth/entities/user.entity';
 import { Department } from 'src/department/entities/department.entity';
 import { Student } from 'src/student/entities/student.entity';

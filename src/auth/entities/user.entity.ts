@@ -18,7 +18,7 @@ import { College } from '../../college/entities/college.entity';
 import { Department } from 'src/department/entities/department.entity';
 import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entity';
 import { Course } from 'src/course/entities/course.entity';
-import { Assignment } from 'src/assigment/entities/assignment.entity';
+import { Assignment } from 'src/assignment/entities/assignment.entity';
 
 @Entity()
 export class User {
