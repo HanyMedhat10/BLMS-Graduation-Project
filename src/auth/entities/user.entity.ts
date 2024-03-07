@@ -19,6 +19,7 @@ import { Department } from 'src/department/entities/department.entity';
 import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entity';
 import { Course } from 'src/course/entities/course.entity';
 import { Assignment } from 'src/assignment/entities/assignment.entity';
+import { SubmitAssignment } from 'src/assignment/entities/submit_assignment.entity';
 
 @Entity()
 export class User {
@@ -68,6 +69,6 @@ export class User {
   teachingCourses: Course[];
   @OneToMany(() => Assignment, (user) => user.createBy)
   createAssignments: Assignment[];
-  // @OneToMany(() => Assignment, (user) => user.correctBy)
-  // correctAssignments: Assignment[];
+  @OneToMany(() => SubmitAssignment, (user) => user.correctBy)
+  correctAssignments: SubmitAssignment[];
 }

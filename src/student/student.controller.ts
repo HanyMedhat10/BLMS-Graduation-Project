@@ -35,12 +35,12 @@ export class StudentController {
   @ApiBearerAuth()
   @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Post('addCourse/:id')
-  addCourse(
+  @Post('addStudyCourse/:id')
+  addStudyCourse(
     @Param('id') id: string,
     @Query('courseId') courseId: string,
   ): Promise<User> {
-    return this.studentService.addCourse(+id, +courseId);
+    return this.studentService.addStudyCourse(+id, +courseId);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)

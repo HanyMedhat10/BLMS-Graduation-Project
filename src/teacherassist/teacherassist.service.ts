@@ -30,7 +30,7 @@ export class TeacherassistService {
   ) {
     return await this.userService.createTA(createTeacherassistDto, currentUser);
   }
-  async addCourse(id: number, courseId: number): Promise<User> {
+  async addStudyCourse(id: number, courseId: number): Promise<User> {
     const ta = await this.findOne(id);
     const course = await this.courseRepository.findOne({
       where: { id: courseId },

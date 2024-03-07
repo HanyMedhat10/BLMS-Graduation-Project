@@ -4,13 +4,14 @@ import {
   JoinColumn,
   JoinTable,
   ManyToMany,
+  OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { StudentType } from './enum/student.enum';
 import { User } from 'src/auth/entities/user.entity';
 import { Course } from 'src/course/entities/course.entity';
-import { Assignment } from 'src/assignment/entities/assignment.entity';
+import { SubmitAssignment } from 'src/assignment/entities/submit_assignment.entity';
 
 @Entity()
 export class Student {
@@ -30,6 +31,6 @@ export class Student {
   })
   @JoinTable({ name: 'student_courses' })
   courses: Course[];
-  @ManyToMany(() => Assignment, (assignment) => assignment.solves)
-  submits: Assignment[];
+  @OneToMany(() => SubmitAssignment, (assignment) => assignment.solver)
+  submits: SubmitAssignment[];
 }

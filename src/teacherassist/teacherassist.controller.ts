@@ -47,7 +47,7 @@ export class TeacherassistController {
     @Param('id') id: string,
     @Query('courseId') courseId: string,
   ): Promise<User> {
-    return this.teacherassistService.addCourse(+id, +courseId);
+    return this.teacherassistService.addStudyCourse(+id, +courseId);
   }
   @Roles('admin', 'clerk')
   @ApiBearerAuth()
@@ -57,7 +57,7 @@ export class TeacherassistController {
     @Param('id') id: string,
     @Query('courseId') courseId: string,
   ): Promise<User> {
-    return this.doctorService.addCourse(+id, +courseId);
+    return this.doctorService.addStudyCourse(+id, +courseId);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)

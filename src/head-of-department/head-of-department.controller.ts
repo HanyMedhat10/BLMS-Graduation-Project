@@ -47,7 +47,7 @@ export class HeadOfDepartmentController {
     @Param('id') id: string,
     @Query('courseId') courseId: string,
   ): Promise<User> {
-    return this.doctorService.addCourse(+id, +courseId);
+    return this.doctorService.addStudyCourse(+id, +courseId);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
