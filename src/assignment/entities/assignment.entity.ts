@@ -8,8 +8,6 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  Timestamp,
-  UpdateDateColumn,
 } from 'typeorm';
 import { SubmitAssignment } from './submit_assignment.entity';
 
@@ -18,13 +16,13 @@ export class Assignment {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  name: string;
+  title: string;
   @Column()
-  url: string;
+  path: string;
   @CreateDateColumn()
-  createdAt: Timestamp;
-  @UpdateDateColumn()
-  updatedAt: Timestamp;
+  createdAt: Date;
+  @Column({ type: 'date' })
+  deadLine: Date;
   @ManyToOne(() => Course, (course) => course.assignments, { cascade: true })
   @JoinColumn()
   course: Course;

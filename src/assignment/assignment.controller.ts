@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
@@ -20,8 +21,11 @@ export class AssignmentController {
 
   @Post()
   @UseInterceptors(FileInterceptor('file'))
-  create(@Body() createAssignmentDto: CreateAssignmentDto) {
-    return this.assignmentService.create(createAssignmentDto);
+  create(
+    @Body() createAssignmentDto: CreateAssignmentDto,
+    @UploadedFile() file: File,
+  ) {
+    return this.assignmentService.create(createAssignmentDto, file);
   }
 
   @Get()
@@ -35,11 +39,13 @@ export class AssignmentController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('file'))
   update(
     @Param('id') id: string,
     @Body() updateAssignmentDto: UpdateAssignmentDto,
+    @UploadedFile() file?: File,
   ) {
-    return this.assignmentService.update(+id, updateAssignmentDto);
+    return this.assignmentService.update(+id, updateAssignmentDto, file);
   }
 
   @Delete(':id')

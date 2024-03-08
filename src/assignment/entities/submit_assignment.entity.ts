@@ -15,7 +15,7 @@ export class SubmitAssignment {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  url: string;
+  path: string;
   @Column({ nullable: true })
   degree: number;
   @CreateDateColumn()

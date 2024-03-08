@@ -11,7 +11,7 @@ export class AssignmentService {
     @InjectRepository(Assignment)
     private readonly assignmentRepository: Repository<Assignment>,
   ) {}
-  create(createAssignmentDto: CreateAssignmentDto) {
+  create(createAssignmentDto: CreateAssignmentDto, file: File) {
     return 'This action adds a new assignment';
   }
 
@@ -23,7 +23,11 @@ export class AssignmentService {
     return `This action returns a #${id} assignment`;
   }
 
-  update(id: number, updateAssignmentDto: UpdateAssignmentDto) {
+  update(
+    id: number,
+    updateAssignmentDto: UpdateAssignmentDto,
+    file: File | null,
+  ) {
     return `This action updates a #${id} assignment`;
   }
 
