@@ -23,7 +23,7 @@ export class AssignmentController {
   @UseInterceptors(FileInterceptor('file'))
   create(
     @Body() createAssignmentDto: CreateAssignmentDto,
-    @UploadedFile() file: File,
+    @UploadedFile() file: Express.Multer.File,
   ) {
     return this.assignmentService.create(createAssignmentDto, file);
   }
@@ -43,7 +43,7 @@ export class AssignmentController {
   update(
     @Param('id') id: string,
     @Body() updateAssignmentDto: UpdateAssignmentDto,
-    @UploadedFile() file?: File,
+    @UploadedFile() file?: Express.Multer.File,
   ) {
     return this.assignmentService.update(+id, updateAssignmentDto, file);
   }

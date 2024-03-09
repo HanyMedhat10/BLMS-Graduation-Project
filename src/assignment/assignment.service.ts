@@ -11,7 +11,7 @@ export class AssignmentService {
     @InjectRepository(Assignment)
     private readonly assignmentRepository: Repository<Assignment>,
   ) {}
-  create(createAssignmentDto: CreateAssignmentDto, file: File) {
+  create(createAssignmentDto: CreateAssignmentDto, file: Express.Multer.File) {
     return 'This action adds a new assignment';
   }
 
@@ -26,7 +26,7 @@ export class AssignmentService {
   update(
     id: number,
     updateAssignmentDto: UpdateAssignmentDto,
-    file: File | null,
+    file: Express.Multer.File | null,
   ) {
     return `This action updates a #${id} assignment`;
   }
