@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseInterceptors,
@@ -11,23 +10,28 @@ import {
   ParseFilePipe,
   FileTypeValidator,
   MaxFileSizeValidator,
+  Query,
+  UseGuards,
 } from '@nestjs/common';
 import { SubmitAssignmentService } from './submit-assignment.service';
-import { CreateSubmitAssignmentDto } from './dto/create-submit-assignment.dto';
-import { UpdateSubmitAssignmentDto } from './dto/update-submit-assignment.dto';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
-
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { RoleGuard } from 'src/auth/role/role.guard';
+import { Roles } from 'src/auth/roles/roles.decorator';
+@ApiTags('Submit Assignment Module')
 @Controller('submit-assignment')
 export class SubmitAssignmentController {
   constructor(
     private readonly submitAssignmentService: SubmitAssignmentService,
   ) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   @ApiBody({
     schema: {
@@ -90,7 +94,8 @@ export class SubmitAssignmentController {
       currentUser,
     );
   }
-
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   findAll() {
     return this.submitAssignmentService.findAll();
@@ -100,25 +105,26 @@ export class SubmitAssignmentController {
   findOne(@Param('id') id: string) {
     return this.submitAssignmentService.findOne(+id);
   }
-
-  @Patch(':id')
+  @ApiBearerAuth()
+  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('correctionAssignment/:id')
   update(
     @Param('id') id: string,
-    @Body() updateSubmitAssignmentDto: UpdateSubmitAssignmentDto,
+    @Query() degree: string,
+    @CurrentUser() currentUser: User,
   ) {
-    return this.submitAssignmentService.update(+id, updateSubmitAssignmentDto);
+    return this.submitAssignmentService.correctionAssignment(
+      +id,
+      +degree,
+      currentUser,
+    );
   }
-
+  @ApiBearerAuth()
+  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.submitAssignmentService.remove(+id);
   }
-}
-function FileSizeValidator(arg0: {
-  maxSize: number;
-}): import('@nestjs/common').FileValidator<
-  Record<string, any>,
-  import('@nestjs/common/pipes/file/interfaces').IFile
-> {
-  throw new Error('Function not implemented.');
 }

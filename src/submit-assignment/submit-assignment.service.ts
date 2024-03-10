@@ -3,7 +3,6 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { UpdateSubmitAssignmentDto } from './dto/update-submit-assignment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SubmitAssignment } from './entities/submit-assignment.entity';
 import { Repository } from 'typeorm';
@@ -39,10 +38,6 @@ export class SubmitAssignmentService {
     return await this.submitAssignmentRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateSubmitAssignmentDto: UpdateSubmitAssignmentDto) {
-    return `This action updates a #${id} submitAssignment`;
-  }
-
   async remove(id: number) {
     const assignment = await this.findOne(id);
     try {
@@ -51,5 +46,13 @@ export class SubmitAssignmentService {
       new BadRequestException('Error deleting file');
     }
     return await this.submitAssignmentRepository.delete(id);
+  }
+
+  async correctionAssignment(id: number, degree: number, currentUser: User) {
+    const submitAssignment = await this.findOne(id);
+    if (!submitAssignment) new NotFoundException('not found assignment');
+    submitAssignment.degree = degree;
+    submitAssignment.correctBy = currentUser;
+    return await this.submitAssignmentRepository.save(submitAssignment);
   }
 }
