@@ -11,14 +11,13 @@ import { Repository } from 'typeorm';
 import * as fs from 'fs';
 import { CourseService } from 'src/course/course.service';
 import { User } from 'src/auth/entities/user.entity';
-import { SubmitAssignment } from './entities/submit_assignment.entity';
 @Injectable()
 export class AssignmentService {
   constructor(
     @InjectRepository(Assignment)
     private readonly assignmentRepository: Repository<Assignment>,
-    @InjectRepository(SubmitAssignment)
-    private readonly submitAssignmentRepository: Repository<SubmitAssignment>,
+    // @InjectRepository(SubmitAssignment)
+    // private readonly submitAssignmentRepository: Repository<SubmitAssignment>,
     private readonly courseService: CourseService,
   ) {}
   async create(
@@ -77,19 +76,6 @@ export class AssignmentService {
     return await this.assignmentRepository.delete(id);
   }
 
-  async createSubmitAssignment(
-    assignmentId: number,
-    file: Express.Multer.File,
-    currentUser: User,
-  ): Promise<SubmitAssignment> {
-    const assignment = await this.findOne(assignmentId);
-    if (!assignment) new NotFoundException('not found assignment');
-    const submitAssignment = new SubmitAssignment();
-    submitAssignment.assignment = assignment;
-    submitAssignment.path = file.path;
-    submitAssignment.solver = currentUser;
-    return await this.submitAssignmentRepository.save(submitAssignment);
-  }
   // async correctionAssignment(
   //   id: number,
   //   degree: number,

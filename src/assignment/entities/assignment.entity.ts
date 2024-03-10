@@ -1,5 +1,6 @@
 import { User } from 'src/auth/entities/user.entity';
 import { Course } from 'src/course/entities/course.entity';
+import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignment.entity';
 import {
   Column,
   CreateDateColumn,
@@ -9,7 +10,6 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SubmitAssignment } from './submit_assignment.entity';
 
 @Entity()
 export class Assignment {
