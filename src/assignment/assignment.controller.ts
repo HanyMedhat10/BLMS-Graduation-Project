@@ -24,9 +24,6 @@ import { extname } from 'path';
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
 
-  // @Body('title') title: string,
-  //   @Body('deadLine') deadLine: string,
-  //   @Body('courseId') courseId: string,
   @Post()
   @ApiBody({
     schema: {
@@ -109,7 +106,31 @@ export class AssignmentController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${file.originalname}-${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+      // fileFilter: (req, file, callback) => {
+      //   const allowedMimeTypes = [
+      //     'application/pdf',
+      //     'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // Corrected DOCX MIME type
+      //   ];
+      //   if (allowedMimeTypes.includes(file.mimetype)) {
+      //     callback(null, true);
+      //   } else {
+      //     callback(new Error('Invalid file type'), false);
+      //   }
+      // },
+    }),
+  )
   update(
     @Param('id') id: string,
     @Body() updateAssignmentDto: UpdateAssignmentDto,
