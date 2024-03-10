@@ -1,3 +1,4 @@
+import { Assignment } from 'src/assignment/entities/assignment.entity';
 import { User } from 'src/auth/entities/user.entity';
 import {
   Column,
@@ -8,7 +9,6 @@ import {
   PrimaryGeneratedColumn,
   Timestamp,
 } from 'typeorm';
-import { Assignment } from './assignment.entity';
 @Entity()
 export class SubmitAssignment {
   @PrimaryGeneratedColumn()
