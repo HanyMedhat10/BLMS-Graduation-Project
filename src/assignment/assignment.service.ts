@@ -63,7 +63,13 @@ export class AssignmentService {
     return await this.assignmentRepository.save(assignment);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} assignment`;
+  async remove(id: number) {
+    const assignment = await this.findOne(id);
+    try {
+      fs.unlinkSync(assignment.path);
+    } catch (error) {
+      new BadRequestException('Error deleting file');
+    }
+    return await this.assignmentRepository.delete(id);
   }
 }
