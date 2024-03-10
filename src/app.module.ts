@@ -16,6 +16,7 @@ import { ConfigModule } from '@nestjs/config';
 import { HeadOfDepartmentModule } from './head-of-department/head-of-department.module';
 import { ClerkModule } from './clerk/clerk.module';
 import { AssignmentModule } from './assignment/assignment.module';
+import { MulterModule } from '@nestjs/platform-express';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -41,6 +42,7 @@ import { AssignmentModule } from './assignment/assignment.module';
     HeadOfDepartmentModule,
     ClerkModule,
     AssignmentModule,
+    MulterModule.register({ dest: './uploads' }),
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

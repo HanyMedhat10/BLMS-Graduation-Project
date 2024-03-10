@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsDate,
+  IsDateString,
   IsInt,
   IsNotEmpty,
   IsPositive,
@@ -16,7 +16,7 @@ export class CreateAssignmentDto {
   // @Type(() => File)
   // fileSubmit: Express.Multer.File;
   @ApiProperty()
-  @IsDate()
+  @IsDateString()
   deadLine: Date;
   @ApiProperty()
   @IsInt()

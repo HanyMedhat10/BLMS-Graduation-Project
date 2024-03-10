@@ -3,13 +3,16 @@
         "BLMS",
         "Deeb",
         "Hesham",
+        "officedocument",
+        "openxmlformats",
         "PGDATABASE",
         "PGHOST",
         "PGPASSWORD",
         "PGPORT",
         "PGUSER",
         "STUDYMASTER",
-        "Teacherassist"
+        "Teacherassist",
+        "wordprocessingml"
     ],
     "sqltools.connections": [
         {
