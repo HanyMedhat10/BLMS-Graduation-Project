@@ -71,4 +71,6 @@ export class User {
   createAssignments: Assignment[];
   @OneToMany(() => SubmitAssignment, (user) => user.correctBy)
   correctAssignments: SubmitAssignment[];
+  @OneToMany(() => SubmitAssignment, (assignment) => assignment.solver)
+  submits: SubmitAssignment[];
 }
