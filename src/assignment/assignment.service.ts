@@ -16,13 +16,12 @@ export class AssignmentService {
   constructor(
     @InjectRepository(Assignment)
     private readonly assignmentRepository: Repository<Assignment>,
-    // @InjectRepository(SubmitAssignment)
-    // private readonly submitAssignmentRepository: Repository<SubmitAssignment>,
     private readonly courseService: CourseService,
   ) {}
   async create(
     createAssignmentDto: CreateAssignmentDto,
     file: Express.Multer.File,
+    currentUser: User,
   ): Promise<Assignment> {
     const assignment = new Assignment();
     assignment.path = file.path;
@@ -32,6 +31,7 @@ export class AssignmentService {
     );
     if (course) assignment.course = course;
     else new NotFoundException('Not found Course');
+    assignment.createBy = currentUser;
     return await this.assignmentRepository.save(assignment);
   }
 
@@ -75,18 +75,4 @@ export class AssignmentService {
     }
     return await this.assignmentRepository.delete(id);
   }
-
-  // async correctionAssignment(
-  //   id: number,
-  //   degree: number,
-  //   currentUser: User,
-  // ): Promise<SubmitAssignment> {
-  //   const assignment = await this.findOne(assignmentId);
-  //   if (!assignment) new NotFoundException('not found assignment');
-  //   const submitAssignment = new SubmitAssignment();
-  //   submitAssignment.assignment = assignment;
-  //   submitAssignment.path = file.path;
-  //   submitAssignment.correctBy = currentUser;
-  //   return await this.submitAssignmentRepository.save(submitAssignment);
-  // }
 }

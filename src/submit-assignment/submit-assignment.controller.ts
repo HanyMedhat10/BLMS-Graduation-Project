@@ -31,6 +31,7 @@ export class SubmitAssignmentController {
   ) {}
 
   @ApiBearerAuth()
+  @Roles('admin', 'student', 'teacher assist')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   @ApiBody({
@@ -100,7 +101,8 @@ export class SubmitAssignmentController {
   findAll() {
     return this.submitAssignmentService.findAll();
   }
-
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.submitAssignmentService.findOne(+id);
