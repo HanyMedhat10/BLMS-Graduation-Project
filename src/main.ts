@@ -3,6 +3,8 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// import path from 'path';
+// import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
@@ -26,6 +28,12 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
+  // app.useStaticAssets(
+  //   path.join(
+  //     'C:/Users/hanym/Desktop/Node-code/Nestjs Projects/blms',
+  //     '../files',
+  //   ),
+  // );
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
 bootstrap();

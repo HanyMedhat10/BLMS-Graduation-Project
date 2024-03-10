@@ -11,23 +11,30 @@ export class AssignmentService {
     @InjectRepository(Assignment)
     private readonly assignmentRepository: Repository<Assignment>,
   ) {}
-  create(createAssignmentDto: CreateAssignmentDto, file: Express.Multer.File) {
-    return 'This action adds a new assignment';
+  async create(
+    createAssignmentDto: CreateAssignmentDto,
+    file: Express.Multer.File,
+  ): Promise<Assignment> {
+    const assignment = new Assignment();
+    assignment.path = file.path;
+    Object.assign(assignment, createAssignmentDto);
+    return await this.assignmentRepository.save(assignment);
   }
 
-  findAll() {
-    return `This action returns all assignment`;
+  async findAll(): Promise<Assignment[]> {
+    return await this.assignmentRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} assignment`;
+  async findOne(id: number): Promise<Assignment> {
+    return await this.assignmentRepository.findOne({ where: { id } });
   }
 
-  update(
+  async update(
     id: number,
     updateAssignmentDto: UpdateAssignmentDto,
     file: Express.Multer.File | null,
   ) {
+ 
     return `This action updates a #${id} assignment`;
   }
 
