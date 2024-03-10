@@ -1,11 +1,15 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { UpdateSubmitAssignmentDto } from './dto/update-submit-assignment.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SubmitAssignment } from './entities/submit-assignment.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { AssignmentService } from 'src/assignment/assignment.service';
-
+import * as fs from 'fs';
 @Injectable()
 export class SubmitAssignmentService {
   constructor(
@@ -39,7 +43,13 @@ export class SubmitAssignmentService {
     return `This action updates a #${id} submitAssignment`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} submitAssignment`;
+  async remove(id: number) {
+    const assignment = await this.findOne(id);
+    try {
+      fs.unlinkSync(assignment.path);
+    } catch (error) {
+      new BadRequestException('Error deleting file');
+    }
+    return await this.submitAssignmentRepository.delete(id);
   }
 }
