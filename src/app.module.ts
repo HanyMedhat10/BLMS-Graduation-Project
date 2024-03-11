@@ -18,6 +18,7 @@ import { ClerkModule } from './clerk/clerk.module';
 import { AssignmentModule } from './assignment/assignment.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { SubmitAssignmentModule } from './submit-assignment/submit-assignment.module';
+import { ChatModule } from './chat/chat.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -45,6 +46,7 @@ import { SubmitAssignmentModule } from './submit-assignment/submit-assignment.mo
     AssignmentModule,
     MulterModule.register({ dest: './uploads' }),
     SubmitAssignmentModule,
+    ChatModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
