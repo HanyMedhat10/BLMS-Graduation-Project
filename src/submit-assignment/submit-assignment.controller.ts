@@ -14,7 +14,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { SubmitAssignmentService } from './submit-assignment.service';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
@@ -34,6 +34,7 @@ export class SubmitAssignmentController {
   @Roles('admin', 'student', 'teacher assist')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
@@ -113,7 +114,7 @@ export class SubmitAssignmentController {
   @Post('correctionAssignment/:id')
   update(
     @Param('id') id: string,
-    @Query() degree: string,
+    @Query('degree') degree: string,
     @CurrentUser() currentUser: User,
   ) {
     return this.submitAssignmentService.correctionAssignment(

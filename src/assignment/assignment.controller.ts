@@ -15,7 +15,7 @@ import {
 } from '@nestjs/common';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
-import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { AssignmentService } from './assignment.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
@@ -33,6 +33,7 @@ export class AssignmentController {
   @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
