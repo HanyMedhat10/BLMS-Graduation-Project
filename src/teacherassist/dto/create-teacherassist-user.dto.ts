@@ -1,10 +1,12 @@
 import {
   IsEmail,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsPositive,
   IsString,
+  Min,
   MinLength,
   ValidateNested,
 } from 'class-validator';
@@ -34,8 +36,9 @@ export class CreateTeacherAssistUserDto {
   @ApiProperty()
   @IsNumber({ maxDecimalPlaces: 0 })
   department: number;
-  @IsString({ each: true })
-  college: string;
+  @IsInt()
+  @Min(1)
+  college: number;
   @ApiProperty()
   @IsNumber({}, { each: true })
   teachingCourses: number[];

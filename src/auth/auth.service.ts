@@ -79,7 +79,7 @@ export class AuthService {
       createTeacherassistDto.password,
       10,
     );
-    const college = await this.preloadCollegeByName(
+    const college = await this.preloadCollegeById(
       createTeacherassistDto.college,
     );
     const department = await this.departmentRepository.findOne({
@@ -111,7 +111,7 @@ export class AuthService {
       createDoctorDto.teachingCourses.map((x) => this.courseService.findOne(x)),
     );
     createDoctorDto.password = await bcrypt.hash(createDoctorDto.password, 10);
-    const college = await this.preloadCollegeByName(createDoctorDto.college);
+    const college = await this.preloadCollegeById(createDoctorDto.college);
     const department = await this.departmentRepository.findOne({
       where: { id: createDoctorDto.department },
     });
@@ -137,7 +137,7 @@ export class AuthService {
       createDoctorDto.teachingCourses.map((x) => this.courseService.findOne(x)),
     );
     createDoctorDto.password = await bcrypt.hash(createDoctorDto.password, 10);
-    const college = await this.preloadCollegeByName(createDoctorDto.college);
+    const college = await this.preloadCollegeById(createDoctorDto.college);
     let department = await this.departmentRepository.findOne({
       where: { id: createDoctorDto.department },
     });
@@ -163,7 +163,7 @@ export class AuthService {
     currentUser: User,
   ) {
     createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
-    const college = await this.preloadCollegeByName(createAuthDto.college);
+    const college = await this.preloadCollegeById(createAuthDto.college);
     let normalUser = new User();
     normalUser = Object.assign(normalUser, createAuthDto);
     normalUser.college = college;
@@ -231,7 +231,7 @@ export class AuthService {
         createStudentUserDto.password,
         10,
       );
-      const college = await this.preloadCollegeByName(
+      const college = await this.preloadCollegeById(
         createStudentUserDto.college,
       );
       const department = await this.departmentRepository.findOne({
@@ -326,7 +326,7 @@ export class AuthService {
     updateAuthDto: UpdateAdminDto,
     currentUser,
   ): Promise<User> {
-    const college = await this.preloadCollegeByName(updateAuthDto.college);
+    const college = await this.preloadCollegeById(updateAuthDto.college);
     const user = await this.findOne(id);
     delete updateAuthDto.password;
     Object.assign(user, updateAuthDto);
@@ -392,8 +392,8 @@ export class AuthService {
   async findUserByEmail(email: string): Promise<User> {
     return await this.userRepository.findOneBy({ email });
   }
-  async preloadCollegeByName(name: string): Promise<College> {
-    const college = await this.collegeRepository.findOne({ where: { name } });
+  async preloadCollegeById(id: number): Promise<College> {
+    const college = await this.collegeRepository.findOne({ where: { id } });
     if (!college) {
       throw new NotFoundException('Not Found college');
     }

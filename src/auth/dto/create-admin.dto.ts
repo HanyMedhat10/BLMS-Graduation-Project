@@ -1,8 +1,10 @@
 import {
   IsEmail,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsString,
+  Min,
   MinLength,
 } from 'class-validator';
 import { Role } from '../entities/enum/user.enum';
@@ -31,6 +33,7 @@ export class CreateAdminDto {
   @IsEnum({ Role, default: Role.ADMIN })
   role: Role;
   @ApiProperty()
-  @IsString({ each: true })
-  college: string;
+  @IsInt()
+  @Min(1)
+  college: number;
 }

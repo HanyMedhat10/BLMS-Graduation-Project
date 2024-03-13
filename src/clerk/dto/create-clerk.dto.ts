@@ -2,8 +2,10 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsString,
+  Min,
   MinLength,
 } from 'class-validator';
 import { Role } from 'src/auth/entities/enum/user.enum';
@@ -26,6 +28,7 @@ export class CreateClerkDto {
   @IsEnum({ Role, default: Role.CLERK })
   role: Role;
   @ApiProperty()
-  @IsString({ each: true })
-  college: string;
+  @IsInt()
+  @Min(1)
+  college: number;
 }

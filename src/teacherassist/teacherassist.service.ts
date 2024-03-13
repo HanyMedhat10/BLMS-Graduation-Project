@@ -96,7 +96,7 @@ export class TeacherassistService {
 
     teacherAssistant =
       await this.teacherAssistantRepository.save(teacherAssistant);
-    const college = await this.userService.preloadCollegeByName(
+    const college = await this.userService.preloadCollegeById(
       updateTeacherAssistUserDto.college,
     );
     const user = await this.findOne(id);

@@ -66,7 +66,7 @@ export class DoctorService {
     }
 
     // doctor = await this.userRepository.save(doctor);
-    const college = await this.userService.preloadCollegeByName(
+    const college = await this.userService.preloadCollegeById(
       updateDoctorDto.college,
     );
     // const user = await this.findOne(id);

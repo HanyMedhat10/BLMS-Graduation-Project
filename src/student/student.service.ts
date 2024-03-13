@@ -99,7 +99,7 @@ export class StudentService {
     }
 
     student = await this.studentRepository.save(student);
-    const college = await this.userService.preloadCollegeByName(
+    const college = await this.userService.preloadCollegeById(
       updateStudentUserDto.college,
     );
     const user = await this.findOne(id);

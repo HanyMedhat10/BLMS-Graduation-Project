@@ -2,10 +2,12 @@ import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEnum,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsPositive,
   IsString,
+  Min,
   MinLength,
 } from 'class-validator';
 import { Role } from 'src/auth/entities/enum/user.enum';
@@ -31,8 +33,9 @@ export class CreateHeadOfDepartmentDto {
   @ApiProperty()
   @IsNumber({ maxDecimalPlaces: 0 })
   department: number;
-  @IsString({ each: true })
-  college: string;
+  @IsInt()
+  @Min(1)
+  college: number;
   //   @IsPositive()
   @ApiProperty()
   @IsNumber({}, { each: true })

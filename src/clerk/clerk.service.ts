@@ -65,7 +65,7 @@ export class ClerkService {
   }
 
   async update(id: number, updateClerkDto: UpdateClerkDto, currentUser: User) {
-    const college = await this.userService.preloadCollegeByName(
+    const college = await this.userService.preloadCollegeById(
       updateClerkDto.college,
     );
     const user = await this.findOne(id);
@@ -85,7 +85,7 @@ export class ClerkService {
   }
   private async createUser(createClerkDto: CreateClerkDto, currentUser: User) {
     createClerkDto.password = await bcrypt.hash(createClerkDto.password, 10);
-    const college = await this.userService.preloadCollegeByName(
+    const college = await this.userService.preloadCollegeById(
       createClerkDto.college,
     );
     let normalUser = new User();

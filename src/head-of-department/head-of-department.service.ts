@@ -48,7 +48,7 @@ export class HeadOfDepartmentService {
       createHeadOfDepartmentDto.password,
       10,
     );
-    const college = await this.userService.preloadCollegeByName(
+    const college = await this.userService.preloadCollegeById(
       createHeadOfDepartmentDto.college,
     );
     let department = await this.departmentRepository.findOne({
@@ -113,7 +113,7 @@ export class HeadOfDepartmentService {
     }
 
     // doctor = await this.userRepository.save(doctor);
-    const college = await this.userService.preloadCollegeByName(
+    const college = await this.userService.preloadCollegeById(
       updateHeadOfDepartmentDto.college,
     );
     // const user = await this.findOne(id);
