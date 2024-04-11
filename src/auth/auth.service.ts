@@ -15,14 +15,12 @@ import { sign } from 'jsonwebtoken';
 import { UserLoginDto } from './dto/user-login.dto';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
 import { Role } from './entities/enum/user.enum';
-import { StudentType } from 'src/student/entities/enum/student.enum';
 import { College } from '../college/entities/college.entity';
 import { CreateCollegeDto } from '../college/dto/create-college.dto';
 import { CourseService } from 'src/course/course.service';
 import { Department } from 'src/department/entities/department.entity';
 import { CreateStudentUserDto } from 'src/student/dto/create-student-user-dto';
 import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entity';
-import { TeacherType } from 'src/teacherassist/entities/enum/teacher.enum';
 import { CreateTeacherAssistUserDto } from 'src/teacherassist/dto/create-teacherassist-user.dto';
 import { CreateDoctorDto } from 'src/doctor/dto/create-doctor.dto';
 import { CreateHeadOfDepartmentDto } from 'src/head-of-department/dto/create-head-of-department.dto';
@@ -61,20 +59,20 @@ export class AuthService {
     if (userExists) {
       throw new BadRequestException('Email is not available.');
     }
-    const userTA = createTeacherassistDto.teacherAssistant;
-    let ta = new TeacherAssistant();
-    Object.assign(ta, userTA);
-    if (
-      userTA.courses != null &&
-      userTA.teacherType == TeacherType.STUDYMASTER
-    ) {
-      const courses = await Promise.all(
-        userTA.courses.map((x) => this.courseService.findOne(x)),
-      );
-      ta.courses = courses;
-    }
+    // const userTA = createTeacherassistDto.teacherAssistant;
+    // let ta = new TeacherAssistant();
+    // Object.assign(ta, userTA);
+    // if (
+    //   userTA.courses != null &&
+    //   userTA.teacherType == TeacherType.STUDYMASTER
+    // ) {
+    //   const courses = await Promise.all(
+    //     userTA.courses.map((x) => this.courseService.findOne(x)),
+    //   );
+    //   ta.courses = courses;
+    // }
 
-    ta = await this.teacherAssistantRepository.save(ta);
+    // ta = await this.teacherAssistantRepository.save(ta);
     createTeacherassistDto.password = await bcrypt.hash(
       createTeacherassistDto.password,
       10,

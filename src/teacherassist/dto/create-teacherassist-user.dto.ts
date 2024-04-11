@@ -8,10 +8,7 @@ import {
   IsString,
   Min,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
-import { UpdateTeacherassistDto } from './update-teacherassist.dto';
-import { Type } from 'class-transformer';
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -42,8 +39,8 @@ export class CreateTeacherAssistUserDto {
   @ApiProperty()
   @IsNumber({}, { each: true })
   teachingCourses: number[];
-  @ApiProperty()
-  @Type(() => UpdateTeacherassistDto)
-  @ValidateNested()
-  teacherAssistant: UpdateTeacherassistDto;
+  // @ApiProperty()
+  // @Type(() => UpdateTeacherassistDto)
+  // @ValidateNested()
+  // teacherAssistant: UpdateTeacherassistDto;
 }

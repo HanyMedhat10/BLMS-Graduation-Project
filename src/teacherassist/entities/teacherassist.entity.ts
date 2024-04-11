@@ -1,14 +1,4 @@
-import { User } from 'src/auth/entities/user.entity';
-import { Course } from 'src/course/entities/course.entity';
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  OneToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 import { TeacherType } from './enum/teacher.enum';
 import { IsNotEmpty } from 'class-validator';
 
@@ -24,9 +14,9 @@ export class TeacherAssistant {
   // @OneToOne(() => User, (user) => user.teacherAssistant)
   // @JoinColumn()
   // user: User;
-  @ManyToMany(() => Course, (course) => course.students, {
-    cascade: true,
-  })
-  @JoinTable({ name: 'teacher_assistant_courses' })
-  courses: Course[];
+  // @ManyToMany(() => Course, (course) => course.students, {
+  //   cascade: true,
+  // })
+  // @JoinTable({ name: 'teacher_assistant_courses' })
+  // courses: Course[];
 }

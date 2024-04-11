@@ -16,7 +16,6 @@ import { Role } from './enum/user.enum';
 import { Student } from 'src/student/entities/student.entity';
 import { College } from '../../college/entities/college.entity';
 import { Department } from 'src/department/entities/department.entity';
-import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entity';
 import { Course } from 'src/course/entities/course.entity';
 import { Assignment } from 'src/assignment/entities/assignment.entity';
 import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignment.entity';
