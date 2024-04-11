@@ -26,8 +26,8 @@ async function bootstrap() {
     .setVersion('1.0')
     .addTag('BLMS')
     .build();
-  // const document = SwaggerModule.createDocument(app, config);
-  // SwaggerModule.setup('api', app, document);
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('api', app, document);
   // app.useStaticAssets(
   //   path.join(
   //     'C:/Users/hanym/Desktop/Node-code/Nestjs Projects/blms',

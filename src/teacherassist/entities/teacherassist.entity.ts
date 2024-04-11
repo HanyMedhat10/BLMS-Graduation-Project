@@ -21,9 +21,9 @@ export class TeacherAssistant {
   degreeProgram: string;
   @Column({ type: 'enum', enum: TeacherType })
   teacherType: TeacherType;
-  @OneToOne(() => User, (user) => user.teacherAssistant)
-  @JoinColumn()
-  user: User;
+  // @OneToOne(() => User, (user) => user.teacherAssistant)
+  // @JoinColumn()
+  // user: User;
   @ManyToMany(() => Course, (course) => course.students, {
     cascade: true,
   })

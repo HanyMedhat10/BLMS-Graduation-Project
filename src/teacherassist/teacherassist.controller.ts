@@ -39,16 +39,16 @@ export class TeacherassistController {
       currentUser,
     );
   }
-  @ApiBearerAuth()
-  @Roles('admin', 'clerk')
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Post('addStudyCourse/:id')
-  addStudyCourse(
-    @Param('id') id: string,
-    @Query('courseId') courseId: string,
-  ): Promise<User> {
-    return this.teacherassistService.addStudyCourse(+id, +courseId);
-  }
+  // @ApiBearerAuth()
+  // @Roles('admin', 'clerk')
+  // @UseGuards(JwtAuthGuard, RoleGuard)
+  // @Post('addStudyCourse/:id')
+  // addStudyCourse(
+  //   @Param('id') id: string,
+  //   @Query('courseId') courseId: string,
+  // ): Promise<User> {
+  //   return this.teacherassistService.addStudyCourse(+id, +courseId);
+  // }
   @Roles('admin', 'clerk')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
@@ -93,16 +93,16 @@ export class TeacherassistController {
   remove(@Param('id') id: string) {
     return this.teacherassistService.remove(+id);
   }
-  @ApiBearerAuth()
-  @Roles('admin', 'clerk')
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Delete('deleteStudyCourse/:id')
-  removeStudyCourse(
-    @Param('id') id: string,
-    @Query('courseId') courseId: string,
-  ) {
-    return this.teacherassistService.removeCourse(+id, +courseId);
-  }
+  // @ApiBearerAuth()
+  // @Roles('admin', 'clerk')
+  // @UseGuards(JwtAuthGuard, RoleGuard)
+  // @Delete('deleteStudyCourse/:id')
+  // removeStudyCourse(
+  //   @Param('id') id: string,
+  //   @Query('courseId') courseId: string,
+  // ) {
+  //   return this.teacherassistService.removeCourse(+id, +courseId);
+  // }
   @ApiBearerAuth()
   @Roles('admin', 'clerk')
   @UseGuards(JwtAuthGuard, RoleGuard)

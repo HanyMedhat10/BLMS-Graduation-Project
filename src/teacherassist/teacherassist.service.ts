@@ -30,22 +30,22 @@ export class TeacherassistService {
   ) {
     return await this.userService.createTA(createTeacherassistDto, currentUser);
   }
-  async addStudyCourse(id: number, courseId: number): Promise<User> {
-    const ta = await this.findOne(id);
-    const course = await this.courseRepository.findOne({
-      where: { id: courseId },
-    });
-    ta.teacherAssistant.courses.push(course);
-    ta.teacherAssistant = await this.teacherAssistantRepository.save(
-      ta.teacherAssistant,
-    );
-    return ta;
-  }
+  // async addStudyCourse(id: number, courseId: number): Promise<User> {
+  //   const ta = await this.findOne(id);
+  //   const course = await this.courseRepository.findOne({
+  //     where: { id: courseId },
+  //   });
+  //   ta.teacherAssistant.courses.push(course);
+  //   ta.teacherAssistant = await this.teacherAssistantRepository.save(
+  //     ta.teacherAssistant,
+  //   );
+  //   return ta;
+  // }
   async findAll(): Promise<User[]> {
     return await this.userRepository.find({
       where: { role: Role.TA },
       relations: {
-        teacherAssistant: { courses: true },
+        // teacherAssistant: { courses: true },
         college: true,
         department: true,
       },
@@ -56,7 +56,7 @@ export class TeacherassistService {
     return await this.userRepository.findOne({
       where: { id, role: Role.TA },
       relations: {
-        teacherAssistant: { courses: true },
+        // teacherAssistant: { courses: true },
         college: true,
         department: true,
         addedBy: true,
@@ -69,40 +69,40 @@ export class TeacherassistService {
     updateTeacherAssistUserDto: UpdateTeacherAssistUserDto,
     currentUser: User,
   ): Promise<User> {
-    let teacherAssistant = await this.teacherAssistantRepository.findOne({
-      where: { user: { id: id } },
-    });
-    if (updateTeacherAssistUserDto.teacherAssistant != null) {
-      if (updateTeacherAssistUserDto.teacherAssistant.courses != null) {
-        const courses = await Promise.all(
-          updateTeacherAssistUserDto.teacherAssistant.courses.map((x) =>
-            this.courseService.findOne(x),
-          ),
-        );
-        teacherAssistant = await this.teacherAssistantRepository.preload({
-          id: teacherAssistant.id, // if id is string , we should id:+id to convert number
-          ...updateTeacherAssistUserDto.teacherAssistant,
-          courses,
-        });
-      } else
-        Object.assign(
-          teacherAssistant,
-          updateTeacherAssistUserDto.teacherAssistant,
-        );
-    }
-    if (!teacherAssistant) {
-      throw new NotFoundException(`This id: ${id} not found `);
-    }
+    // let teacherAssistant = await this.teacherAssistantRepository.findOne({
+    //   where: { user: { id: id } },
+    // });
+    // if (updateTeacherAssistUserDto.teacherAssistant != null) {
+    //   if (updateTeacherAssistUserDto.teacherAssistant.courses != null) {
+    //     // const courses = await Promise.all(
+    //     //   updateTeacherAssistUserDto.teacherAssistant.courses.map((x) =>
+    //     //     this.courseService.findOne(x),
+    //     //   ),
+    //     // );
+    //     teacherAssistant = await this.teacherAssistantRepository.preload({
+    //       id: teacherAssistant.id, // if id is string , we should id:+id to convert number
+    //       // ...updateTeacherAssistUserDto.teacherAssistant,
+    //       // courses,
+    //     });
+    //   } else
+    //     Object.assign(
+    //       teacherAssistant,
+    //       updateTeacherAssistUserDto.teacherAssistant,
+    //     );
+    // }
+    // if (!teacherAssistant) {
+    //   throw new NotFoundException(`This id: ${id} not found `);
+    // }
 
-    teacherAssistant =
-      await this.teacherAssistantRepository.save(teacherAssistant);
+    // teacherAssistant =
+    //   await this.teacherAssistantRepository.save(teacherAssistant);
     const college = await this.userService.preloadCollegeById(
       updateTeacherAssistUserDto.college,
     );
     const user = await this.findOne(id);
     delete updateTeacherAssistUserDto.password;
     Object.assign(user, updateTeacherAssistUserDto);
-    user.teacherAssistant = teacherAssistant;
+    // user.teacherAssistant = teacherAssistant;
     user.addedBy = currentUser;
     user.college = college;
     if (updateTeacherAssistUserDto.teachingCourses != null) {
@@ -123,22 +123,22 @@ export class TeacherassistService {
   }
 
   async remove(id: number) {
-    const ta = await this.findOne(id);
-    await this.teacherAssistantRepository.delete(ta.teacherAssistant.id);
+    // const ta = await this.findOne(id);
+    // await this.teacherAssistantRepository.delete(ta.teacherAssistant.id);
     return await this.userRepository.delete(id);
     return `This action removes a #${id} teacherassist`;
   }
-  async removeCourse(id: number, courseId: number) {
-    const ta = await this.findOne(id);
-    ta.teacherAssistant.courses = ta.teacherAssistant.courses.filter(
-      (course) => {
-        return course.id !== courseId;
-      },
-    );
-    ta.teacherAssistant = await this.teacherAssistantRepository.save(
-      ta.teacherAssistant,
-    );
-    return ta;
-    // return await this.studentRepository.save(student);
-  }
+  // async removeCourse(id: number, courseId: number) {
+  //   const ta = await this.findOne(id);
+  //   ta.teacherAssistant.courses = ta.teacherAssistant.courses.filter(
+  //     (course) => {
+  //       return course.id !== courseId;
+  //     },
+  //   );
+  //   ta.teacherAssistant = await this.teacherAssistantRepository.save(
+  //     ta.teacherAssistant,
+  //   );
+  //   return ta;
+  //   // return await this.studentRepository.save(student);
+  // }
 }

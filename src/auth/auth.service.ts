@@ -92,7 +92,7 @@ export class AuthService {
     );
     let user = await this.userRepository.create({
       ...createTeacherassistDto,
-      teacherAssistant: ta,
+      // teacherAssistant: ta,
       college,
       department: department,
       teachingCourses: coursesTeaching,
@@ -209,12 +209,13 @@ export class AuthService {
     if (userExists) {
       throw new BadRequestException('Email is not available.');
     }
-    const userObject = createStudentUserDto.student;
+    // const userObject = createStudentUserDto.student;
     if (
-      (userObject.studentType == StudentType.UNDERGRADUATE &&
-        userObject.classes != null) ||
-      (userObject.studentType == StudentType.POSTGRADUATE &&
-        userObject.degreeProgram != null)
+      // (userObject.studentType == StudentType.UNDERGRADUATE &&
+      //   userObject.classes != null) ||
+      // (userObject.studentType == StudentType.POSTGRADUATE &&
+      //   userObject.degreeProgram != null)
+      true
     ) {
       const courses = await Promise.all(
         createStudentUserDto.student.courses.map((x) =>
@@ -487,7 +488,7 @@ export class AuthService {
         return await this.userRepository.findOne({
           where: { id, role: Role.TA },
           relations: {
-            teacherAssistant: { courses: true },
+            // teacherAssistant: { courses: true },
             college: true,
             department: true,
             addedBy: true,

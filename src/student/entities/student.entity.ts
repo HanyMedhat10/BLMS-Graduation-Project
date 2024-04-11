@@ -8,7 +8,6 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { StudentType } from './enum/student.enum';
 import { User } from 'src/auth/entities/user.entity';
 import { Course } from 'src/course/entities/course.entity';
 import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignment.entity';
@@ -16,12 +15,12 @@ import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignme
 export class Student {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ nullable: true })
+  @Column()
   classes: string;
-  @Column({ nullable: true })
-  degreeProgram: string;
-  @Column({ type: 'enum', enum: StudentType })
-  studentType: StudentType;
+  // @Column({ nullable: true })
+  // degreeProgram: string;
+  // @Column({ type: 'enum', enum: StudentType })
+  // studentType: StudentType;
   @OneToOne(() => User, (user) => user.student)
   @JoinColumn()
   user: User;
