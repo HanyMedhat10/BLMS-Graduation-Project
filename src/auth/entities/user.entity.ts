@@ -19,6 +19,8 @@ import { Department } from 'src/department/entities/department.entity';
 import { Course } from 'src/course/entities/course.entity';
 import { Assignment } from 'src/assignment/entities/assignment.entity';
 import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignment.entity';
+import { Chat } from 'src/chat/entities/chat.entity';
+import { Message } from 'src/chat/entities/message.entity';
 
 @Entity()
 export class User {
@@ -70,4 +72,10 @@ export class User {
   createAssignments: Assignment[];
   @OneToMany(() => SubmitAssignment, (user) => user.correctBy)
   correctAssignments: SubmitAssignment[];
+  @ManyToMany(() => Chat, (chat) => chat.users)
+  chats: Chat[];
+  @OneToMany(() => Message, (message) => message.senderId)
+  sentMessages: Message[];
+  @OneToMany(() => Message, (message) => message.receiverId)
+  receivedMessages: Message[];
 }
