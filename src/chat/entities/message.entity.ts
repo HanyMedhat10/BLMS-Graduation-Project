@@ -6,10 +6,10 @@ import { MessageType } from './enum/type.message.enum';
 @Entity()
 export class Message {
   @PrimaryColumn({ primary: false, unique: true })
+  // @PrimaryColumn()
   id: number;
   @Column({ nullable: true })
   content: string;
-
   @Column({ type: 'enum', enum: MessageType, default: 'text' })
   messageType: string;
 
