@@ -40,6 +40,36 @@ export class CourseService {
       // },
     });
   }
+  async findStaff(id: number): Promise<Course[]> {
+    return await this.courseRepository.find({
+      where: { id },
+      relations: { teaching: true },
+      // select: {
+      //   id: true,
+      //   name: true,
+      //   Role: true,
+      // },
+    });
+  }
+  async searchByRole(id: number, role: string) {
+    return await this.courseRepository
+      .createQueryBuilder('course')
+      .leftJoinAndSelect('course.teaching', 'teaching')
+      .leftJoinAndSelect('course.students', 'students')
+      .where('students.role = :role OR teaching.role = :role', { role })
+      .getMany();
+  }
+  async findByNameUser(id: number, name: string): Promise<Course> {
+    return await this.courseRepository
+      .createQueryBuilder('course')
+      .where('course.id = :id', { id })
+      .andWhere('(teaching.name ILIKE :name OR students.name ILIKE :name)', {
+        name: `%${name}%`,
+      })
+      .leftJoinAndSelect('course.teaching', 'teaching')
+      .leftJoinAndSelect('course.students', 'students')
+      .getOne();
+  }
   async findOne(id: number) {
     return await this.courseRepository.findOne({
       where: { id },

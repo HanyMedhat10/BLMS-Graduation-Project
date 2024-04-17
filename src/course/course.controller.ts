@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { CourseService } from './course.service';
 import { CreateCourseDto } from './dto/create-course.dto';
@@ -43,6 +44,24 @@ export class CourseController {
   @Get('participants/:id')
   findAllParticipants(@Param('id') id: string) {
     return this.courseService.findAllParticipants(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('findNameParticipants/:id')
+  findByNameUser(@Param('id') id: string, @Query('name') name: string) {
+    return this.courseService.findByNameUser(+id, name);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('allStaff/:id')
+  findStaff(@Param('id') id: string) {
+    return this.courseService.findStaff(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('searchByRole/:id')
+  searchByRole(@Param('id') id: string, @Query('name') name: string) {
+    return this.courseService.searchByRole(+id, name);
   }
   @Roles('admin')
   @ApiBearerAuth()
