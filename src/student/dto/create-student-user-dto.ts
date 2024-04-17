@@ -9,10 +9,7 @@ import {
   IsString,
   Min,
   MinLength,
-  ValidateNested,
 } from 'class-validator';
-import { UpdateStudentDto } from './update-student.dto';
-import { Type } from 'class-transformer';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateStudentUserDto {
   @ApiProperty()
@@ -43,8 +40,12 @@ export class CreateStudentUserDto {
   @IsInt()
   @Min(1)
   college: number;
-  @ApiProperty({ type: () => UpdateStudentDto })
-  @Type(() => UpdateStudentDto)
-  @ValidateNested()
-  student: UpdateStudentDto;
+  @ApiProperty()
+  @IsNumber({ maxDecimalPlaces: 0 }, { each: true })
+  // @IsPositive()
+  courses: number[];
+  // @ApiProperty({ type: () => UpdateStudentDto })
+  // @Type(() => UpdateStudentDto)
+  // @ValidateNested()
+  // student: UpdateStudentDto;
 }

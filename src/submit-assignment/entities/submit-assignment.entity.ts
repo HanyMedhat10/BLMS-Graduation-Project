@@ -1,6 +1,6 @@
 import { Assignment } from 'src/assignment/entities/assignment.entity';
 import { User } from 'src/auth/entities/user.entity';
-import { Student } from 'src/student/entities/student.entity';
+
 import {
   Column,
   CreateDateColumn,
@@ -20,9 +20,9 @@ export class SubmitAssignment {
   degree: number;
   @CreateDateColumn()
   submitTime: Timestamp;
-  @ManyToOne(() => Student, (student) => student.submits, { cascade: true })
+  @ManyToOne(() => User, (student) => student.submits, { cascade: true })
   @JoinColumn()
-  solver: Student;
+  solver: User;
   @ManyToOne(() => User, (staff) => staff.correctAssignments, { cascade: true })
   @JoinColumn()
   correctBy: User;

@@ -63,7 +63,11 @@ export class StudentController {
     @Body() updateStudentUserDto: UpdateStudentUserDto,
     @CurrentUser() currentUser: User,
   ): Promise<User> {
-    return this.studentService.update(+id, updateStudentUserDto, currentUser);
+    return this.studentService.updateStudent(
+      +id,
+      updateStudentUserDto,
+      currentUser,
+    );
   }
   @ApiBearerAuth()
   @Roles('admin')

@@ -38,6 +38,12 @@ export class CourseController {
   findOne(@Param('id') id: string) {
     return this.courseService.findOne(+id);
   }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('participants/:id')
+  findAllParticipants(@Param('id') id: string) {
+    return this.courseService.findAllParticipants(+id);
+  }
   @Roles('admin')
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)

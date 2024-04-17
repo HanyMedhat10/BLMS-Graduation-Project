@@ -1,6 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Student } from './entities/student.entity';
 import { Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/entities/enum/user.enum';
@@ -14,8 +13,8 @@ import { Course } from 'src/course/entities/course.entity';
 @Injectable()
 export class StudentService {
   constructor(
-    @InjectRepository(Student)
-    private readonly studentRepository: Repository<Student>,
+    // @InjectRepository(Student)
+    // private readonly studentRepository: Repository<Student>,
     @InjectRepository(Course)
     private readonly courseRepository: Repository<Course>,
     private readonly userService: AuthService,
@@ -35,15 +34,18 @@ export class StudentService {
     const course = await this.courseRepository.findOne({
       where: { id: courseId },
     });
-    await student.student.courses.push(course);
-    await this.studentRepository.save(student.student);
+    // await student.student.courses.push(course);
+    await student.courses.push(course);
+    await this.userRepository.save(student);
+    // await this.studentRepository.save(student.student);
     return await this.findOne(id);
   }
   async findAll() {
     // return await this.studentRepository.find({ relations: { user: true } });
     return await this.userRepository.find({
       where: { role: Role.STUDENT },
-      relations: { student: { courses: true } },
+      // relations: { student: { courses: true } },
+      relations: { courses: true },
     });
   }
 
@@ -58,62 +60,102 @@ export class StudentService {
     const user = await this.userRepository.findOne({
       where: { id: id, role: Role.STUDENT },
       // select: { password: false },
-      relations: { student: { courses: true }, addedBy: true, college: true },
+      // relations: { student: { courses: true }, addedBy: true, college: true },
+      relations: { courses: true, addedBy: true, college: true },
     });
     if (!user) throw new NotFoundException(`the student Not Found`);
     return user;
   }
 
-  async update(
+  // async update(
+  //   id: number,
+  //   updateStudentUserDto: UpdateStudentUserDto,
+  //   currentUser: User,
+  // ) {
+  //   // let user = await this.findOne(id);
+  //   // let student = await this.studentRepository.findOne(user.student.id as any);
+  //   // student = Object.assign(student, updateStudentUserDto.student);
+  //   // student = await this.studentRepository.save(student);
+  //   // user = Object.assign(user, updateStudentUserDto);
+  //   // user.student = student;
+  //   // user.addedBy = currentUser;
+  //   // return await this.userRepository.save(user);
+  //   // let student = await this.studentRepository.findOne({
+  //   //   where: { user: { id: id } },
+  //   // });
+  //   let student = await this.userRepository.findOne({
+  //     where: { id: id, role: Role.STUDENT },
+  //   });
+  //   // if (updateStudentUserDto.student != null) {
+  //   if (updateStudentUserDto.courses != null) {
+  //     const courses = await Promise.all(
+  //       updateStudentUserDto.courses.map((x) => this.courseService.findOne(x)),
+  //     );
+  //     // student = await this.studentRepository.preload({
+  //     //   id: student.id, // if id is string , we should id:+id to convert number
+  //     //   ...updateStudentUserDto.student,
+  //     //   courses,
+  //     // });
+  //     // student = await this.userRepository.preload({
+  //     //   // id:id, // if id is string , we should id:+id to convert number
+  //     //   ...updateStudentUserDto,
+  //     //   courses,
+  //     // });
+  //   } else Object.assign(student, updateStudentUserDto);
+  //   // }
+  //   if (!student) {
+  //     throw new NotFoundException(`This id: ${id} not found `);
+  //   }
+
+  //   student = await this.userRepository.save(student);
+  //   const college = await this.userService.preloadCollegeById(
+  //     updateStudentUserDto.college,
+  //   );
+  //   const user = await this.findOne(id);
+  //   // await this.userRepository.preload({
+  //   //   id: +id, // if id is string , we should id:+id to convert number
+  //   //   ...updateStudentUserDto,
+  //   //   student: student,
+  //   //   college,
+  //   // });
+  //   delete updateStudentUserDto.password;
+  //   Object.assign(user, updateStudentUserDto);
+  //   // user.student = student;
+  //   user.addedBy = currentUser;
+  //   user.college = college;
+  //   user.courses = courses;
+  //   if (updateStudentUserDto.department != null) {
+  //     const department = await this.departmentService.findOne(
+  //       updateStudentUserDto.department,
+  //     );
+  //     user.department = department;
+  //   }
+  //   return await this.userRepository.save(user);
+  //   // const student = await this.findOne(id);
+
+  //   // return await this.userService.update(id, updateStudentUserDto, currentUser);
+  // }
+
+  async updateStudent(
     id: number,
     updateStudentUserDto: UpdateStudentUserDto,
     currentUser: User,
   ) {
-    // let user = await this.findOne(id);
-    // let student = await this.studentRepository.findOne(user.student.id as any);
-    // student = Object.assign(student, updateStudentUserDto.student);
-    // student = await this.studentRepository.save(student);
-    // user = Object.assign(user, updateStudentUserDto);
-    // user.student = student;
-    // user.addedBy = currentUser;
-    // return await this.userRepository.save(user);
-    let student = await this.studentRepository.findOne({
-      where: { user: { id: id } },
-    });
-    if (updateStudentUserDto.student != null) {
-      if (updateStudentUserDto.student.courses != null) {
-        const courses = await Promise.all(
-          updateStudentUserDto.student.courses.map((x) =>
-            this.courseService.findOne(x),
-          ),
-        );
-        student = await this.studentRepository.preload({
-          id: student.id, // if id is string , we should id:+id to convert number
-          ...updateStudentUserDto.student,
-          courses,
-        });
-      } else Object.assign(student, updateStudentUserDto.student);
-    }
-    if (!student) {
-      throw new NotFoundException(`This id: ${id} not found `);
-    }
-
-    student = await this.studentRepository.save(student);
     const college = await this.userService.preloadCollegeById(
       updateStudentUserDto.college,
     );
     const user = await this.findOne(id);
-    // await this.userRepository.preload({
-    //   id: +id, // if id is string , we should id:+id to convert number
-    //   ...updateStudentUserDto,
-    //   student: student,
-    //   college,
-    // });
     delete updateStudentUserDto.password;
     Object.assign(user, updateStudentUserDto);
-    user.student = student;
+    // user.teacherAssistant = teacherAssistant;
     user.addedBy = currentUser;
     user.college = college;
+    if (updateStudentUserDto.courses != null) {
+      const courses = await Promise.all(
+        updateStudentUserDto.courses.map((x) => this.courseService.findOne(x)),
+      );
+      user.courses = courses;
+    }
     if (updateStudentUserDto.department != null) {
       const department = await this.departmentService.findOne(
         updateStudentUserDto.department,
@@ -121,22 +163,18 @@ export class StudentService {
       user.department = department;
     }
     return await this.userRepository.save(user);
-    // const student = await this.findOne(id);
-
-    // return await this.userService.update(id, updateStudentUserDto, currentUser);
   }
-
   async remove(id: number) {
-    const student = await this.findOne(id);
-    await this.studentRepository.delete(student.student.id);
+    // const student = await this.findOne(id);
+    // await this.studentRepository.delete(student.student.id);
     return await this.userService.remove(id);
   }
   async removeCourse(id: number, courseId: number) {
     const student = await this.findOne(id);
-    student.student.courses = student.student.courses.filter((course) => {
+    student.courses = student.courses.filter((course) => {
       return course.id !== courseId;
     });
-    await this.studentRepository.save(student.student);
+    await this.userRepository.save(student);
     return await this.findOne(id);
     // return await this.studentRepository.save(student);
   }

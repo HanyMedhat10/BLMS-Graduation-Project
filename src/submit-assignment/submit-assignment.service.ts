@@ -26,7 +26,8 @@ export class SubmitAssignmentService {
     const submitAssignment = new SubmitAssignment();
     submitAssignment.assignment = assignment;
     submitAssignment.path = file.path;
-    submitAssignment.solver = currentUser.student;
+    // submitAssignment.solver = currentUser.student;
+    submitAssignment.solver = currentUser;
     return await this.submitAssignmentRepository.save(submitAssignment);
   }
 

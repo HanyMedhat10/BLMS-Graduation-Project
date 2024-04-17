@@ -1,4 +1,3 @@
-import { Student } from 'src/student/entities/student.entity';
 import {
   BadRequestException,
   Injectable,
@@ -30,8 +29,8 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Student)
-    private readonly studentRepository: Repository<Student>,
+    // @InjectRepository(Student)
+    // private readonly studentRepository: Repository<Student>,
     @InjectRepository(College)
     private readonly collegeRepository: Repository<College>,
     private readonly courseService: CourseService,
@@ -176,7 +175,7 @@ export class AuthService {
       case Role.STUDENT:
         const user = await this.userRepository.findOne({
           where: { id: id, role: role },
-          relations: { student: true },
+          // relations: { student: true },
         });
         if (!user) throw new NotFoundException(`Student Not Found`);
         return user;
@@ -216,15 +215,16 @@ export class AuthService {
       true
     ) {
       const courses = await Promise.all(
-        createStudentUserDto.student.courses.map((x) =>
-          this.courseService.findOne(x),
-        ),
+        createStudentUserDto.courses.map((x) => this.courseService.findOne(x)),
       );
-      let student = await this.studentRepository.create({
-        ...createStudentUserDto.student,
-        courses,
-      });
-      student = await this.studentRepository.save(student);
+      // let student = await this.userRepository.create({
+      //   ...createStudentUserDto,
+      //   courses,
+      // });
+      // let student = new User();
+      // student = Object.assign(student, createStudentUserDto);
+      // student.courses = courses;
+      // student = await this.userRepository.save(createStudentUserDto);
       // createAuthDto.student = student;
       createStudentUserDto.password = await bcrypt.hash(
         createStudentUserDto.password,
@@ -238,7 +238,8 @@ export class AuthService {
       });
       let user = await this.userRepository.create({
         ...createStudentUserDto,
-        student,
+        // student,
+        courses: courses,
         college,
         department: department,
         // teacherAssistant:null,
@@ -459,7 +460,7 @@ export class AuthService {
           where: { id: id, role: Role.STUDENT },
           // select: { password: false },
           relations: {
-            student: { courses: true },
+            // student: { courses: true },
             addedBy: true,
             college: true,
           },
