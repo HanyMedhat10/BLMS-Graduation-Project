@@ -2,7 +2,9 @@ import {
   WebSocketGateway,
   SubscribeMessage,
   MessageBody,
+  WebSocketServer,
 } from '@nestjs/websockets';
+import { Server } from 'socket.io';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { RoleGuard } from 'src/auth/role/role.guard';
@@ -16,20 +18,23 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 @WebSocketGateway()
 export class ChatGateway {
   constructor(private readonly chatService: ChatService) {}
+  @WebSocketServer() server: Server;
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('createChat')
-  create(
+  async create(
     @MessageBody() createChatDto: CreateChatDto,
     @CurrentUser() currentUser: User,
   ) {
-    return this.chatService.create(createChatDto, currentUser);
+    const chat = await this.chatService.create(createChatDto, currentUser);
+    this.server.emit('createChat', chat);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('findAllChat')
   async findAll(@CurrentUser() currentUser: User) {
-    return await this.chatService.findAll(currentUser);
+    const chats = await this.chatService.findAll(currentUser);
+    this.server.emit('findAllChat', chats);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
@@ -44,21 +49,27 @@ export class ChatGateway {
     @MessageBody() updateChatDto: UpdateMessageDto,
     @CurrentUser() currentUser: User,
   ) {
-    return await this.chatService.updateMessage(updateChatDto, currentUser);
+    const message = await this.chatService.updateMessage(
+      updateChatDto,
+      currentUser,
+    );
+    this.server.emit('updateMessage', message);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('removeChat')
   async remove(@MessageBody() id: number) {
-    return await this.chatService.remove(id);
+    await this.chatService.remove(id);
+    this.server.emit('removeChat', null);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @SubscribeMessage('removeChat')
+  @SubscribeMessage('removeMessage')
   async removeMessage(
     @MessageBody() id: number,
     @CurrentUser() currentUser: User,
   ) {
-    return await this.chatService.removeMessage(id, currentUser);
+    await this.chatService.removeMessage(id, currentUser);
+    this.server.emit('removeMessage', null);
   }
 }
