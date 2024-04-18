@@ -12,7 +12,6 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 export class CreateStudentUserDto {
-  @ApiProperty()
   //   @IsNotEmpty({ message: 'Name can not be null ' })
   @ApiProperty()
   @IsNotEmpty()

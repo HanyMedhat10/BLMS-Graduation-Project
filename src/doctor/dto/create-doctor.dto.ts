@@ -17,6 +17,7 @@ export class CreateDoctorDto {
   @IsNotEmpty()
   @IsString()
   name: string;
+  @ApiProperty()
   @IsNotEmpty()
   @IsEmail()
   email: string;
@@ -36,8 +37,8 @@ export class CreateDoctorDto {
   @IsInt()
   @Min(1)
   college: number;
-  //   @IsPositive()
   @ApiProperty()
+  @IsPositive()
   @IsNumber({}, { each: true })
   teachingCourses: number[];
 }
