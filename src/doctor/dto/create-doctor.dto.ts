@@ -38,7 +38,8 @@ export class CreateDoctorDto {
   @Min(1)
   college: number;
   @ApiProperty()
-  @IsPositive()
-  @IsNumber({}, { each: true })
+  // @IsPositive()
+  @IsNumber({ maxDecimalPlaces: 0 }, { each: true })
+  // @Min(1)
   teachingCourses: number[];
 }
