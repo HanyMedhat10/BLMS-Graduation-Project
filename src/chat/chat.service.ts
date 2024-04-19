@@ -10,6 +10,7 @@ import { Message } from './entities/message.entity';
 import { Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { CreateMessageDto } from './dto/create-message.dto';
 
 @Injectable()
 export class ChatService {
@@ -40,12 +41,12 @@ export class ChatService {
   }
 
   async createMessage(
-    createChatDto: CreateChatDto,
+    createMessageDto: CreateMessageDto,
     chat: Chat,
     currentUser: User,
   ) {
     const message = new Message();
-    message.content = createChatDto.content;
+    message.content = createMessageDto.content;
     message.chat = chat;
     // message.receiverId = createChatDto.receiverId;
     message.sender = currentUser;

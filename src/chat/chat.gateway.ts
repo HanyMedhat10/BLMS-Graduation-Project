@@ -3,8 +3,9 @@ import {
   SubscribeMessage,
   MessageBody,
   WebSocketServer,
+  ConnectedSocket,
 } from '@nestjs/websockets';
-import { Server } from 'socket.io';
+import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { RoleGuard } from 'src/auth/role/role.guard';
@@ -13,32 +14,42 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { CurrentUserSocket } from 'src/utility/decorators/current-user-Socket.decorator';
 // import { UpdateMessageDto } from './dto/update-message.dto';
-@ApiTags('Chat Module')
+@ApiTags('Chat')
 @WebSocketGateway({
   // cors: {
   //   origin: '*',
   // },
+  namespace: 'chat',
 })
 export class ChatGateway {
   constructor(private readonly chatService: ChatService) {}
   @WebSocketServer()
   server: Server;
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  // @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('createChat')
   async create(
     @MessageBody() createChatDto: CreateChatDto,
-    @CurrentUser() currentUser: User,
+    // @CurrentUser() currentUser: User,
+    @ConnectedSocket() client: Socket,
+    @CurrentUserSocket() currentUser: User,
   ) {
-    const chat = await this.chatService.create(createChatDto, currentUser);
-    this.server.emit('createChat', chat);
+    console.log('create Chat dto', createChatDto);
+    // console.log('current user', currentUser);
+    // console.log('client', client);
+    // console.log(client.request.headers.authorization);
+    console.log('test', currentUser);
+    // const chat = await this.chatService.create(createChatDto, currentUser);
+    // client.join(chat.id.toString());
+    // client.emit('createChat', chat);
   }
-  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('createMessage')
   async createMessage(
     @MessageBody() createChatDto: CreateChatDto,
+    @ConnectedSocket() client: Socket,
     @CurrentUser() currentUser: User,
   ) {
     const chat = await this.chatService.findOne(createChatDto.chatId);
@@ -47,14 +58,16 @@ export class ChatGateway {
       chat,
       currentUser,
     );
-    this.server.emit('createMessage', message);
+    client.broadcast.to(chat.id.toString()).emit('createMessage', message);
   }
-  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('findAllChat')
-  async findAll(@CurrentUser() currentUser: User) {
+  async findAll(
+    @ConnectedSocket() client: Socket,
+    @CurrentUser() currentUser: User,
+  ) {
     const chats = await this.chatService.findAll(currentUser);
-    this.server.emit('findAllChat', chats);
+    client.emit('findAllChat', chats);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
@@ -92,4 +105,9 @@ export class ChatGateway {
     await this.chatService.removeMessage(id, currentUser);
     this.server.emit('removeMessage', null);
   }
+  // @SubscribeMessage('message')
+  // handleMessage(@MessageBody() data: any, client: any) {
+  //   console.log(data);
+  //   return 'hello world';
+  // }
 }

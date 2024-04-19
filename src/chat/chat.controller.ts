@@ -16,6 +16,7 @@ import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { UpdateMessageDto } from './dto/update-message.dto';
+import { CreateMessageDto } from './dto/create-message.dto';
 @ApiTags('Chat Module')
 @Controller('chat')
 export class ChatController {
@@ -33,12 +34,12 @@ export class ChatController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('createMessage')
   async createMessage(
-    @Body() createChatDto: CreateChatDto,
+    @Body() createMessageDto: CreateMessageDto,
     @CurrentUser() currentUser: User,
   ) {
-    const chat = await this.chatService.findOne(createChatDto.chatId);
+    const chat = await this.chatService.findOne(createMessageDto.chatId);
     return await this.chatService.createMessage(
-      createChatDto,
+      createMessageDto,
       chat,
       currentUser,
     );
