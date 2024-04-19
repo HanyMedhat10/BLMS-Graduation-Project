@@ -1,18 +1,15 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import { PartialType } from '@nestjs/swagger';
+// import { IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
+import { CreateMessageDto } from './create-message.dto';
 
-export class UpdateMessageDto {
-  @ApiProperty()
-  //   @IsOptional()
-  @IsInt()
-  @Min(1)
-  id: number;
-  @ApiProperty()
-  @IsInt()
-  @Min(1)
-  receiverId: number;
-  @ApiProperty()
-  @IsString()
-  @IsNotEmpty()
-  content: string;
+export class UpdateMessageDto extends PartialType(CreateMessageDto) {
+  // @ApiProperty()
+  // //   @IsOptional()
+  // @IsInt()
+  // @Min(1)
+  // chatId: number;
+  // @ApiProperty()
+  // @IsString()
+  // @IsNotEmpty()
+  // content: string;
 }

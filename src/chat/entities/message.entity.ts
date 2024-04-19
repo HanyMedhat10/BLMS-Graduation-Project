@@ -1,5 +1,12 @@
 import { User } from 'src/auth/entities/user.entity';
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryColumn,
+} from 'typeorm';
 import { Chat } from './chat.entity';
 import { MessageType } from './enum/type.message.enum';
 
@@ -16,7 +23,7 @@ export class Message {
   @Column({ default: false })
   isRead: boolean;
 
-  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  @CreateDateColumn()
   createdAt: Date;
 
   @Column({
@@ -24,15 +31,13 @@ export class Message {
     default: () => 'CURRENT_TIMESTAMP',
     onUpdate: 'CURRENT_TIMESTAMP',
   })
+  // @UpdateDateColumn()
   updatedAt: Date;
 
   @ManyToOne(() => User, (user) => user.sentMessages)
   @JoinColumn({ name: 'senderId' })
-  senderId: User;
+  sender: User;
 
-  @ManyToOne(() => User, (user) => user.receivedMessages)
-  @JoinColumn({ name: 'receiverId' })
-  receiverId: User;
   @ManyToOne(() => Chat, (chat) => chat.messages)
   @JoinColumn()
   chat: Chat;

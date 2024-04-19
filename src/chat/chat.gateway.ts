@@ -13,12 +13,17 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { UseGuards } from '@nestjs/common';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
-import { UpdateMessageDto } from './dto/update-message.dto';
+// import { UpdateMessageDto } from './dto/update-message.dto';
 @ApiTags('Chat Module')
-@WebSocketGateway()
+@WebSocketGateway({
+  // cors: {
+  //   origin: '*',
+  // },
+})
 export class ChatGateway {
   constructor(private readonly chatService: ChatService) {}
-  @WebSocketServer() server: Server;
+  @WebSocketServer()
+  server: Server;
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('createChat')
@@ -28,6 +33,21 @@ export class ChatGateway {
   ) {
     const chat = await this.chatService.create(createChatDto, currentUser);
     this.server.emit('createChat', chat);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @SubscribeMessage('createMessage')
+  async createMessage(
+    @MessageBody() createChatDto: CreateChatDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    const chat = await this.chatService.findOne(createChatDto.chatId);
+    const message = await this.chatService.createMessage(
+      createChatDto,
+      chat,
+      currentUser,
+    );
+    this.server.emit('createMessage', message);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
@@ -42,19 +62,19 @@ export class ChatGateway {
   async findOne(@MessageBody() id: number) {
     return await this.chatService.findOne(id);
   }
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @SubscribeMessage('updateMessage')
-  async updateMessage(
-    @MessageBody() updateChatDto: UpdateMessageDto,
-    @CurrentUser() currentUser: User,
-  ) {
-    const message = await this.chatService.updateMessage(
-      updateChatDto,
-      currentUser,
-    );
-    this.server.emit('updateMessage', message);
-  }
+  // @ApiBearerAuth()
+  // @UseGuards(JwtAuthGuard, RoleGuard)
+  // @SubscribeMessage('updateMessage')
+  // async updateMessage(
+  //   @MessageBody() updateChatDto: UpdateMessageDto,
+  //   @CurrentUser() currentUser: User,
+  // ) {
+  //   const message = await this.chatService.updateMessage(
+  //     updateChatDto,
+  //     currentUser,
+  //   );
+  //   this.server.emit('updateMessage', message);
+  // }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('removeChat')

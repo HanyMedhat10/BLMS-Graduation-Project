@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateChatDto } from './dto/create-chat.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
@@ -24,38 +28,27 @@ export class ChatService {
     if (createChatDto.chatId != null) {
       const chat = await this.findOne(createChatDto.chatId); //!!!!! change to
       if (chat) {
-        return await this.createMessage(
-          createChatDto,
-          chat,
-          receiverId,
-          currentUser,
-        );
+        return await this.createMessage(createChatDto, chat, currentUser);
       }
       throw new NotFoundException('Chat Not Found');
     }
     let chat = new Chat();
     chat.users = [currentUser, receiverId];
     chat = await this.chatRepository.save(chat);
-    return await this.createMessage(
-      createChatDto,
-      chat,
-      receiverId,
-      currentUser,
-    );
+    await this.createMessage(createChatDto, chat, currentUser);
+    return chat;
   }
 
   async createMessage(
     createChatDto: CreateChatDto,
     chat: Chat,
-    receiverId: User,
     currentUser: User,
   ) {
     const message = new Message();
     message.content = createChatDto.content;
     message.chat = chat;
-    message.receiverId = receiverId;
     // message.receiverId = createChatDto.receiverId;
-    message.senderId = currentUser;
+    message.sender = currentUser;
     return await this.messageRepository.save(message);
   }
 
@@ -70,12 +63,7 @@ export class ChatService {
           content: true,
           messageType: true,
           isRead: true,
-          senderId: {
-            id: true,
-            name: true,
-            email: true,
-          },
-          receiverId: {
+          sender: {
             id: true,
             name: true,
             email: true,
@@ -102,12 +90,7 @@ export class ChatService {
         messages: {
           id: true,
           content: true,
-          senderId: {
-            id: true,
-            name: true,
-            email: true,
-          },
-          receiverId: {
+          sender: {
             id: true,
             name: true,
             email: true,
@@ -123,11 +106,18 @@ export class ChatService {
     });
   }
 
-  async updateMessage(updateChatDto: UpdateMessageDto, currentUser: User) {
+  async updateMessage(
+    id: number,
+    updateChatDto: UpdateMessageDto,
+    currentUser: User,
+  ) {
+    // const Chat = await this.chatRepository.findOne({
+    //   where: { id: updateChatDto.chatId },
+    // });
     const message = await this.messageRepository.findOne({
-      where: { id: updateChatDto.id },
+      where: { id },
     });
-    if (currentUser.id == message.receiverId.id) throw new NotFoundException();
+    if (currentUser.id != message.sender.id) throw new UnauthorizedException();
     message.content = updateChatDto.content;
     return await this.messageRepository.save(message);
     // return `This action updates a #${id} chat`;
@@ -141,10 +131,7 @@ export class ChatService {
     const message = await this.messageRepository.findOne({
       where: { id },
     });
-    if (currentUser.id == message.receiverId.id)
-      throw new NotFoundException(
-        'You are not authorized to perform this action',
-      );
+    if (currentUser.id != message.sender.id) throw new UnauthorizedException();
     return await this.messageRepository.delete(id);
   }
 }

@@ -38,6 +38,6 @@ export class CreateHeadOfDepartmentDto {
   college: number;
   //   @IsPositive()
   @ApiProperty()
-  @IsNumber({}, { each: true })
+  @IsNumber({ maxDecimalPlaces: 0 }, { each: true })
   teachingCourses: number[];
 }

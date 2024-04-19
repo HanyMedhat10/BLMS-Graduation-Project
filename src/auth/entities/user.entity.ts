@@ -73,11 +73,8 @@ export class User {
   correctAssignments: SubmitAssignment[];
   @ManyToMany(() => Chat, (chat) => chat.users)
   chats: Chat[];
-  @OneToMany(() => Message, (message) => message.senderId)
+  @OneToMany(() => Message, (message) => message.sender)
   sentMessages: Message[];
-  @OneToMany(() => Message, (message) => message.receiverId)
-  receivedMessages: Message[];
-
   // if state Role is student
   @ManyToMany(() => Course, (course) => course.students, {
     cascade: true,
