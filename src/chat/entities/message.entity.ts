@@ -5,14 +5,14 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  PrimaryColumn,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Chat } from './chat.entity';
 import { MessageType } from './enum/type.message.enum';
 
 @Entity()
 export class Message {
-  @PrimaryColumn({ primary: false, unique: true })
+  @PrimaryGeneratedColumn()
   // @PrimaryColumn()
   id: number;
   @Column({ nullable: true })

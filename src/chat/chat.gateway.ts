@@ -8,13 +8,11 @@ import {
 import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { CreateChatDto } from './dto/create-chat.dto';
-import { RoleGuard } from 'src/auth/role/role.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from 'src/auth/jwt.guard';
-import { UseGuards } from '@nestjs/common';
-import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
 import { CurrentUserSocket } from 'src/utility/decorators/current-user-Socket.decorator';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateMessageDto } from './dto/update-message.dto';
 // import { UpdateMessageDto } from './dto/update-message.dto';
 @ApiTags('Chat')
 @WebSocketGateway({
@@ -28,82 +26,80 @@ export class ChatGateway {
   @WebSocketServer()
   server: Server;
   @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard, RoleGuard)
+  //
   @SubscribeMessage('createChat')
   async create(
     @MessageBody() createChatDto: CreateChatDto,
-    // @CurrentUser() currentUser: User,
+    // @CurrentUserSocket() currentUser: User,
     @ConnectedSocket() client: Socket,
     @CurrentUserSocket() currentUser: User,
   ) {
-    console.log('create Chat dto', createChatDto);
-    // console.log('current user', currentUser);
-    // console.log('client', client);
-    // console.log(client.request.headers.authorization);
-    console.log('test', currentUser);
-    // const chat = await this.chatService.create(createChatDto, currentUser);
-    // client.join(chat.id.toString());
-    // client.emit('createChat', chat);
+    console.log(currentUser);
+    const chat = await this.chatService.create(createChatDto, currentUser);
+    client.join(chat.id.toString());
+    client.emit('createChat', chat);
+    return chat;
   }
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  //
   @SubscribeMessage('createMessage')
   async createMessage(
-    @MessageBody() createChatDto: CreateChatDto,
+    @MessageBody() createMessage: CreateMessageDto,
     @ConnectedSocket() client: Socket,
-    @CurrentUser() currentUser: User,
+    @CurrentUserSocket() currentUser: User,
   ) {
-    const chat = await this.chatService.findOne(createChatDto.chatId);
+    const chat = await this.chatService.findOne(createMessage.chatId);
     const message = await this.chatService.createMessage(
-      createChatDto,
+      createMessage,
       chat,
       currentUser,
     );
     client.broadcast.to(chat.id.toString()).emit('createMessage', message);
   }
-  @UseGuards(JwtAuthGuard, RoleGuard)
+
   @SubscribeMessage('findAllChat')
-  async findAll(
+  async findAllToUser(
     @ConnectedSocket() client: Socket,
-    @CurrentUser() currentUser: User,
+    @CurrentUserSocket() currentUser: User,
   ) {
     const chats = await this.chatService.findAll(currentUser);
     client.emit('findAllChat', chats);
+    return chats;
   }
+
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('findOneChat')
-  async findOne(@MessageBody() id: number) {
-    return await this.chatService.findOne(id);
+  async findOne(@MessageBody() id: number, @ConnectedSocket() client: Socket) {
+    const chat = await this.chatService.findOne(id);
+    client.emit('findOneChat', chat);
   }
-  // @ApiBearerAuth()
-  // @UseGuards(JwtAuthGuard, RoleGuard)
-  // @SubscribeMessage('updateMessage')
-  // async updateMessage(
-  //   @MessageBody() updateChatDto: UpdateMessageDto,
-  //   @CurrentUser() currentUser: User,
-  // ) {
-  //   const message = await this.chatService.updateMessage(
-  //     updateChatDto,
-  //     currentUser,
-  //   );
-  //   this.server.emit('updateMessage', message);
-  // }
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
+  @SubscribeMessage('updateMessage')
+  async updateMessage(
+    @MessageBody() updateChatDto: UpdateMessageDto,
+    @CurrentUserSocket() currentUser: User,
+  ) {
+    const message = await this.chatService.updateMessage(
+      updateChatDto.messageId,
+      updateChatDto,
+      currentUser,
+    );
+    this.server.emit('updateMessage', message);
+    return message;
+  }
+  @ApiBearerAuth()
   @SubscribeMessage('removeChat')
   async remove(@MessageBody() id: number) {
     await this.chatService.remove(id);
     this.server.emit('removeChat', null);
   }
   @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
   @SubscribeMessage('removeMessage')
   async removeMessage(
     @MessageBody() id: number,
-    @CurrentUser() currentUser: User,
+    @CurrentUserSocket() currentUser: User,
   ) {
     await this.chatService.removeMessage(id, currentUser);
-    this.server.emit('removeMessage', null);
+    this.server.emit('removeMessage id:', id);
   }
   // @SubscribeMessage('message')
   // handleMessage(@MessageBody() data: any, client: any) {

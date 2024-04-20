@@ -12,7 +12,7 @@ import { User } from 'src/auth/entities/user.entity';
 export class Chat {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
+  @Column({ nullable: true })
   name: string;
   @Column({ default: false })
   isGroup: boolean;

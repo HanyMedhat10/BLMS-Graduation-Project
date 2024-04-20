@@ -47,6 +47,7 @@ export class ChatService {
   ) {
     const message = new Message();
     message.content = createMessageDto.content;
+    // console.log('after saving create message', message);
     message.chat = chat;
     // message.receiverId = createChatDto.receiverId;
     message.sender = currentUser;
