@@ -1,6 +1,7 @@
 import { Assignment } from 'src/assignment/entities/assignment.entity';
 import { User } from 'src/auth/entities/user.entity';
 import { Department } from 'src/department/entities/department.entity';
+import { Material } from 'src/material/entities/material.entity';
 import { Quiz } from 'src/quiz/entities/quiz.entity';
 import {
   Column,
@@ -27,4 +28,6 @@ export class Course {
   assignments: Assignment[];
   @OneToMany(() => Quiz, (quiz) => quiz.course)
   quizzes: Quiz[];
+  @OneToMany(() => Material, (material) => material.course)
+  materials: Material[];
 }
