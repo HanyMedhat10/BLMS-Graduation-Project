@@ -25,6 +25,7 @@ import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { diskStorage } from 'multer';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { MaterialType } from './entities/enum/material.enum';
 @ApiTags('Material Module')
 @Controller('material')
 export class MaterialController {
@@ -32,7 +33,7 @@ export class MaterialController {
   @ApiBearerAuth()
   @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Post('uploadFile/')
+  @Post('uploadDocs/')
   @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
@@ -72,7 +73,7 @@ export class MaterialController {
       },
     }),
   )
-  uploadFile(
+  uploadDocs(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
@@ -91,6 +92,71 @@ export class MaterialController {
     @CurrentUser() currentUser: User,
   ) {
     return this.materialService.uploadFile(file, title, +courseId, currentUser);
+  }
+  @ApiBearerAuth()
+  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('uploadVideo/')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'File', // Use 'File' for file uploads
+          format: '(mp4|webm)', // Specify video format
+        },
+        title: { type: 'string' },
+        courseId: { type: 'number' },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${file.originalname}-${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        const allowedMimeTypes = ['video/mp4', 'video/webm'];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Invalid file type'), false);
+        }
+      },
+    }),
+  )
+  uploadVideo(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 50000000 }), // 50000000*bytes
+          new FileTypeValidator({
+            // Corrected assignment for fileType
+            fileType: 'video/mp4|video/webm', // MP4 and webm formats, // MP4 and webm formats
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Body('title') title: string,
+    @Body('courseId') courseId: string,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.materialService.uploadFile(
+      file,
+      title,
+      +courseId,
+      currentUser,
+      MaterialType.Video,
+    );
   }
   @ApiBearerAuth()
   @Roles('admin', 'dr', 'teacher assist', 'head Of Department')

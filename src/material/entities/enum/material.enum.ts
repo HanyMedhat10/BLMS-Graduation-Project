@@ -1,5 +1,5 @@
 export enum MaterialType {
-  File = 'File',
+  Docs = 'Docs',
   Link = 'Link',
   Video = 'Video',
 }
