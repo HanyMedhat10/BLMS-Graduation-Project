@@ -1,61 +1,87 @@
-{/, GET} 
-{/auth, POST} 
-{/auth/login, POST} 
-{/auth/restPassword/:id, POST} 
-{/auth/changePassword, POST} 
-{/auth, GET} 
-{/auth/singleUser/:id, GET} 
-{/auth/:id, PATCH} 
-{/auth/:id, DELETE} 
-{/auth/profile, GET} 
-{/course, POST} 
-{/course, GET} 
-{/course/:id, GET} 
-{/course/:id, PATCH} 
-{/course/:id, DELETE} 
-{/department, POST} 
-{/department, GET} 
-{/department/:id, GET} 
-{/department/:id, PATCH} 
-{/department/:id, DELETE} 
-{/college, POST} 
-{/college, GET} 
-{/college/:id, GET} 
-{/college/:id, PATCH} 
-{/college/:id, DELETE} 
-{/student, POST} 
-{/student/addCourse/:id, POST} 
-{/student, GET} 
-{/student/:id, GET} 
-{/student/:id, PATCH} 
-{/student/:id, DELETE} 
-{/student/deleteCourse/:id, DELETE} 
-{/teacherassist, POST} 
-{/teacherassist/addStudyCourse/:id, POST} 
-{/teacherassist/addTeachingCourse/:id, POST} 
-{/teacherassist, GET} 
-{/teacherassist/:id, GET} 
-{/teacherassist/:id, PATCH} 
-{/teacherassist/:id, DELETE} 
-{/teacherassist/deleteStudyCourse/:id, DELETE} 
-{/teacherassist/deleteTeachingCourse/:id, DELETE} 
-{/doctor, POST} 
-{/doctor/addTeachingCourse/:id, POST} 
-{/doctor, GET} 
-{/doctor/:id, GET} 
-{/doctor/:id, PATCH} 
-{/doctor/:id, DELETE} 
-{/doctor/deleteTeachingCourse/:id, DELETE} 
-{/head-of-department, POST} 
-{/head-of-department/addTeachingCourse/:id, POST} 
-{/head-of-department, GET} 
-{/head-of-department/:id, GET} 
-{/head-of-department/:id, PATCH} 
-{/head-of-department/:id, DELETE} 
-{/head-of-department/deleteTeachingCourse/:id, DELETE} 
-{/clerk, POST} 
-{/clerk, GET} 
-{/clerk/:id, GET} 
-{/clerk/:id, PATCH} 
-{/clerk/:id, DELETE} 
+ChatGateway subscribed to the "createChat" 
+ ChatGateway subscribed to the "createMessage" 
+ ChatGateway subscribed to the "findAllChat" 
+ ChatGateway subscribed to the "findOneChat" 
+ ChatGateway subscribed to the "updateMessage" 
+ ChatGateway subscribed to the "removeChat" 
+ ChatGateway subscribed to the "removeMessage" 
+{/, GET} route +2ms
+{/auth, POST} route +2ms
+{/auth/login, POST} route +0ms
+{/auth/restPassword/:id, POST} route +1ms
+{/auth/changePassword, POST} route +1ms
+{/auth, GET} route +0ms
+{/auth/singleUser/:id, GET} route +1ms
+{/auth/:id, PATCH} route +1ms
+{/auth/:id, DELETE} route +0ms
+{/auth/profile, GET} route +1ms
+{/course, POST} route +2ms
+{/course, GET} route +1ms
+{/course/:id, GET} route +1ms
+{/course/participants/:id, GET} route +1ms
+{/course/findNameParticipants/:id, GET} route +0ms
+{/course/allStaff/:id, GET} route +1ms
+{/course/searchByRole/:id, GET} route +0ms
+{/course/:id, PATCH} route +0ms
+{/course/:id, DELETE} route +1ms
+{/department, POST} route +0ms
+{/department, GET} route +4ms
+{/department/:id, GET} route +2ms
+{/department/:id, PATCH} route +1ms
+{/department/:id, DELETE} route +0ms
+{/college, POST} route +1ms
+{/college, GET} route +2ms
+{/college/:id, GET} route +1ms
+{/college/:id, PATCH} route +1ms
+{/college/:id, DELETE} route +0ms
+{/student, POST} route +1ms
+{/student/addStudyCourse/:id, POST} route +1ms
+{/student, GET} route +1ms
+{/student/:id, GET} route +0ms
+{/student/:id, PATCH} route +0ms
+{/student/:id, DELETE} route +1ms
+{/student/deleteCourse/:id, DELETE} route +0ms
+{/teacherassist, POST} route +1ms
+{/teacherassist/addTeachingCourse/:id, POST} route +0ms
+{/teacherassist, GET} route +1ms
+{/teacherassist/:id, GET} route +1ms
+{/teacherassist/:id, PATCH} route +1ms
+{/teacherassist/:id, DELETE} route +1ms
+{/teacherassist/deleteTeachingCourse/:id, DELETE} route +1ms
+{/doctor, POST} route +0ms
+{/doctor/addTeachingCourse/:id, POST} route +1ms
+{/doctor, GET} route +0ms
+{/doctor/:id, GET} route +1ms
+{/doctor/:id, PATCH} route +0ms
+{/doctor/:id, DELETE} route +1ms
+{/doctor/deleteTeachingCourse/:id, DELETE} route +0ms
+{/head-of-department, POST} route +1ms
+{/head-of-department/addTeachingCourse/:id, POST} route +0ms
+{/head-of-department, GET} route +1ms
+{/head-of-department/:id, GET} route +0ms
+{/head-of-department/:id, PATCH} route +0ms
+{/head-of-department/:id, DELETE} route +1ms
+{/head-of-department/deleteTeachingCourse/:id, DELETE} route +0ms
+{/clerk, POST} route +0ms
+{/clerk, GET} route +0ms
+{/clerk/:id, GET} route +1ms
+{/clerk/:id, PATCH} route +0ms
+{/clerk/:id, DELETE} route +0ms
+{/assignment, POST} route +0ms
+{/assignment, GET} route +1ms
+{/assignment/:id, GET} route +0ms
+{/assignment/:id, PATCH} route +1ms
+{/assignment/:id, DELETE} route +0ms
+{/submit-assignment, POST} route +1ms
+{/submit-assignment, GET} route +0ms
+{/submit-assignment/:id, GET} route +0ms
+{/submit-assignment/correctionAssignment/:id, POST} route +1ms
+{/submit-assignment/:id, DELETE} route +0ms
+{/chat/createChat, POST} route +1ms
+{/chat/createMessage, POST} route +0ms
+{/chat/findAllChat, GET} route +0ms
+{/chat/findOneChat/:id, GET} route +1ms
+{/chat/updateMessage/:id, PATCH} route +0ms
+{/chat/removeChat/:id, DELETE} route +0ms
+{/chat/removeMessage/:id, DELETE} route +1ms
 https://blms-api.up.railway.app
