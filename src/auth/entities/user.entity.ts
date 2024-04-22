@@ -21,6 +21,7 @@ import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignme
 import { Chat } from 'src/chat/entities/chat.entity';
 import { Message } from 'src/chat/entities/message.entity';
 import { Quiz } from 'src/quiz/entities/quiz.entity';
+import { Material } from 'src/material/entities/material.entity';
 
 @Entity()
 export class User {
@@ -86,4 +87,6 @@ export class User {
   submits: SubmitAssignment[];
   @OneToMany(() => Quiz, (quiz) => quiz.createBy)
   createQuizzes: Quiz[];
+  @OneToMany(() => Material, (material) => material.createBy)
+  uploadMaterials: Material[];
 }

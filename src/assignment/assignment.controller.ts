@@ -1,18 +1,3 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseInterceptors,
-  UploadedFile,
-  ParseFilePipe,
-  MaxFileSizeValidator,
-  FileTypeValidator,
-  UseGuards,
-} from '@nestjs/common';
 import { CreateAssignmentDto } from './dto/create-assignment.dto';
 import { UpdateAssignmentDto } from './dto/update-assignment.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
@@ -25,6 +10,21 @@ import { User } from 'src/auth/entities/user.entity';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
+import {
+  Body,
+  Controller,
+  Delete,
+  FileTypeValidator,
+  Get,
+  MaxFileSizeValidator,
+  Param,
+  ParseFilePipe,
+  Patch,
+  Post,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
 @ApiTags('Assignment Module')
 @Controller('assignment')
 export class AssignmentController {
@@ -40,7 +40,7 @@ export class AssignmentController {
       properties: {
         file: {
           type: 'File', // Use 'File' for file uploads
-          format: 'pdf', // Specify PDF format
+          format: '(pdf|docx)', // Specify PDF or word format
         },
         title: { type: 'string' },
         deadLine: { type: 'date', format: 'Date' },
@@ -60,17 +60,17 @@ export class AssignmentController {
           callback(null, filename);
         },
       }),
-      // fileFilter: (req, file, callback) => {
-      //   const allowedMimeTypes = [
-      //     'application/pdf',
-      //     'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // Corrected DOCX MIME type
-      //   ];
-      //   if (allowedMimeTypes.includes(file.mimetype)) {
-      //     callback(null, true);
-      //   } else {
-      //     callback(new Error('Invalid file type'), false);
-      //   }
-      // },
+      fileFilter: (req, file, callback) => {
+        const allowedMimeTypes = [
+          'application/pdf',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // Corrected DOCX MIME type
+        ];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Invalid file type'), false);
+        }
+      },
     }),
   )
   // handleMultiPartData(@Body() createAssignmentDto: CreateAssignmentDto)
@@ -81,7 +81,9 @@ export class AssignmentController {
         validators: [
           new MaxFileSizeValidator({ maxSize: 10000000 }), // 10000000*bytes
           new FileTypeValidator({
-            fileType: 'application/pdf',
+            // Corrected assignment for fileType
+            fileType:
+              'application/pdf|application/vnd.openxmlformats-officedocument.wordprocessingml.document', // PDF and word formats, // PDF and word formats
           }),
         ],
       }),
@@ -136,17 +138,17 @@ export class AssignmentController {
           callback(null, filename);
         },
       }),
-      // fileFilter: (req, file, callback) => {
-      //   const allowedMimeTypes = [
-      //     'application/pdf',
-      //     'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // Corrected DOCX MIME type
-      //   ];
-      //   if (allowedMimeTypes.includes(file.mimetype)) {
-      //     callback(null, true);
-      //   } else {
-      //     callback(new Error('Invalid file type'), false);
-      //   }
-      // },
+      fileFilter: (req, file, callback) => {
+        const allowedMimeTypes = [
+          'application/pdf',
+          'application/vnd.openxmlformats-officedocument.wordprocessingml.document', // Corrected DOCX MIME type
+        ];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Invalid file type'), false);
+        }
+      },
     }),
   )
   update(
