@@ -8,6 +8,11 @@ import {
   Delete,
   UseGuards,
   Patch,
+  UploadedFile,
+  UseInterceptors,
+  ParseFilePipe,
+  MaxFileSizeValidator,
+  FileTypeValidator,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -18,7 +23,10 @@ import { JwtAuthGuard } from './jwt.guard';
 import { RoleGuard } from './role/role.guard';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import { extname } from 'path';
+import { diskStorage } from 'multer';
+import { FileInterceptor } from '@nestjs/platform-express/multer';
 @ApiTags('Auth Module')
 @Controller('auth')
 export class AuthController {
@@ -87,5 +95,58 @@ export class AuthController {
   @Get('profile')
   async profile(@CurrentUser() currentUser: User) {
     return await this.authService.profile(currentUser);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('ChangeProfileImage')
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        file: {
+          type: 'File', // Use 'File' for file uploads
+          format: '(jpeg|png)', // Specify Image format
+        },
+      },
+    },
+  })
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './files',
+        filename: (req, file, callback) => {
+          const uniqueSuffix =
+            Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          const filename = `${file.originalname}-${uniqueSuffix}${ext}`;
+          callback(null, filename);
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        const allowedMimeTypes = ['image/jpeg', 'image/png'];
+        if (allowedMimeTypes.includes(file.mimetype)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Invalid file type'), false);
+        }
+      },
+    }),
+  )
+  changeProfileImage(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 2000 }), // 2000*bytes
+          new FileTypeValidator({
+            fileType: 'image/jpeg|image/png', // jpeg and png formats, // jpeg and png formats
+          }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.authService.changeProfileImage(file, currentUser);
   }
 }

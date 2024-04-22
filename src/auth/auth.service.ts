@@ -10,6 +10,7 @@ import { User } from './entities/user.entity';
 import { DeleteResult, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import * as fs from 'fs';
 import { sign } from 'jsonwebtoken';
 import { UserLoginDto } from './dto/user-login.dto';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
@@ -497,5 +498,19 @@ export class AuthService {
         throw new NotFoundException('the User not found ');
         break;
     }
+  }
+  async changeProfileImage(file: Express.Multer.File, currentUser: User) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+    });
+    if (user.profileImage != null) {
+      try {
+        fs.unlinkSync(user.profileImage);
+      } catch (error) {
+        new BadRequestException('Error deleting file');
+      }
+    }
+    user.profileImage = file.path;
+    return this.userRepository.save(user);
   }
 }

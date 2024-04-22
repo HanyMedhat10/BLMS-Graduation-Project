@@ -33,6 +33,8 @@ export class User {
   email: string;
   @Column({ select: false })
   password: string;
+  @Column({ nullable: true })
+  profileImage: string;
   @ManyToOne(() => User)
   @JoinColumn()
   addedBy: User;
