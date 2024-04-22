@@ -1,12 +1,16 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateMaterialDto } from './dto/create-material.dto';
 import { UpdateMaterialDto } from './dto/update-material.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Material } from './entities/material.entity';
 import { User } from 'src/auth/entities/user.entity';
 import { MaterialType } from './entities/enum/material.enum';
 import * as fs from 'fs';
+import { Material } from 'src/material/entities/material.entity';
 @Injectable()
 export class MaterialService {
   constructor(
@@ -44,8 +48,22 @@ export class MaterialService {
     return await this.materialRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateMaterialDto: UpdateMaterialDto) {
-    return `This action updates a #${id} material`;
+  async update(id: number, updateMaterialDto: UpdateMaterialDto) {
+    let material = await this.findOne(id);
+    switch (material.materialType) {
+      case MaterialType.Docs:
+      case MaterialType.Video:
+        if (updateMaterialDto.path != null) {
+          throw new BadRequestException('do not update path for docs or video');
+        }
+        material = Object.assign(material, updateMaterialDto);
+        return material;
+      case MaterialType.Link:
+        material = Object.assign(material, updateMaterialDto);
+        return material;
+      default:
+        throw new NotFoundException('the material not found');
+    }
   }
 
   async remove(id: number) {
@@ -61,6 +79,9 @@ export class MaterialService {
         break;
       case MaterialType.Link:
         await this.materialRepository.remove(material);
+        break;
+      default:
+        throw new NotFoundException('the material not found');
     }
     return `This action removes a #${id} material`;
   }
