@@ -20,6 +20,7 @@ import { MulterModule } from '@nestjs/platform-express';
 import { SubmitAssignmentModule } from './submit-assignment/submit-assignment.module';
 import { ChatModule } from './chat/chat.module';
 import { QuizModule } from './quiz/quiz.module';
+import { MaterialModule } from './material/material.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -49,6 +50,7 @@ import { QuizModule } from './quiz/quiz.module';
     SubmitAssignmentModule,
     ChatModule,
     QuizModule,
+    MaterialModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
