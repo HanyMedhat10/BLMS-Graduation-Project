@@ -168,16 +168,21 @@ export class MaterialController {
   ) {
     return this.materialService.addLink(createMaterialDto, currentUser);
   }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   findAll() {
     return this.materialService.findAll();
   }
-
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.materialService.findOne(+id);
   }
-
+  @ApiBearerAuth()
+  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(
     @Param('id') id: string,
@@ -185,7 +190,9 @@ export class MaterialController {
   ) {
     return this.materialService.update(+id, updateMaterialDto);
   }
-
+  @ApiBearerAuth()
+  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.materialService.remove(+id);

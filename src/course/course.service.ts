@@ -26,7 +26,7 @@ export class CourseService {
 
   async findAll() {
     return await this.courseRepository.find({
-      relations: { department: true, assignments: true },
+      relations: { department: true, assignments: true, materials: true },
     });
   }
   async findAllParticipants(id: number): Promise<Course[]> {
@@ -73,7 +73,7 @@ export class CourseService {
   async findOne(id: number) {
     return await this.courseRepository.findOne({
       where: { id },
-      relations: { department: true, assignments: true },
+      relations: { department: true, assignments: true, materials: true },
     });
   }
 
