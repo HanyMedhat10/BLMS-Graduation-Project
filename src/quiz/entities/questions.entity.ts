@@ -1,5 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { QuestionsType } from './enum/questions-type.enum';
+import { Choice } from './choice.entity';
 
 @Entity()
 export class Questions {
@@ -11,5 +12,6 @@ export class Questions {
   answer: string;
   @Column({ type: 'enum', enum: QuestionsType })
   questionType: QuestionsType;
-  //   con;
+  @OneToMany(() => Choice, (choice) => choice.question)
+  choice: Choice[];
 }

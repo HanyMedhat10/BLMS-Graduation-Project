@@ -12,6 +12,7 @@ import { MessageType } from './enum/type.message.enum';
 
 @Entity()
 export class Message {
+  // @Column({ type: 'integer', unsigned: true, generated: 'increment' })
   @PrimaryGeneratedColumn()
   // @PrimaryColumn()
   id: number;
