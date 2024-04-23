@@ -73,6 +73,16 @@ export class AuthController {
     return this.authService.findOne(+id);
   }
   @ApiBearerAuth()
+  @Get('getAnyUser/:id')
+  anyUser(@Param('id') id: string) {
+    return this.authService.anyUser(+id);
+  }
+  @ApiBearerAuth()
+  @Get('allAnyUser/')
+  allAnyUser() {
+    return this.authService.allAnyUser();
+  }
+  @ApiBearerAuth()
   @Roles('admin')
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')

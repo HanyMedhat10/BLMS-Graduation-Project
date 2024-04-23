@@ -250,9 +250,6 @@ export class AuthService {
       delete user.password;
       return user;
     }
-    throw new NotFoundException(
-      'student Type is Under Graduate you must entry classes data or student type is postGraduate you must entry degree program',
-    );
   }
   async login(userLoginDto: UserLoginDto) {
     // const userExists = await this.findUserByEmail(userLoginDto.email);
@@ -321,7 +318,12 @@ export class AuthService {
     if (!user) throw new NotFoundException('User not found.');
     return user;
   }
-
+  anyUser(id: number) {
+    return this.userRepository.findOne({ where: { id } });
+  }
+  allAnyUser() {
+    return this.userRepository.find();
+  }
   async update(
     id: number,
     updateAuthDto: UpdateAdminDto,
@@ -496,7 +498,6 @@ export class AuthService {
         });
       default:
         throw new NotFoundException('the User not found ');
-        break;
     }
   }
   async changeProfileImage(file: Express.Multer.File, currentUser: User) {
