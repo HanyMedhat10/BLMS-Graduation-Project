@@ -1,6 +1,14 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  JoinColumn,
+} from 'typeorm';
 import { QuestionsType } from './enum/questions-type.enum';
-import { Choice } from './choice.entity';
+import { Options } from './choice.entity';
+import { Quiz } from './quiz.entity';
 
 @Entity()
 export class Questions {
@@ -8,10 +16,13 @@ export class Questions {
   id: number;
   @Column()
   question: string;
-  @Column()
+  @Column({ nullable: true })
   answer: string;
   @Column({ type: 'enum', enum: QuestionsType })
   questionType: QuestionsType;
-  @OneToMany(() => Choice, (choice) => choice.question, { cascade: true })
-  choice: Choice[];
+  @ManyToOne(() => Quiz, (quiz) => quiz.questions)
+  @JoinColumn()
+  quiz: Quiz;
+  @OneToMany(() => Options, (options) => options.question, { cascade: true })
+  options: Options[];
 }

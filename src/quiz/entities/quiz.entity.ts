@@ -6,8 +6,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Questions } from './questions.entity';
 
 @Entity('quiz')
 export class Quiz {
@@ -29,4 +31,8 @@ export class Quiz {
   @ManyToOne(() => User, (user) => user.createQuizzes)
   @JoinColumn()
   createBy: User;
+  @OneToMany(() => Questions, (questions) => questions.quiz, {
+    cascade: true,
+  })
+  questions: Questions[];
 }
