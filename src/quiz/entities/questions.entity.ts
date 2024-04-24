@@ -12,6 +12,6 @@ export class Questions {
   answer: string;
   @Column({ type: 'enum', enum: QuestionsType })
   questionType: QuestionsType;
-  @OneToMany(() => Choice, (choice) => choice.question)
+  @OneToMany(() => Choice, (choice) => choice.question, { cascade: true })
   choice: Choice[];
 }

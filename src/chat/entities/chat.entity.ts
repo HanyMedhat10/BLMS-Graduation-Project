@@ -16,7 +16,7 @@ export class Chat {
   name: string;
   @Column({ default: false })
   isGroup: boolean;
-  @OneToMany(() => Message, (message) => message.chat)
+  @OneToMany(() => Message, (message) => message.chat, { cascade: true })
   messages: Message[];
   @ManyToMany(() => User, (user) => user.chats)
   @JoinTable({ name: 'user_chat' })
