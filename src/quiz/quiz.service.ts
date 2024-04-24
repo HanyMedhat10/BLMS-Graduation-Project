@@ -49,19 +49,86 @@ export class QuizService {
     return question;
   }
   async findOneQuiz(id: number) {
-    return await this.quizRepository.findOne({ where: { id } });
+    return await this.quizRepository.findOne({
+      where: { id },
+      relations: {
+        questions: {
+          choices: true,
+        },
+      },
+      select: {
+        questions: {
+          id: true,
+          question: true,
+          answer: false,
+          degree: true,
+          questionType: true,
+          choices: {
+            id: true,
+            option: true,
+          },
+        },
+      },
+    });
+  }
+  async findAllQuiz() {
+    return await this.quizRepository.findOne({
+      relations: {
+        questions: {
+          choices: true,
+        },
+      },
+      select: {
+        questions: {
+          id: true,
+          question: true,
+          answer: false,
+          degree: true,
+          questionType: true,
+          choices: {
+            id: true,
+            option: true,
+          },
+        },
+      },
+    });
   }
 
   async findAll() {
-    return await this.questionsRepository.find();
+    return await this.questionsRepository.find({
+      relations: {
+        quiz: true,
+        choices: true,
+      },
+      select: {
+        id: true,
+        question: true,
+        answer: false,
+        degree: true,
+        questionType: true,
+        quiz: {
+          id: true,
+          title: true,
+        },
+        choices: {
+          id: true,
+          option: true,
+        },
+      },
+    });
   }
 
   async findOne(id: number) {
     return await this.questionsRepository.findOne({ where: { id } });
   }
 
-  update(id: number, updateQuizDto: UpdateQuizDto) {
-    return `This action updates a #${id} quiz`;
+  async updateQuiz(id: number, updateQuizDto: UpdateQuizDto) {
+    let quiz = await this.findOneQuiz(id);
+    if (!quiz) {
+      throw new NotFoundException('quiz not found');
+    }
+    quiz = Object.assign(quiz, updateQuizDto);
+    return await this.quizRepository.save(quiz);
   }
 
   async remove(id: number) {

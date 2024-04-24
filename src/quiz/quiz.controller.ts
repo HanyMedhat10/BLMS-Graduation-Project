@@ -51,7 +51,7 @@ export class QuizController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateQuizDto: UpdateQuizDto) {
-    return this.quizService.update(+id, updateQuizDto);
+    return this.quizService.updateQuiz(+id, updateQuizDto);
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
