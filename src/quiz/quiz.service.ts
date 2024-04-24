@@ -52,19 +52,19 @@ export class QuizService {
     return await this.quizRepository.findOne({ where: { id } });
   }
 
-  findAll() {
-    return `This action returns all quiz`;
+  async findAll() {
+    return await this.questionsRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} quiz`;
+  async findOne(id: number) {
+    return await this.questionsRepository.findOne({ where: { id } });
   }
 
   update(id: number, updateQuizDto: UpdateQuizDto) {
     return `This action updates a #${id} quiz`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} quiz`;
+  async remove(id: number) {
+    return await this.questionsRepository.delete(id);
   }
 }
