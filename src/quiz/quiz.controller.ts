@@ -16,6 +16,8 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { Role } from 'src/auth/entities/enum/user.enum';
+import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
+import { User } from 'src/auth/entities/user.entity';
 @ApiTags('Quiz Module')
 @Controller('quiz')
 export class QuizController {
@@ -24,8 +26,11 @@ export class QuizController {
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
-  create(@Body() createQuizDto: CreateQuizDto) {
-    return this.quizService.create(createQuizDto);
+  create(
+    @Body() createQuizDto: CreateQuizDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.quizService.createQuiz(createQuizDto, currentUser);
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)

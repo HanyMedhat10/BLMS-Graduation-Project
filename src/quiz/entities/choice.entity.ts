@@ -1,13 +1,19 @@
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Questions } from './questions.entity';
 
 @Entity()
-export class Options {
-  @Column({ type: 'integer', unsigned: true, generated: 'increment' })
+export class Choice {
+  @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  options: string;
-  @ManyToOne(() => Questions, (questions) => questions.options)
+  option: string;
+  @ManyToOne(() => Questions, (questions) => questions.choices)
   @JoinColumn({ name: 'question_id' })
   question: Questions;
 }
