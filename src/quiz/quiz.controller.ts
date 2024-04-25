@@ -18,6 +18,8 @@ import { Roles } from 'src/auth/roles/roles.decorator';
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { CreateQuestionDto } from './dto/create-question.dto';
+import { UpdateQuestionDto } from './dto/update-question.dto';
 @ApiTags('Quiz Module')
 @Controller('quiz')
 export class QuizController {
@@ -35,29 +37,64 @@ export class QuizController {
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
+  @Post('question')
+  createQuestion(@Body() createQuestionDto: CreateQuestionDto) {
+    return this.quizService.createQuestion(createQuestionDto);
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   findAll() {
-    return this.quizService.findAll();
+    return this.quizService.findAllQuiz();
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('questions')
+  findAllQuestion() {
+    return this.quizService.findAllQuestion();
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.quizService.findOne(+id);
+    return this.quizService.findOneQuiz(+id);
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('questions/:id')
+  findOneQuestion(@Param('id') id: string) {
+    return this.quizService.findOneQuestion(+id);
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateQuizDto: UpdateQuizDto) {
+  updateQuiz(@Param('id') id: string, @Body() updateQuizDto: UpdateQuizDto) {
     return this.quizService.updateQuiz(+id, updateQuizDto);
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
+  @Patch('question/:id')
+  update(@Param('id') id: string, @Body() updateQuizDto: UpdateQuestionDto) {
+    return this.quizService.updateQuestion(+id, updateQuizDto);
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.quizService.remove(+id);
+  removeQuiz(@Param('id') id: string) {
+    return this.quizService.removeQuiz(+id);
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Delete('question/:id')
+  removeQuestion(@Param('id') id: string) {
+    return this.quizService.removeQuestion(+id);
   }
 }
