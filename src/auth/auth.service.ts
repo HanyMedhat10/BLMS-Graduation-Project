@@ -464,6 +464,7 @@ export class AuthService {
           // select: { password: false },
           relations: {
             // student: { courses: true },
+            courses: true,
             addedBy: true,
             college: true,
           },

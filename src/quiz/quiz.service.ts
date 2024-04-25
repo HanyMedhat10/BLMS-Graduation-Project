@@ -177,6 +177,23 @@ export class QuizService {
         return await this.choiceRepository.delete(choice.id);
       });
     }
+    if (
+      question.questionType == updateQuestionDto.questionType &&
+      question.questionType != QuestionsType.SHORT_ANSWER
+    ) {
+      question.choices = question.choices.filter(async (choice) => {
+        return await this.choiceRepository.delete(choice.id);
+      });
+      const choices = updateQuestionDto.choice.map(async (choice) => {
+        const choiceObject = new Choice();
+        choiceObject.option = choice;
+        choiceObject.question = question;
+        return await this.choiceRepository.save(choiceObject);
+      });
+      await Promise.all(choices).then((choices) => {
+        question.choices = choices;
+      });
+    }
     question = Object.assign(question, updateQuestionDto);
     return await this.questionsRepository.save(question);
   }
