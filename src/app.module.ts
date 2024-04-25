@@ -21,6 +21,7 @@ import { SubmitAssignmentModule } from './submit-assignment/submit-assignment.mo
 import { ChatModule } from './chat/chat.module';
 import { QuizModule } from './quiz/quiz.module';
 import { MaterialModule } from './material/material.module';
+import { SubmitQuizModule } from './submit-quiz/submit-quiz.module';
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -51,6 +52,7 @@ import { MaterialModule } from './material/material.module';
     ChatModule,
     QuizModule,
     MaterialModule,
+    SubmitQuizModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
