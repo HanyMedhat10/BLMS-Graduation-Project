@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSubmitQuizDto } from './dto/create-submit-quiz.dto';
-import { UpdateSubmitQuizDto } from './dto/update-submit-quiz.dto';
 import { User } from 'src/auth/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SubmitQuiz } from './entities/submit-quiz.entity';
@@ -68,11 +67,38 @@ export class SubmitQuizService {
     return `This action returns a #${id} submitQuiz`;
   }
 
-  update(id: number, updateSubmitQuizDto: UpdateSubmitQuizDto) {
-    return `This action updates a #${id} submitQuiz`;
+  async correctionAutomaticSubmitQuiz(id: number) {
+    const submitQuiz = await this.submitQuizRepository.findOne({
+      where: { id },
+    });
+    let sumDegree = 0;
+    await Promise.all(
+      submitQuiz.submitQuestions.map(async (submitQuestion) => {
+        if (submitQuestion.answer == submitQuestion.question.answer) {
+          const question = await this.questionRepository.findOne({
+            where: { id: submitQuestion.question.id },
+            select: ['degree'],
+          });
+          sumDegree += question?.degree;
+          submitQuestion.degree = question?.degree || 0;
+        } else {
+          submitQuestion.degree = 0;
+        }
+      }),
+    );
+    submitQuiz.degree = sumDegree;
+    return await this.submitQuizRepository.save(submitQuiz);
+  }
+  async correctionQuestion(id: number, degree: number, currentUser: User) {
+    const submitQuestion = await this.submitQuestionRepository.findOne({
+      where: { id },
+    });
+    submitQuestion.degree = degree;
+    submitQuestion.submitQuiz.correctBy = currentUser;
+    return await this.submitQuestionRepository.save(submitQuestion);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} submitQuiz`;
+  async remove(id: number) {
+    return await this.submitQuizRepository.delete(id);
   }
 }

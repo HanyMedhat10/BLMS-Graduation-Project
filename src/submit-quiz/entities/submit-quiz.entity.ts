@@ -32,7 +32,8 @@ export class SubmitQuiz {
     () => SubmitQuestion,
     (submitQuestion) => submitQuestion.submitQuiz,
     {
-      cascade: true,}
+      cascade: true,
+    },
   )
   submitQuestions: SubmitQuestion[];
 }
