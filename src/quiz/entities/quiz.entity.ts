@@ -36,6 +36,8 @@ export class Quiz {
     cascade: true,
   })
   questions: Questions[];
-  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.quiz)
+  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.quiz, {
+    cascade: true,
+  })
   submits: SubmitQuiz[];
 }

@@ -15,8 +15,6 @@ import { SubmitQuestion } from './submit-question.entity';
 export class SubmitQuiz {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column()
-  answer: string;
   @Column({ nullable: true })
   degree: number;
   @CreateDateColumn()
@@ -33,6 +31,8 @@ export class SubmitQuiz {
   @OneToMany(
     () => SubmitQuestion,
     (submitQuestion) => submitQuestion.submitQuiz,
+    {
+      cascade: true,}
   )
   submitQuestions: SubmitQuestion[];
 }

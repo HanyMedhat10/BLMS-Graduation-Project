@@ -2,18 +2,69 @@ import { Injectable } from '@nestjs/common';
 import { CreateSubmitQuizDto } from './dto/create-submit-quiz.dto';
 import { UpdateSubmitQuizDto } from './dto/update-submit-quiz.dto';
 import { User } from 'src/auth/entities/user.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { SubmitQuiz } from './entities/submit-quiz.entity';
+import { Repository } from 'typeorm';
+import { SubmitQuestion } from './entities/submit-question.entity';
+import { Quiz } from 'src/quiz/entities/quiz.entity';
+import { Questions } from 'src/quiz/entities/questions.entity';
 
 @Injectable()
 export class SubmitQuizService {
-  create(createSubmitQuizDto: CreateSubmitQuizDto, currentUser: User) {
-    return 'This action adds a new submitQuiz';
+  constructor(
+    @InjectRepository(SubmitQuiz)
+    private readonly submitQuizRepository: Repository<SubmitQuiz>,
+    @InjectRepository(Quiz)
+    private readonly quizRepository: Repository<Quiz>,
+    @InjectRepository(SubmitQuestion)
+    private readonly submitQuestionRepository: Repository<SubmitQuestion>,
+    @InjectRepository(Questions)
+    private readonly questionRepository: Repository<Questions>,
+  ) {}
+  async create(createSubmitQuizDto: CreateSubmitQuizDto, currentUser: User) {
+    const quiz = await this.quizRepository.findOneBy({
+      id: createSubmitQuizDto.quizId,
+    });
+    const submitQuiz = this.submitQuizRepository.create({
+      quiz: quiz,
+      solver: currentUser,
+    });
+    await Promise.all(
+      createSubmitQuizDto.questionId.map(async (questionId) => {
+        await this.submitQuestionRepository.create({
+          answer: createSubmitQuizDto.answer[questionId],
+          submitQuiz: submitQuiz,
+          question: await this.questionRepository.findOne({
+            where: { id: questionId },
+          }),
+          // The above line is equivalent to the following one:
+          // question: await this.questionRepository.findOneOrFail({ id: questionId }),
+        });
+      }),
+    );
+    return submitQuiz;
   }
 
-  findAll() {
-    return `This action returns all submitQuiz`;
+  async findAll() {
+    return await this.submitQuizRepository.find({
+      relations: {
+        quiz: true,
+        solver: true,
+      },
+    });
   }
 
-  findOne(id: number) {
+  async findOne(id: number) {
+    return await this.submitQuizRepository.findOne({
+      where: { id },
+      relations: {
+        quiz: true,
+        solver: true,
+        submitQuestions: {
+          question: true,
+        },
+      },
+    });
     return `This action returns a #${id} submitQuiz`;
   }
 
