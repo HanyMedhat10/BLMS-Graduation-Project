@@ -147,7 +147,7 @@ export class AuthController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 2000000 }), // 2000*bytes
+          new MaxFileSizeValidator({ maxSize: 5000000 }), // 5000000*bytes
           new FileTypeValidator({
             fileType: 'image/jpeg|image/png', // jpeg and png formats,
           }),

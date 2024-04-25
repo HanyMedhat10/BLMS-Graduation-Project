@@ -22,6 +22,7 @@ import { Chat } from 'src/chat/entities/chat.entity';
 import { Message } from 'src/chat/entities/message.entity';
 import { Quiz } from 'src/quiz/entities/quiz.entity';
 import { Material } from 'src/material/entities/material.entity';
+import { SubmitQuiz } from 'src/submit-quiz/entities/submit-quiz.entity';
 
 @Entity()
 export class User {
@@ -91,4 +92,10 @@ export class User {
   createQuizzes: Quiz[];
   @OneToMany(() => Material, (material) => material.createBy)
   uploadMaterials: Material[];
+  // if state Quiz staff
+  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.correctBy)
+  correctQuiz: SubmitQuiz[];
+  // if state Quiz student
+  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.solver)
+  submitQuizzes: SubmitQuiz[];
 }

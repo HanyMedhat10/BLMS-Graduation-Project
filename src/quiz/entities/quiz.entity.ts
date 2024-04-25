@@ -10,6 +10,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Questions } from './questions.entity';
+import { SubmitQuiz } from 'src/submit-quiz/entities/submit-quiz.entity';
 
 @Entity('quiz')
 export class Quiz {
@@ -35,4 +36,6 @@ export class Quiz {
     cascade: true,
   })
   questions: Questions[];
+  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.quiz)
+  submits: SubmitQuiz[];
 }
