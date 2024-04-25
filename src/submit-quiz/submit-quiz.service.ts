@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateSubmitQuizDto } from './dto/create-submit-quiz.dto';
 import { UpdateSubmitQuizDto } from './dto/update-submit-quiz.dto';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class SubmitQuizService {
-  create(createSubmitQuizDto: CreateSubmitQuizDto) {
+  create(createSubmitQuizDto: CreateSubmitQuizDto, currentUser: User) {
     return 'This action adds a new submitQuiz';
   }
 

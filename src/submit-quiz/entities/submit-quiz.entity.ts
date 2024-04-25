@@ -6,8 +6,10 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { SubmitQuestion } from './submit-question.entity';
 
 @Entity()
 export class SubmitQuiz {
@@ -28,4 +30,9 @@ export class SubmitQuiz {
   @ManyToOne(() => Quiz, (quiz) => quiz.submits)
   @JoinColumn()
   quiz: Quiz;
+  @OneToMany(
+    () => SubmitQuestion,
+    (submitQuestion) => submitQuestion.submitQuiz,
+  )
+  submitQuestions: SubmitQuestion[];
 }

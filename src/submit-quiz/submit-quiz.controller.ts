@@ -10,14 +10,20 @@ import {
 import { SubmitQuizService } from './submit-quiz.service';
 import { CreateSubmitQuizDto } from './dto/create-submit-quiz.dto';
 import { UpdateSubmitQuizDto } from './dto/update-submit-quiz.dto';
-
+import { ApiTags } from '@nestjs/swagger';
+import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
+import { User } from 'src/auth/entities/user.entity';
+@ApiTags('submit-quiz')
 @Controller('submit-quiz')
 export class SubmitQuizController {
   constructor(private readonly submitQuizService: SubmitQuizService) {}
 
   @Post()
-  create(@Body() createSubmitQuizDto: CreateSubmitQuizDto) {
-    return this.submitQuizService.create(createSubmitQuizDto);
+  create(
+    @Body() createSubmitQuizDto: CreateSubmitQuizDto,
+    @CurrentUser() currentUser: User,
+  ) {
+    return this.submitQuizService.create(createSubmitQuizDto, currentUser);
   }
 
   @Get()
