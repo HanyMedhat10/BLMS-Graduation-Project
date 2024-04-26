@@ -23,6 +23,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('Submit Assignment Module')
 @Controller('submit-assignment')
 export class SubmitAssignmentController {
@@ -31,7 +32,7 @@ export class SubmitAssignmentController {
   ) {}
 
   @ApiBearerAuth()
-  @Roles('admin', 'student', 'teacher assist')
+  @Roles(Role.ADMIN, Role.STUDENT)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   @ApiConsumes('multipart/form-data')
@@ -109,7 +110,7 @@ export class SubmitAssignmentController {
     return this.submitAssignmentService.findOne(+id);
   }
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('correctionAssignment/:id')
   update(
@@ -124,7 +125,7 @@ export class SubmitAssignmentController {
     );
   }
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {

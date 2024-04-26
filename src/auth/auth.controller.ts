@@ -27,12 +27,13 @@ import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
+import { Role } from './entities/enum/user.enum';
 @ApiTags('Auth Module')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
   @ApiBearerAuth()
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   create(
@@ -45,7 +46,7 @@ export class AuthController {
   login(@Body() userLoginDto: UserLoginDto) {
     return this.authService.login(userLoginDto);
   }
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('restPassword/:id')
@@ -83,7 +84,7 @@ export class AuthController {
     return this.authService.allAnyUser();
   }
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(
@@ -94,7 +95,7 @@ export class AuthController {
     return this.authService.update(+id, updateAuthDto, currentUser);
   }
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {

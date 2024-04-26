@@ -18,11 +18,12 @@ import { RoleGuard } from 'src/auth/role/role.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('Doctor Module')
 @Controller('doctor')
 export class DoctorController {
   constructor(private readonly doctorService: DoctorService) {}
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
@@ -32,7 +33,7 @@ export class DoctorController {
   ) {
     return this.doctorService.create(createDoctorDto, currentUser);
   }
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('addTeachingCourse/:id')
@@ -55,7 +56,7 @@ export class DoctorController {
     return this.doctorService.findOne(+id);
   }
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(
@@ -66,7 +67,7 @@ export class DoctorController {
     return this.doctorService.update(+id, updateDoctorDto, currentUser);
   }
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
@@ -74,7 +75,7 @@ export class DoctorController {
   }
 
   @ApiBearerAuth()
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('deleteTeachingCourse/:id')
   removeTeachingCourse(

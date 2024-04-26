@@ -15,11 +15,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('College Module')
 @Controller('college')
 export class CollegeController {
   constructor(private readonly collegeService: CollegeService) {}
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
@@ -38,14 +39,14 @@ export class CollegeController {
   findOne(@Param('id') id: string) {
     return this.collegeService.findOne(+id);
   }
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCollegeDto: UpdateCollegeDto) {
     return this.collegeService.update(+id, updateCollegeDto);
   }
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')

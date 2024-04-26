@@ -17,11 +17,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('Clerk Module')
 @Controller('clerk')
 export class ClerkController {
   constructor(private readonly clerkService: ClerkService) {}
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
@@ -43,7 +44,7 @@ export class ClerkController {
   findOne(@Param('id') id: string) {
     return this.clerkService.findOne(+id);
   }
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
@@ -54,7 +55,7 @@ export class ClerkController {
   ) {
     return this.clerkService.update(+id, updateClerkDto, currentUser);
   }
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')

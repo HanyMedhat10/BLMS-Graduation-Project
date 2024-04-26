@@ -3,6 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+// import { ChatGateway } from './chat/chat.gateway';
 // import path from 'path';
 // import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
@@ -34,6 +35,10 @@ async function bootstrap() {
   //     '../files',
   //   ),
   // );
+  // const chatGateway = app.get(ChatGateway);
+  // setInterval(() => {
+  //   chatGateway.create();
+  // })
   app.enableCors();
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }

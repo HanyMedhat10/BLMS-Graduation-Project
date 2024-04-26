@@ -25,12 +25,13 @@ import {
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('Assignment Module')
 @Controller('assignment')
 export class AssignmentController {
   constructor(private readonly assignmentService: AssignmentService) {}
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   @ApiConsumes('multipart/form-data')
@@ -123,7 +124,7 @@ export class AssignmentController {
     return this.assignmentService.findOne(+id);
   }
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   @UseInterceptors(
@@ -159,7 +160,7 @@ export class AssignmentController {
     return this.assignmentService.update(+id, updateAssignmentDto, file);
   }
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {

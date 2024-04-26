@@ -16,9 +16,13 @@ import { UpdateMessageDto } from './dto/update-message.dto';
 // import { UpdateMessageDto } from './dto/update-message.dto';
 @ApiTags('Chat')
 @WebSocketGateway({
-  // cors: {
-  //   origin: '*',
-  // },
+  cors: {
+    credentials: true,
+    allowedHeaders: ['Authorization'],
+    // cors: {
+    //   origin: '*',
+    // },
+  },
   namespace: 'chat',
 })
 export class ChatGateway {

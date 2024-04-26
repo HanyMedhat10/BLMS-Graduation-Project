@@ -16,11 +16,12 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('Course Module')
 @Controller('course')
 export class CourseController {
   constructor(private readonly courseService: CourseService) {}
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
@@ -63,14 +64,14 @@ export class CourseController {
   searchByRole(@Param('id') id: string, @Query('name') name: string) {
     return this.courseService.searchByRole(+id, name);
   }
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateCourseDto: UpdateCourseDto) {
     return this.courseService.update(+id, updateCourseDto);
   }
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')

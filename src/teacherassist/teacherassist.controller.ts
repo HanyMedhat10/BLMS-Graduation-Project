@@ -19,6 +19,7 @@ import { RoleGuard } from 'src/auth/role/role.guard';
 import { UpdateTeacherAssistUserDto } from './dto/update-teacherassist-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { DoctorService } from 'src/doctor/doctor.service';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('Teacher Assist Module')
 @Controller('teacherassist')
 export class TeacherassistController {
@@ -27,7 +28,7 @@ export class TeacherassistController {
     private readonly doctorService: DoctorService,
   ) {}
   @ApiBearerAuth()
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   create(
@@ -40,7 +41,7 @@ export class TeacherassistController {
     );
   }
   // @ApiBearerAuth()
-  // @Roles('admin', 'clerk')
+  // @Roles(Role.ADMIN, Role.CLERK)
   // @UseGuards(JwtAuthGuard, RoleGuard)
   // @Post('addStudyCourse/:id')
   // addStudyCourse(
@@ -49,7 +50,7 @@ export class TeacherassistController {
   // ): Promise<User> {
   //   return this.teacherassistService.addStudyCourse(+id, +courseId);
   // }
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('addTeachingCourse/:id')
@@ -72,7 +73,7 @@ export class TeacherassistController {
     return this.teacherassistService.findOne(+id);
   }
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(
@@ -87,14 +88,14 @@ export class TeacherassistController {
     );
   }
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.teacherassistService.remove(+id);
   }
   // @ApiBearerAuth()
-  // @Roles('admin', 'clerk')
+  // @Roles(Role.ADMIN, Role.CLERK)
   // @UseGuards(JwtAuthGuard, RoleGuard)
   // @Delete('deleteStudyCourse/:id')
   // removeStudyCourse(
@@ -104,7 +105,7 @@ export class TeacherassistController {
   //   return this.teacherassistService.removeCourse(+id, +courseId);
   // }
   @ApiBearerAuth()
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('deleteTeachingCourse/:id')
   removeTeachingCourse(

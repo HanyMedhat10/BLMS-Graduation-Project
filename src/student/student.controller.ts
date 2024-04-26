@@ -18,12 +18,13 @@ import { RoleGuard } from 'src/auth/role/role.guard';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { UpdateStudentUserDto } from './dto/update-student-user-dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('Student Module')
 @Controller('student')
 export class StudentController {
   constructor(private readonly studentService: StudentService) {}
   @ApiBearerAuth()
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post()
   create(
@@ -33,7 +34,7 @@ export class StudentController {
     return this.studentService.create(createStudentUserDto, currentUser);
   }
   @ApiBearerAuth()
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('addStudyCourse/:id')
   addStudyCourse(
@@ -55,7 +56,7 @@ export class StudentController {
     return this.studentService.findOne(+id);
   }
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(
@@ -70,14 +71,14 @@ export class StudentController {
     );
   }
   @ApiBearerAuth()
-  @Roles('admin')
+  @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.studentService.remove(+id);
   }
   @ApiBearerAuth()
-  @Roles('admin', 'clerk')
+  @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('deleteCourse/:id')
   removeCourse(@Param('id') id: string, @Query('courseId') courseId: string) {

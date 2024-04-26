@@ -26,12 +26,13 @@ import { diskStorage } from 'multer';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
 import { MaterialType } from './entities/enum/material.enum';
+import { Role } from 'src/auth/entities/enum/user.enum';
 @ApiTags('Material Module')
 @Controller('material')
 export class MaterialController {
   constructor(private readonly materialService: MaterialService) {}
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('uploadDocs/')
   @ApiConsumes('multipart/form-data')
@@ -94,7 +95,7 @@ export class MaterialController {
     return this.materialService.uploadFile(file, title, +courseId, currentUser);
   }
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('uploadVideo/')
   @ApiConsumes('multipart/form-data')
@@ -159,7 +160,7 @@ export class MaterialController {
     );
   }
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('addLink/')
   addLink(
@@ -181,7 +182,7 @@ export class MaterialController {
     return this.materialService.findOne(+id);
   }
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
   update(
@@ -191,7 +192,7 @@ export class MaterialController {
     return this.materialService.update(+id, updateMaterialDto);
   }
   @ApiBearerAuth()
-  @Roles('admin', 'dr', 'teacher assist', 'head Of Department')
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {

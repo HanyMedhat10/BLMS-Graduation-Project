@@ -54,7 +54,7 @@ export class SubmitQuizController {
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('correctionQuestion/:id')
-  update(
+  correctionQuestion(
     @Param('id') id: string,
     @Query('degree') degree: string,
     @CurrentUser() currentUser: User,
