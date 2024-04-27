@@ -23,10 +23,10 @@ export class Assignment {
   createdAt: Date;
   @Column({ type: 'date' })
   deadLine: Date;
-  @ManyToOne(() => Course, (course) => course.assignments, { cascade: true })
+  @ManyToOne(() => Course, (course) => course.assignments)
   @JoinColumn()
   course: Course;
-  @ManyToOne(() => User, (user) => user.createAssignments, { cascade: true })
+  @ManyToOne(() => User, (user) => user.createAssignments)
   @JoinColumn()
   createBy: User;
   @OneToMany(
