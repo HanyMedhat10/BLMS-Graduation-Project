@@ -118,6 +118,7 @@ export class ChatService {
     // });
     const message = await this.messageRepository.findOne({
       where: { id },
+      relations: { sender: true },
     });
     if (currentUser.id != message.sender.id) throw new UnauthorizedException();
     message.content = updateChatDto.content;
@@ -132,8 +133,15 @@ export class ChatService {
   async removeMessage(id: number, currentUser: User) {
     const message = await this.messageRepository.findOne({
       where: { id },
+      relations: { sender: true },
     });
-    if (currentUser.id != message.sender.id) throw new UnauthorizedException();
-    return await this.messageRepository.delete(id);
+    console.log(message);
+    if (!message) {
+      throw new NotFoundException('Message not found');
+    }
+    if (currentUser.id != message.sender.id) {
+      throw new UnauthorizedException();
+    }
+    return await this.messageRepository.remove(message);
   }
 }

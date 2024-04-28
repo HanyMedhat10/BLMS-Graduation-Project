@@ -84,10 +84,12 @@ export class ChatController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('removeMessage/:id')
   async removeMessage(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @CurrentUser() currentUser: User,
   ) {
-    return await this.chatService.removeMessage(id, currentUser);
+    console.log(currentUser);
+    console.log(id);
+    return await this.chatService.removeMessage(+id, currentUser);
     // this.server.emit('removeMessage', null);
   }
 }
