@@ -47,7 +47,7 @@ import { SubmitQuizModule } from './submit-quiz/submit-quiz.module';
     HeadOfDepartmentModule,
     ClerkModule,
     AssignmentModule,
-    MulterModule.register({ dest: './uploads' }),
+    MulterModule.register({ dest: './../files' }),
     SubmitAssignmentModule,
     ChatModule,
     QuizModule,

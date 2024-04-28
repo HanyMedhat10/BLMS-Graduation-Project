@@ -24,7 +24,7 @@ export class AssignmentService {
     currentUser: User,
   ): Promise<Assignment> {
     const assignment = new Assignment();
-    assignment.path = file.path;
+    assignment.path = file.filename;
     Object.assign(assignment, createAssignmentDto);
     const course = await this.courseService.findOne(
       createAssignmentDto.courseId,
@@ -55,7 +55,7 @@ export class AssignmentService {
       } catch (error) {
         new BadRequestException('Error deleting file');
       }
-      assignment.path = file.path;
+      assignment.path = file.filename;
     }
     Object.assign(assignment, updateAssignmentDto);
     const courseId = updateAssignmentDto.courseId;

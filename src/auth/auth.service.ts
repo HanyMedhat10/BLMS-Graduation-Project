@@ -513,7 +513,7 @@ export class AuthService {
         new BadRequestException('Error deleting file');
       }
     }
-    user.profileImage = file.path;
+    user.profileImage = file.filename;
     // window.open(user.profileImage);
     return await this.userRepository.save(user);
     const profileImage = fs.createReadStream(

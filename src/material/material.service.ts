@@ -26,7 +26,7 @@ export class MaterialService {
   ) {
     const material = this.materialRepository.create({
       title: title,
-      path: file.path,
+      path: file.filename,
       materialType: materialType,
       course: { id: courseId },
       createBy: currentUser,

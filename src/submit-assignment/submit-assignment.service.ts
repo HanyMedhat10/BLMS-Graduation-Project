@@ -25,7 +25,7 @@ export class SubmitAssignmentService {
     if (!assignment) new NotFoundException('not found assignment');
     const submitAssignment = new SubmitAssignment();
     submitAssignment.assignment = assignment;
-    submitAssignment.path = file.path;
+    submitAssignment.path = file.filename;
     // submitAssignment.solver = currentUser.student;
     submitAssignment.solver = currentUser;
     return await this.submitAssignmentRepository.save(submitAssignment);

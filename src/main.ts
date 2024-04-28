@@ -3,8 +3,7 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-import { ChatGateway } from './chat/chat.gateway';
-import path from 'path';
+import * as path from 'path';
 import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -30,10 +29,11 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
   app.useStaticAssets(path.join(__dirname, '../files'));
-  const chatGateway = app.get(ChatGateway);
-  setInterval(() => {
-    chatGateway;
-  });
+  console.log(__dirname);
+  // const chatGateway = app.get(ChatGateway);
+  // setInterval(() => {
+  //   chatGateway;
+  // });
   app.enableCors();
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }

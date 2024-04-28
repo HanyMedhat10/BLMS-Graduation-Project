@@ -24,10 +24,12 @@ import { RoleGuard } from './role/role.guard';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
 import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
-import { extname } from 'path';
+// import * as path from 'path';
 import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { Role } from './entities/enum/user.enum';
+import { extname } from 'path';
+// import { createReadStream } from 'fs';
 @ApiTags('Auth Module')
 @Controller('auth')
 export class AuthController {
@@ -158,6 +160,11 @@ export class AuthController {
     file: Express.Multer.File,
     @CurrentUser() currentUser: User,
   ) {
+    // const fileNe = createReadStream(
+    //   join(process.cwd(), '/files/' + file.filename),
+    // );
+    // return new StreamableFile(fileNe);
+    // res.sendFile(path.join(process.cwd(), 'files/' + file.filename)); //show image in response
     return this.authService.changeProfileImage(file, currentUser);
   }
   @ApiBearerAuth()
