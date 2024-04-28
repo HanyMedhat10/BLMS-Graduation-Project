@@ -3,11 +3,11 @@ import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common/pipes/validation.pipe';
 import * as process from 'process';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
-// import { ChatGateway } from './chat/chat.gateway';
-// import path from 'path';
-// import { NestExpressApplication } from '@nestjs/platform-express';
+import { ChatGateway } from './chat/chat.gateway';
+import path from 'path';
+import { NestExpressApplication } from '@nestjs/platform-express';
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   const config = new DocumentBuilder()
     .setTitle('BLMS example')
@@ -29,16 +29,11 @@ async function bootstrap() {
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
-  // app.useStaticAssets(
-  //   path.join(
-  //     'C:/Users/hanym/Desktop/Node-code/Nestjs Projects/blms',
-  //     '../files',
-  //   ),
-  // );
-  // const chatGateway = app.get(ChatGateway);
-  // setInterval(() => {
-  //   chatGateway.create();
-  // })
+  app.useStaticAssets(path.join(__dirname, '../files'));
+  const chatGateway = app.get(ChatGateway);
+  setInterval(() => {
+    chatGateway;
+  });
   app.enableCors();
   await app.listen(process.env.PORT || 3000, '0.0.0.0');
 }
