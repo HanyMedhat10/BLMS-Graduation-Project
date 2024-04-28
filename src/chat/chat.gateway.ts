@@ -58,6 +58,7 @@ export class ChatGateway {
       currentUser,
     );
     client.broadcast.to(chat.id.toString()).emit('createMessage', message);
+    this.server.emit('createMessage', message);
   }
 
   @SubscribeMessage('findAllChat')

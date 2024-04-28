@@ -160,4 +160,10 @@ export class AuthController {
   ) {
     return this.authService.changeProfileImage(file, currentUser);
   }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Delete('profileImage')
+  deleteProfileImage(@CurrentUser() currentUser: User) {
+    return this.authService.deleteProfileImage(currentUser);
+  }
 }

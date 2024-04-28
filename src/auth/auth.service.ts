@@ -21,7 +21,6 @@ import { CreateCollegeDto } from '../college/dto/create-college.dto';
 import { CourseService } from 'src/course/course.service';
 import { Department } from 'src/department/entities/department.entity';
 import { CreateStudentUserDto } from 'src/student/dto/create-student-user-dto';
-import { TeacherAssistant } from 'src/teacherassist/entities/teacherassist.entity';
 import { CreateTeacherAssistUserDto } from 'src/teacherassist/dto/create-teacherassist-user.dto';
 import { CreateDoctorDto } from 'src/doctor/dto/create-doctor.dto';
 import { CreateHeadOfDepartmentDto } from 'src/head-of-department/dto/create-head-of-department.dto';
@@ -39,8 +38,8 @@ export class AuthService {
     private readonly courseService: CourseService,
     @InjectRepository(Department)
     private readonly departmentRepository: Repository<Department>,
-    @InjectRepository(TeacherAssistant)
-    private readonly teacherAssistantRepository: Repository<TeacherAssistant>,
+    // @InjectRepository(TeacherAssistant)
+    // private readonly teacherAssistantRepository: Repository<TeacherAssistant>,
   ) {}
   async create(
     createAuthDto: CreateAdminDto,
@@ -522,7 +521,8 @@ export class AuthService {
     );
     return new StreamableFile(profileImage);
   }
-  async deleteProfileImage(file: Express.Multer.File, currentUser: User) {
+
+  async deleteProfileImage(currentUser: User) {
     const user = await this.userRepository.findOne({
       where: { id: currentUser.id },
     });

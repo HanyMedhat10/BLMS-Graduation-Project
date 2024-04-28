@@ -62,7 +62,7 @@ export class ChatController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch('updateMessage/:id')
   async updateMessage(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() updateChatDto: UpdateMessageDto,
     @CurrentUser() currentUser: User,
   ) {
