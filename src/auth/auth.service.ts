@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  StreamableFile,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -25,6 +26,7 @@ import { CreateTeacherAssistUserDto } from 'src/teacherassist/dto/create-teacher
 import { CreateDoctorDto } from 'src/doctor/dto/create-doctor.dto';
 import { CreateHeadOfDepartmentDto } from 'src/head-of-department/dto/create-head-of-department.dto';
 import { CreateClerkDto } from 'src/clerk/dto/create-clerk.dto';
+import { join } from 'path';
 @Injectable()
 export class AuthService {
   constructor(
@@ -513,6 +515,23 @@ export class AuthService {
       }
     }
     user.profileImage = file.path;
-    return this.userRepository.save(user);
+    // window.open(user.profileImage);
+    return await this.userRepository.save(user);
+    const profileImage = fs.createReadStream(
+      join(process.cwd(), user.profileImage),
+    );
+    return new StreamableFile(profileImage);
+  }
+  async deleteProfileImage(file: Express.Multer.File, currentUser: User) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+    });
+    if (user.profileImage != null) {
+      try {
+        fs.unlinkSync(user.profileImage);
+      } catch (error) {
+        throw new BadRequestException('Error deleting File');
+      }
+    }
   }
 }

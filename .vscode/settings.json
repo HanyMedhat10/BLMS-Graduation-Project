@@ -13,6 +13,7 @@
         "PGPASSWORD",
         "PGPORT",
         "PGUSER",
+        "Streamable",
         "STUDYMASTER",
         "Teacherassist",
         "wordprocessingml"

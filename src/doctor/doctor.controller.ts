@@ -41,7 +41,7 @@ export class DoctorController {
     @Param('id') id: string,
     @Query('courseId') courseId: string,
   ): Promise<User> {
-    return this.doctorService.addStudyCourse(+id, +courseId);
+    return this.doctorService.addTeachingCourse(+id, +courseId);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)

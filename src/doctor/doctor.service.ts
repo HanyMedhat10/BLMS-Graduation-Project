@@ -24,12 +24,13 @@ export class DoctorService {
   async create(createDoctorDto: CreateDoctorDto, currentUser: User) {
     return await this.userService.createDR(createDoctorDto, currentUser);
   }
-  async addStudyCourse(id: number, courseId: number): Promise<User> {
+  async addTeachingCourse(id: number, courseId: number): Promise<User> {
     const dr = await this.findOne(id);
     const course = await this.courseRepository.findOne({
       where: { id: courseId },
     });
     dr.teachingCourses.push(course);
+    await this.userRepository.save(dr);
     return dr;
   }
 
