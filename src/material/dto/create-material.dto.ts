@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { MaterialType } from '../entities/enum/material.enum';
-import { IsEnum, IsNotEmpty, IsString } from 'class-validator';
+import { IsEnum, IsInt, IsNotEmpty, IsString, Min } from 'class-validator';
 
 export class CreateMaterialDto {
   @ApiProperty()
@@ -11,6 +11,10 @@ export class CreateMaterialDto {
   @IsNotEmpty()
   @IsString()
   path: string;
+  @ApiProperty()
+  @IsInt()
+  @Min(1)
+  courseId: number;
   @ApiProperty({ enum: ['Link'] })
   @IsEnum({ MaterialType, default: MaterialType.Link })
   type: MaterialType;

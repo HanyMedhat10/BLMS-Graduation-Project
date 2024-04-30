@@ -11,11 +11,14 @@ import { User } from 'src/auth/entities/user.entity';
 import { MaterialType } from './entities/enum/material.enum';
 import * as fs from 'fs';
 import { Material } from 'src/material/entities/material.entity';
+import { Course } from 'src/course/entities/course.entity';
 @Injectable()
 export class MaterialService {
   constructor(
     @InjectRepository(Material)
     private readonly materialRepository: Repository<Material>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
   ) {}
   async uploadFile(
     file: Express.Multer.File,
@@ -33,11 +36,15 @@ export class MaterialService {
     });
     return await this.materialRepository.save(material);
   }
-  addLink(createMaterialDto: CreateMaterialDto, currentUser: User) {
+  async addLink(createMaterialDto: CreateMaterialDto, currentUser: User) {
     const material = this.materialRepository.create({
       ...createMaterialDto,
       createBy: currentUser,
     });
+    const course = await this.courseRepository.findOne({
+      where: { id: createMaterialDto.courseId },
+    });
+    material.course = course;
     return this.materialRepository.save(material);
   }
   async findAll() {
