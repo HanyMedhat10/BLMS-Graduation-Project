@@ -38,7 +38,9 @@ export class MaterialService {
   }
   async addLink(createMaterialDto: CreateMaterialDto, currentUser: User) {
     const material = this.materialRepository.create({
-      ...createMaterialDto,
+      title: createMaterialDto.title,
+      path: createMaterialDto.path,
+      materialType: createMaterialDto.materialType,
       createBy: currentUser,
     });
     const course = await this.courseRepository.findOne({

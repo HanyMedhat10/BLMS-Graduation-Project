@@ -17,5 +17,5 @@ export class CreateMaterialDto {
   courseId: number;
   @ApiProperty({ enum: ['Link'] })
   @IsEnum({ MaterialType, default: MaterialType.Link })
-  type: MaterialType;
+  materialType: MaterialType;
 }
