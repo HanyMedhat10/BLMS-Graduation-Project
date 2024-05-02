@@ -85,10 +85,9 @@ export class MaterialService {
         } catch (error) {
           new BadRequestException('Error deleting file');
         }
-        break;
+        return await this.materialRepository.remove(material);
       case MaterialType.Link:
-        await this.materialRepository.remove(material);
-        break;
+        return await this.materialRepository.remove(material);
       default:
         throw new NotFoundException('the material not found');
     }
