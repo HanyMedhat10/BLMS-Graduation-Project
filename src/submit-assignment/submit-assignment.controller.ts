@@ -114,6 +114,7 @@ export class SubmitAssignmentController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('findSubmitAssignmentStudent')
   async findSubmitAssignmentStudent(@CurrentUser() currentUser: User) {
+    console.log(currentUser);
     return await this.submitAssignmentService.findSubmitAssignmentStudent(
       currentUser,
     );
