@@ -91,20 +91,20 @@ export class AssignmentController {
     )
     file: Express.Multer.File,
     // @Req() req,
-    // @Body('title') title: string,
-    // @Body('deadLine') deadLine: string,
-    // @Body('courseId') courseId: string,
-    @Body() createAssignmentDto: CreateAssignmentDto,
+    @Body('title') title: string,
+    @Body('deadLine') deadLine: string,
+    @Body('courseId') courseId: string,
+    // @Body() createAssignmentDto: CreateAssignmentDto,
     @CurrentUser() currentUser: User,
   ) {
     console.log(file);
     // console.log(req.body.title);
-    // let createAssignmentDto = new CreateAssignmentDto();
-    // createAssignmentDto = {
-    //   title: title,
-    //   deadLine: new Date(deadLine),
-    //   courseId: Number(courseId),
-    // };
+    let createAssignmentDto = new CreateAssignmentDto();
+    createAssignmentDto = {
+      title: title,
+      deadLine: new Date(deadLine),
+      courseId: Number(courseId),
+    };
     console.log(createAssignmentDto);
     return this.assignmentService.create(
       createAssignmentDto,
