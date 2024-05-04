@@ -164,6 +164,30 @@ export class StudentService {
     }
     return await this.userRepository.save(user);
   }
+  async getAllGradesInCourse(currentUser: User, courseId: number) {
+    return await this.userRepository.findOne({
+      where: {
+        id: currentUser.id,
+        // role: Role.STUDENT,
+        courses: { id: courseId },
+        submitQuizzes: { quiz: { course: { id: courseId } } },
+        submitsAssignments: { assignment: { course: { id: courseId } } },
+      },
+      relations: {
+        submitQuizzes: { quiz: true },
+        submitsAssignments: { assignment: true },
+      },
+      select: {
+        submitQuizzes: {
+          degree: true,
+          quiz: {
+            title: true,
+          },
+        },
+        submitsAssignments: { degree: true, assignment: { title: true } },
+      },
+    });
+  }
   async remove(id: number) {
     // const student = await this.findOne(id);
     // await this.studentRepository.delete(student.student.id);

@@ -20,7 +20,9 @@ export class SubmitAssignment {
   degree: number;
   @CreateDateColumn()
   submitTime: Timestamp;
-  @ManyToOne(() => User, (student) => student.submits, { cascade: true })
+  @ManyToOne(() => User, (student) => student.submitsAssignments, {
+    cascade: true,
+  })
   @JoinColumn()
   solver: User;
   @ManyToOne(() => User, (staff) => staff.correctAssignments, { cascade: true })

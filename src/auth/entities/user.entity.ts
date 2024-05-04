@@ -89,7 +89,7 @@ export class User {
   @JoinTable({ name: 'student_courses' })
   courses: Course[];
   @OneToMany(() => SubmitAssignment, (assignment) => assignment.solver)
-  submits: SubmitAssignment[];
+  submitsAssignments: SubmitAssignment[];
   @OneToMany(() => Quiz, (quiz) => quiz.createBy)
   createQuizzes: Quiz[];
   @OneToMany(() => Material, (material) => material.createBy)
