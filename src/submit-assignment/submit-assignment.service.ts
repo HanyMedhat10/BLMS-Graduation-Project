@@ -54,7 +54,7 @@ export class SubmitAssignmentService {
   async findSubmitAssignmentStudent(currentUser: User) {
     return await this.submitAssignmentRepository.find({
       where: { solver: { id: currentUser.id } },
-      relations: { assignment: true },
+      relations: { assignment: true, solver: true },
     });
   }
   async remove(id: number) {
