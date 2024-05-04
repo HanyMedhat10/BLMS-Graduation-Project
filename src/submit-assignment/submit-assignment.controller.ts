@@ -111,17 +111,6 @@ export class SubmitAssignmentController {
   }
 
   @ApiBearerAuth()
-  @Roles(Role.STUDENT)
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('findSubmitAssignmentStudent')
-  async findSubmitAssignmentStudent(@CurrentUser() currentUser: User) {
-    console.log(currentUser);
-    // return await this.submitAssignmentService.findSubmitAssignmentStudent(
-    //   currentUser,
-    // );
-  }
-
-  @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('correctionAssignment/:id')
@@ -142,5 +131,19 @@ export class SubmitAssignmentController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.submitAssignmentService.remove(+id);
+  }
+
+  @ApiBearerAuth()
+  @Roles(Role.STUDENT)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('findSubmitAssignmentCourseStudent/:id')
+  async findSubmitAssignmentStudent(
+    @CurrentUser() currentUser: User,
+    @Param('id') id: string,
+  ) {
+    return await this.submitAssignmentService.findSubmitAssignmentStudent(
+      currentUser,
+      +id,
+    );
   }
 }

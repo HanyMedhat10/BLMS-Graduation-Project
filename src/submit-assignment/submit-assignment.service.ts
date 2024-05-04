@@ -51,9 +51,12 @@ export class SubmitAssignmentService {
       },
     });
   }
-  async findSubmitAssignmentStudent(currentUser: User) {
+  async findSubmitAssignmentStudent(currentUser: User, courseId: number) {
     return await this.submitAssignmentRepository.find({
-      where: { solver: { id: currentUser.id } },
+      where: {
+        solver: { id: currentUser.id },
+        assignment: { course: { id: courseId } },
+      },
       relations: { assignment: true, solver: true },
     });
   }
