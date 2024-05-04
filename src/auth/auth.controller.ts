@@ -29,6 +29,7 @@ import { diskStorage } from 'multer';
 import { FileInterceptor } from '@nestjs/platform-express/multer';
 import { Role } from './entities/enum/user.enum';
 import { extname } from 'path';
+import { ForgetPasswordDto } from './dto/forget-password.dto';
 // import { createReadStream } from 'fs';
 @ApiTags('Auth Module')
 @Controller('auth')
@@ -167,6 +168,45 @@ export class AuthController {
     // res.sendFile(path.join(process.cwd(), 'files/' + file.filename)); //show image in response
     return this.authService.changeProfileImage(file, currentUser);
   }
+
+  @ApiBody({
+    description: 'forget password otp send mail to user email (step 1)',
+    schema: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @Post('forgotPassword')
+  forgotPassword(@Body('email') email: string) {
+    return this.authService.forgetPassword(email);
+  }
+  @ApiBody({
+    description:
+      'verify forget password otp and set new password (step 2 and 3) ',
+    schema: {
+      type: 'object',
+      properties: {
+        email: {
+          type: 'string',
+        },
+        otp: {
+          type: 'number',
+        },
+        password: {
+          type: 'string',
+        },
+      },
+    },
+  })
+  @Post('forgetPasswordMail')
+  forgetPasswordMail(@Body() forgetPasswordDto: ForgetPasswordDto) {
+    return this.authService.forgetPasswordMail(forgetPasswordDto);
+  }
+
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('profileImage')

@@ -2,7 +2,6 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  StreamableFile,
   UnauthorizedException,
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -25,7 +24,9 @@ import { CreateTeacherAssistUserDto } from 'src/teacherassist/dto/create-teacher
 import { CreateDoctorDto } from 'src/doctor/dto/create-doctor.dto';
 import { CreateHeadOfDepartmentDto } from 'src/head-of-department/dto/create-head-of-department.dto';
 import { CreateClerkDto } from 'src/clerk/dto/create-clerk.dto';
-import { join } from 'path';
+import * as nodemailer from 'nodemailer';
+import { ConfigService } from '@nestjs/config';
+import { ForgetPasswordDto } from './dto/forget-password.dto';
 @Injectable()
 export class AuthService {
   constructor(
@@ -40,6 +41,7 @@ export class AuthService {
     private readonly departmentRepository: Repository<Department>,
     // @InjectRepository(TeacherAssistant)
     // private readonly teacherAssistantRepository: Repository<TeacherAssistant>,
+    private readonly configService: ConfigService,
   ) {}
   async create(
     createAuthDto: CreateAdminDto,
@@ -516,10 +518,6 @@ export class AuthService {
     user.profileImage = file.filename;
     // window.open(user.profileImage);
     return await this.userRepository.save(user);
-    const profileImage = fs.createReadStream(
-      join(process.cwd(), user.profileImage),
-    );
-    return new StreamableFile(profileImage);
   }
 
   async deleteProfileImage(currentUser: User) {
@@ -533,5 +531,200 @@ export class AuthService {
         throw new BadRequestException('Error deleting File');
       }
     }
+  }
+  // forget password otp send mail to user email (step 1)
+  async forgetPassword(email: string) {
+    const user = await this.userRepository.findOne({
+      where: { email },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    const transporter = this.mailTransport();
+    const otp = this.generateRandom4DigitNumber();
+    user.otp = otp;
+    const mailOptions = {
+      from: this.configService.get<string>('MAIL_USER'),
+      recipients: [{ name: user.name, email: user.email }],
+      to: user.email,
+      subject: 'Reset Password',
+      html: `<!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <title></title>
+        <style>
+          body {
+            margin: 0;
+            padding: 0;
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            color: #333;
+            background-color: #fff;
+          }
+      
+          .container {
+            margin: 0 auto;
+            width: 100%;
+            max-width: 600px;
+            padding: 0 0px;
+            padding-bottom: 10px;
+            border-radius: 5px;
+            line-height: 1.8;
+          }
+      
+          .header {
+            border-bottom: 1px solid #eee;
+          }
+      
+          .header a {
+            font-size: 1.4em;
+            color: #000;
+            text-decoration: none;
+            font-weight: 600;
+          }
+      
+          .content {
+            min-width: 700px;
+            overflow: auto;
+            line-height: 2;
+          }
+      
+          .otp {
+            background: linear-gradient(to right, #00bc69 0, #00bc88 50%, #00bca8 100%);
+            margin: 0 auto;
+            width: max-content;
+            padding: 0 10px;
+            color: #fff;
+            border-radius: 4px;
+          }
+      
+          .footer {
+            color: #aaa;
+            font-size: 0.8em;
+            line-height: 1;
+            font-weight: 300;
+          }
+      
+          .email-info {
+            color: #666666;
+            font-weight: 400;
+            font-size: 13px;
+            line-height: 18px;
+            padding-bottom: 6px;
+          }
+      
+          .email-info a {
+            text-decoration: none;
+            color: #00bc69;
+          }
+        </style>
+      </head>
+      
+      <body>
+        <!--Subject: Login Verification Required for Your [App Name] Account-->
+        <div class="container">
+          <div class="header">
+            <a>Prove Your <strong>Mind Explore</strong> Identity</a>
+          </div>
+          <br />
+          <strong>Dear ${user.name},</strong>
+          <p>
+            We have received a login request for your <strong>Mind Explore</strong> account. For
+            security purposes, please verify your identity by providing the
+            following for Forget Password (OTP).
+            <br />
+            <b>Your for Forget Password (OTP) verification code is:</b>
+          </p>
+          <h2 class="otp">${user.otp}</h2>
+          <p style="font-size: 0.9em">
+            <strong>for Forget Password (OTP) is valid for 3 minutes.</strong>
+            <br />
+            <br />
+            If you did not initiate this login request, please disregard this
+            message. Please ensure the confidentiality of your OTP and do not share
+            it with anyone.<br />
+            <strong>Do not forward or give this code to anyone.</strong>
+            <br />
+            <br />
+            <strong>Thank you for using Mind Explore.</strong>
+            <br />
+            <br />
+            Best regards,
+            <br />
+            <strong>Mind Explore</strong>
+          </p>
+      
+          <hr style="border: none; border-top: 0.5px solid #131111" />
+          <div class="footer">
+            <p>This email can't receive replies.</p>
+            <p>
+              For more information about <strong>Mind Explore</strong> and your account, visit
+              <strong>${user.name}</strong>
+            </p>
+          </div>
+        </div>
+        <div style="text-align: center">
+          <div class="email-info">
+            <span>
+              This email was sent to
+              <a href="mailto:{Email Adress}">${user.email}</a>
+            </span>
+          </div>
+          <div class="email-info">
+            <a href="/"><strong>Mind Explore</strong></a>
+             <!-- | [Address]| [Address] - [Zip Code/Pin Code], <strong>Mind Explore</strong> -->
+          </div>
+          <div class="email-info">
+            &copy; 2024 <strong>Mind Explore</strong>. All rights
+            reserved.
+          </div>
+        </div>
+      </body>
+      </html>`,
+    };
+    await this.userRepository.save(user);
+    try {
+      const result = await transporter.sendMail(mailOptions);
+      return result;
+    } catch (error) {
+      console.log('Email Error: ', error);
+      throw new BadRequestException('Email Error: ' + error);
+    }
+  }
+  mailTransport() {
+    return nodemailer.createTransport({
+      host: this.configService.get<string>('MAIL_HOST'),
+      port: this.configService.get<number>('MAIL_PORT'),
+      secure: false, // Use `true` for port 465, `false` for all other ports
+      auth: {
+        user: this.configService.get<string>('MAIL_USER'),
+        pass: this.configService.get<string>('MAIL_PASSWORD'),
+      },
+    });
+  }
+  // step 2 and 3
+  async forgetPasswordMail(forgetPasswordDto: ForgetPasswordDto) {
+    const user = await this.userRepository.findOne({
+      where: { email: forgetPasswordDto.email, otp: forgetPasswordDto.otp },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        password: true,
+        otp: true,
+      },
+    });
+    if (!user) {
+      throw new NotFoundException('User not found.');
+    }
+    user.otp = null;
+    return await this.updatePassword(user, forgetPasswordDto.password);
+  }
+  generateRandom4DigitNumber(): number {
+    const min = 1000; // Minimum value (inclusive)
+    const max = 9999; // Maximum value (inclusive)
+
+    // Generate a random integer between min and max
+    return Math.floor(Math.random() * (max - min + 1)) + min;
   }
 }

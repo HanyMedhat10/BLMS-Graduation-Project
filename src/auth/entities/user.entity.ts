@@ -34,6 +34,8 @@ export class User {
   email: string;
   @Column({ select: false })
   password: string;
+  @Column({ select: false, nullable: true })
+  otp: number;
   @Column({ nullable: true })
   profileImage: string;
   @ManyToOne(() => User)
