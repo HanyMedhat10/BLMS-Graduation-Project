@@ -11,6 +11,7 @@ import { Roles } from 'src/auth/roles/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -26,6 +27,7 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Role } from 'src/auth/entities/enum/user.enum';
+import { on } from 'events';
 @ApiTags('Assignment Module')
 @Controller('assignment')
 export class AssignmentController {
@@ -100,11 +102,15 @@ export class AssignmentController {
     console.log(file);
     // console.log(req.body.title);
     let createAssignmentDto = new CreateAssignmentDto();
-    createAssignmentDto = {
-      title: title,
-      deadLine: new Date(deadLine),
-      courseId: Number(courseId),
-    };
+    try {
+      createAssignmentDto = {
+        title: title,
+        deadLine: new Date(deadLine),
+        courseId: Number(courseId),
+      };
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
     console.log(createAssignmentDto);
     return this.assignmentService.create(
       createAssignmentDto,
