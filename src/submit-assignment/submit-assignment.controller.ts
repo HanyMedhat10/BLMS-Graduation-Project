@@ -109,16 +109,18 @@ export class SubmitAssignmentController {
   findOne(@Param('id') id: string) {
     return this.submitAssignmentService.findOne(+id);
   }
+
   @ApiBearerAuth()
   @Roles(Role.STUDENT)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('findSubmitAssignmentStudent')
   async findSubmitAssignmentStudent(@CurrentUser() currentUser: User) {
     console.log(currentUser);
-    return await this.submitAssignmentService.findSubmitAssignmentStudent(
-      currentUser,
-    );
+    // return await this.submitAssignmentService.findSubmitAssignmentStudent(
+    //   currentUser,
+    // );
   }
+
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
