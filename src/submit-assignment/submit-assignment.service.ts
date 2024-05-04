@@ -32,13 +32,31 @@ export class SubmitAssignmentService {
   }
 
   async findAll(): Promise<SubmitAssignment[]> {
-    return await this.submitAssignmentRepository.find();
+    return await this.submitAssignmentRepository.find({
+      relations: {
+        assignment: true,
+        solver: true,
+        correctBy: true,
+      },
+    });
   }
 
   async findOne(id: number): Promise<SubmitAssignment> {
-    return await this.submitAssignmentRepository.findOne({ where: { id } });
+    return await this.submitAssignmentRepository.findOne({
+      where: { id },
+      relations: {
+        assignment: true,
+        solver: true,
+        correctBy: true,
+      },
+    });
   }
-
+  async findSubmitAssignmentStudent(currentUser: User) {
+    return await this.submitAssignmentRepository.find({
+      where: { solver: { id: currentUser.id } },
+      relations: { assignment: true },
+    });
+  }
   async remove(id: number) {
     const assignment = await this.findOne(id);
     try {

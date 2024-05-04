@@ -110,6 +110,15 @@ export class SubmitAssignmentController {
     return this.submitAssignmentService.findOne(+id);
   }
   @ApiBearerAuth()
+  @Roles(Role.STUDENT)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('findSubmitAssignmentStudent')
+  findSubmitAssignmentStudent(@CurrentUser() currentUser: User) {
+    return this.submitAssignmentService.findSubmitAssignmentStudent(
+      currentUser,
+    );
+  }
+  @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('correctionAssignment/:id')
