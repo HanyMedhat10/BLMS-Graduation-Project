@@ -113,8 +113,8 @@ export class SubmitAssignmentController {
   @Roles(Role.STUDENT)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('findSubmitAssignmentStudent')
-  findSubmitAssignmentStudent(@CurrentUser() currentUser: User) {
-    return this.submitAssignmentService.findSubmitAssignmentStudent(
+  async findSubmitAssignmentStudent(@CurrentUser() currentUser: User) {
+    return await this.submitAssignmentService.findSubmitAssignmentStudent(
       currentUser,
     );
   }
