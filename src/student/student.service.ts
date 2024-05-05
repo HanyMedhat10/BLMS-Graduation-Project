@@ -169,7 +169,7 @@ export class StudentService {
       where: {
         id: currentUser.id,
         // role: Role.STUDENT,
-        courses: { id: courseId },
+        // courses: { id: courseId },
         submitQuizzes: { quiz: { course: { id: courseId } } },
         submitsAssignments: { assignment: { course: { id: courseId } } },
       },
