@@ -28,9 +28,7 @@ export class SubmitAssignment {
   @ManyToOne(() => User, (staff) => staff.correctAssignments, { cascade: true })
   @JoinColumn()
   correctBy: User;
-  @ManyToOne(() => Assignment, (assignment) => assignment.submits, {
-    cascade: true,
-  })
+  @ManyToOne(() => Assignment, (assignment) => assignment.submits)
   @JoinColumn()
   assignment: Assignment;
 }

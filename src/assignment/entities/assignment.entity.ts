@@ -32,6 +32,9 @@ export class Assignment {
   @OneToMany(
     () => SubmitAssignment,
     (submitAssignment) => submitAssignment.assignment,
+    {
+      cascade: true,
+    },
   )
   submits: SubmitAssignment[];
 }

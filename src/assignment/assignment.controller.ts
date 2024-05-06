@@ -27,7 +27,6 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { Role } from 'src/auth/entities/enum/user.enum';
-import { on } from 'events';
 @ApiTags('Assignment Module')
 @Controller('assignment')
 export class AssignmentController {
