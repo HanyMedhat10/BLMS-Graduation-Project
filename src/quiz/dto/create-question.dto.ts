@@ -16,7 +16,7 @@ export class CreateQuestionDto {
   @ApiProperty()
   @IsInt()
   quizId: number;
-  @ApiProperty({ enum: ['admin'] })
+  @ApiProperty({ enum: QuestionsType })
   @IsEnum({ QuestionsType })
   @IsNotEmpty()
   questionType: QuestionsType;
