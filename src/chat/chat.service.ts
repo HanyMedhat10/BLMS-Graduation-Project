@@ -57,7 +57,7 @@ export class ChatService {
   async findAll(currentUser: User) {
     let chats = await this.chatRepository.find({
       where: { users: { id: currentUser.id } },
-      relations: { messages: true },
+      relations: { messages: { sender: true }, users: true },
       select: {
         users: { id: true, name: true, email: true },
         messages: {
@@ -86,7 +86,7 @@ export class ChatService {
   async findOne(id: number) {
     return await this.chatRepository.findOne({
       where: { id },
-      relations: { messages: true },
+      relations: { messages: { sender: true }, users: true },
       select: {
         users: { id: true, name: true, email: true },
         messages: {

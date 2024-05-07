@@ -20,7 +20,6 @@ import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
 import { User } from 'src/auth/entities/user.entity';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { UpdateQuestionDto } from './dto/update-question.dto';
-import { Questions } from './entities/questions.entity';
 import { QuestionsType } from './entities/enum/questions-type.enum';
 @ApiTags('Quiz Module')
 @Controller('quiz')
