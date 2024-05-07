@@ -55,11 +55,11 @@ export class ChatService {
   }
 
   async findAll(currentUser: User) {
-    let chats = await this.chatRepository.find({
+    const chats = await this.chatRepository.find({
       where: { users: { id: currentUser.id } },
       relations: { messages: { sender: true }, users: true },
       select: {
-        users: { id: true, name: true, email: true },
+        users: { id: true, name: true, email: true, profileImage: true },
         messages: {
           id: true,
           content: true,
@@ -74,13 +74,15 @@ export class ChatService {
         },
       },
       order: {
-        messages: { createdAt: 'DESC' },
+        messages: {
+          createdAt: 'DESC',
+        },
       },
     });
-    chats = chats.map((chat) => {
-      chat.messages[0];
-      return chat;
-    });
+    // chats = chats.map((chat) => {
+    //   chat.messages[0];
+    //   return chat;
+    // });
     return chats;
   }
   async findOne(id: number) {
@@ -88,7 +90,7 @@ export class ChatService {
       where: { id },
       relations: { messages: { sender: true }, users: true },
       select: {
-        users: { id: true, name: true, email: true },
+        users: { id: true, name: true, email: true, profileImage: true },
         messages: {
           id: true,
           content: true,
