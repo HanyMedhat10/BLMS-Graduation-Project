@@ -544,7 +544,11 @@ export class AuthService {
     const otp = this.generateRandom4DigitNumber();
     user.otp = otp;
     const mailOptions = {
-      from: this.configService.get<string>('MAIL_USER'),
+      // from: this.configService.get<string>('MAIL_USER'),
+      from: this.configService.get<string>('MAIL_USER') ?? {
+        name: 'BLMS',
+        address: 'MindExplore@gmail.com',
+      },
       recipients: [{ name: user.name, email: user.email }],
       to: user.email,
       subject: 'Reset Password',
