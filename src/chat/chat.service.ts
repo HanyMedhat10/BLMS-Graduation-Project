@@ -7,7 +7,7 @@ import { CreateChatDto } from './dto/create-chat.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Chat } from './entities/chat.entity';
 import { Message } from './entities/message.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { UpdateMessageDto } from './dto/update-message.dto';
 import { CreateMessageDto } from './dto/create-message.dto';
@@ -55,8 +55,12 @@ export class ChatService {
   }
 
   async findAll(currentUser: User) {
-    const chats = await this.chatRepository.find({
-      where: { users: { id: currentUser.id } },
+    const chatsUsers = await this.userRepository.findOne({
+      where: { id: currentUser.id },
+      relations: { chats: true },
+    });
+    let chats = await this.chatRepository.find({
+      where: { id: In(chatsUsers.chats.map((chat) => chat.id)) },
       relations: { messages: { sender: true }, users: true },
       select: {
         users: { id: true, name: true, email: true, profileImage: true },
@@ -79,10 +83,10 @@ export class ChatService {
         },
       },
     });
-    // chats = chats.map((chat) => {
-    //   chat.messages[0];
-    //   return chat;
-    // });
+    chats = chats.map((chat) => {
+      chat.messages[0];
+      return chat;
+    });
     return chats;
   }
   async findOne(id: number) {
