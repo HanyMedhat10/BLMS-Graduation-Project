@@ -11,7 +11,7 @@ async function bootstrap() {
   const config = new DocumentBuilder()
     .setTitle('BLMS example')
     .setTitle('The BLMS API description')
-    .setDescription('Develope By.Hany Medhat Gamal Mehani')
+    .setDescription('Development By.Hany Medhat Gamal Mehani')
     .setContact(
       'Hany Medhat Gamal Mehani ',
       'https://www.linkedin.com/in/hany-medhat-74452520a/',

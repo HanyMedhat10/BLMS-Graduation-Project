@@ -16,17 +16,23 @@ export class Questions {
   @PrimaryGeneratedColumn()
   id: number;
   @Column()
-  question: string;
+  content: string;
   @Column({ nullable: true })
   answer: string;
-  @Column()
+  @Column({ default: 0 })
   degree: number;
-  @Column({ type: 'enum', enum: QuestionsType })
+  @Column({
+    type: 'enum',
+    enum: QuestionsType,
+    default: QuestionsType.SINGLE_CHOICE,
+  })
   questionType: QuestionsType;
-  @ManyToOne(() => Quiz, (quiz) => quiz.questions)
+  @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
+    createForeignKeyConstraints: false,
+  })
   @JoinColumn()
   quiz: Quiz;
-  @OneToMany(() => Choice, (choices) => choices.question, { cascade: true })
+  @OneToMany(() => Choice, (choices) => choices.question)
   choices: Choice[];
   @OneToMany(() => SubmitQuestion, (submitQuestion) => submitQuestion.question)
   submitQuestions: SubmitQuestion[];

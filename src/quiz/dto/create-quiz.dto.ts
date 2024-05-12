@@ -1,5 +1,14 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDate, IsInt, IsNotEmpty, IsString } from 'class-validator';
+import {
+  IsDateString,
+  IsInt,
+  IsNotEmpty,
+  IsString,
+  Min,
+  ValidateNested,
+} from 'class-validator';
+import { CreateQuestionQuizDto } from './create-question-multi.dto';
+import { Type } from 'class-transformer';
 
 export class CreateQuizDto {
   @ApiProperty()
@@ -9,13 +18,19 @@ export class CreateQuizDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsInt()
+  @Min(1)
   courseId: number;
   @ApiProperty()
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   startDate: Date;
   @ApiProperty()
   @IsNotEmpty()
-  @IsDate()
+  @IsDateString()
   endDate: Date;
+  @ApiProperty({ type: () => [CreateQuestionQuizDto] })
+  @Type(() => CreateQuestionQuizDto)
+  // @IsArray()
+  @ValidateNested({ each: true })
+  questions: CreateQuestionQuizDto[];
 }

@@ -18,7 +18,7 @@ export class Quiz {
   id: number;
   @Column()
   title: string;
-  @Column()
+  @Column({ nullable: true })
   degree: number;
   @CreateDateColumn()
   createdAt: Date;
@@ -32,12 +32,8 @@ export class Quiz {
   @ManyToOne(() => User, (user) => user.createQuizzes)
   @JoinColumn()
   createBy: User;
-  @OneToMany(() => Questions, (questions) => questions.quiz, {
-    cascade: true,
-  })
+  @OneToMany(() => Questions, (questions) => questions.quiz, { nullable: true })
   questions: Questions[];
-  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.quiz, {
-    cascade: true,
-  })
+  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.quiz)
   submits: SubmitQuiz[];
 }

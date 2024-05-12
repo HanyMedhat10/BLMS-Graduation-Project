@@ -699,7 +699,7 @@ export class AuthService {
     return nodemailer.createTransport({
       host: this.configService.get<string>('MAIL_HOST'),
       port: this.configService.get<number>('MAIL_PORT'),
-      secure: false, // Use `true` for port 465, `false` for all other ports
+      secure: true, // Use `true` for port 465, `false` for all other ports
       auth: {
         user: this.configService.get<string>('MAIL_USER'),
         pass: this.configService.get<string>('MAIL_PASSWORD'),

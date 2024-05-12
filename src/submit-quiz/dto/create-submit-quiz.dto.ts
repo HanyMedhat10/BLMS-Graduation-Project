@@ -1,5 +1,12 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsPositive, IsString, Min } from 'class-validator';
+import {
+  ArrayNotEmpty,
+  IsInt,
+  IsNotEmpty,
+  IsPositive,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class CreateSubmitQuizDto {
   @ApiProperty()
@@ -14,7 +21,8 @@ export class CreateSubmitQuizDto {
   @IsNotEmpty()
   questionId: number[];
   @ApiProperty({ type: [String] })
-  @IsString()
+  @IsString({ always: true })
   @IsNotEmpty()
+  @ArrayNotEmpty()
   answer: string[];
 }

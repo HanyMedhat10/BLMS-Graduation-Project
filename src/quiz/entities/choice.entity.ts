@@ -11,6 +11,8 @@ import { Questions } from './questions.entity';
 export class Choice {
   @PrimaryGeneratedColumn()
   id: number;
+  @Column({ type: 'int', generated: 'increment' })
+  counter: number;
   @Column()
   option: string;
   @ManyToOne(() => Questions, (questions) => questions.choices)

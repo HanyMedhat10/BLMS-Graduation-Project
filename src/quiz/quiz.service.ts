@@ -10,6 +10,8 @@ import { User } from 'src/auth/entities/user.entity';
 import { CreateQuestionDto } from './dto/create-question.dto';
 import { QuestionsType } from './entities/enum/questions-type.enum';
 import { UpdateQuestionDto } from './dto/update-question.dto';
+import { CreateQuestionQuizDto } from './dto/create-question-multi.dto';
+import { CourseService } from 'src/course/course.service';
 
 @Injectable()
 export class QuizService {
@@ -20,12 +22,50 @@ export class QuizService {
     private readonly questionsRepository: Repository<Questions>,
     @InjectRepository(Choice)
     private readonly choiceRepository: Repository<Choice>,
+    private readonly courseService: CourseService,
   ) {}
   async createQuiz(createQuizDto: CreateQuizDto, currentUser: User) {
-    let quiz = new Quiz();
-    quiz = Object.assign(quiz, createQuizDto);
+    const quiz = new Quiz();
+    // const questions =createQuizDto.questions.map(async (question) => {
+    // return await this.createQuestionForQuiz(question);
+    // });
+    const questions: Questions[] = [];
+    for (let index = 0; index < createQuizDto.questions.length; index++) {
+      // let question = new CreateQuestionDto();
+      // question = {
+      //   ...createQuizDto.questions[index],
+      //   quizId: quiz.id,
+      // };
+      const element = await this.createQuestionForQuiz(
+        createQuizDto.questions[index],
+        // quiz,
+      );
+      // questions.push(element);
+      // questions = questions ? [...questions, element] : [element];
+      questions.push({
+        ...element,
+        choices: element.choices.map((choice) => ({
+          ...choice,
+          // element: undefined,
+        })),
+      });
+    }
+    const course = await this.courseService.findOne(createQuizDto.courseId);
+    if (!course) throw new NotFoundException('Course not found');
+
+    quiz.title = createQuizDto.title;
+    quiz.startDate = createQuizDto.startDate;
+    quiz.endDate = createQuizDto.endDate;
+    quiz.course = course;
     quiz.createBy = currentUser;
-    return await this.questionsRepository.save(quiz);
+    // quiz.title = createQuizDto.title;
+
+    // quiz = await this.questionsRepository.save(quiz);
+    // delete questions['choices'];
+    // quiz.questions = await Promise.all(questions);
+    quiz.questions = questions;
+    console.log('quiz', quiz);
+    return await this.quizRepository.save(quiz);
   }
   async createQuestion(createQuestionDto: CreateQuestionDto) {
     const Quiz = await this.findOneQuiz(createQuestionDto.quizId);
@@ -45,22 +85,66 @@ export class QuizService {
       const choiceObject = new Choice();
       choiceObject.option = choice;
       choiceObject.question = question;
-      await this.choiceRepository.save(choiceObject);
+      return await this.choiceRepository.save(choiceObject);
     });
-    return question;
+    question.choices = await Promise.all(choices);
+    return await this.questionsRepository.save(question);
+  }
+  async createQuestionForQuiz(
+    createQuestionDto: CreateQuestionQuizDto,
+    // quiz: Quiz,
+  ) {
+    if (
+      !createQuestionDto.choices &&
+      (createQuestionDto.questionType == QuestionsType.MULTIPLE_CHOICE ||
+        createQuestionDto.questionType == QuestionsType.SINGLE_CHOICE)
+    ) {
+      throw new NotFoundException("choice can't be empty");
+    }
+    let question = new Questions();
+    // question.quiz = quiz;
+    // question = Object.assign(question, createQuestionDto);
+    question.answer = createQuestionDto.answer;
+    question.content = createQuestionDto.content;
+    question.questionType = createQuestionDto.questionType;
+    question.degree = createQuestionDto.degree;
+
+    // delete question.choices;
+    console.log('question', question);
+    question = await this.questionsRepository.save(question);
+    const choices: Choice[] = [];
+    for (let index = 0; index < createQuestionDto.choices.length; index++) {
+      const choiceObject = new Choice();
+      choiceObject.option = createQuestionDto.choices[index];
+      choiceObject.question = question;
+      const choice = await this.choiceRepository.save(choiceObject);
+      choices.push(choice);
+    }
+    // const choices = createQuestionDto.choice.map(async (choice) => {
+    //   const choiceObject = new Choice();
+    //   choiceObject.option = choice;
+    //   choiceObject.question = question;
+    //   return await this.choiceRepository.save(choiceObject);
+    // });
+
+    // await Promise.all(choices).then((choicesData) => {
+    //   question.choices = choicesData as any;
+    // });
+    question.choices = await Promise.all(choices);
+    return await this.questionsRepository.save(question);
   }
   async findOneQuiz(id: number) {
     return await this.quizRepository.findOne({
       where: { id },
       relations: {
-        questions: {
-          choices: true,
-        },
+        // questions: {
+        //   choices: true,
+        // },
       },
       select: {
         questions: {
           id: true,
-          question: true,
+          content: true,
           answer: false,
           degree: true,
           questionType: true,
@@ -82,7 +166,7 @@ export class QuizService {
       select: {
         questions: {
           id: true,
-          question: true,
+          content: true,
           answer: false,
           degree: true,
           questionType: true,
@@ -103,7 +187,7 @@ export class QuizService {
       },
       select: {
         id: true,
-        question: true,
+        content: true,
         answer: false,
         degree: true,
         questionType: true,
@@ -128,7 +212,7 @@ export class QuizService {
       },
       select: {
         id: true,
-        question: true,
+        content: true,
         answer: false,
         degree: true,
         questionType: true,
