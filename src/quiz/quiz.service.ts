@@ -290,9 +290,17 @@ export class QuizService {
     return await this.quizRepository.save(quiz);
   }
   async removeQuestion(id: number) {
+    const question = await this.findOneQuestion(id);
+    question.choices = question.choices.filter(async (choice) => {
+      return await this.choiceRepository.delete(choice.id);
+    });
     return await this.questionsRepository.delete(id);
   }
   async removeQuiz(id: number) {
+    const quiz = await this.findOneQuiz(id);
+    quiz.questions = quiz.questions.filter(async (question) => {
+      return await this.removeQuestion(question.id);
+    });
     return await this.quizRepository.delete(id);
   }
 }

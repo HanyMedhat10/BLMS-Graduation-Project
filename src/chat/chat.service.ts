@@ -133,8 +133,11 @@ export class ChatService {
   }
 
   async remove(id: number) {
-    await this.chatRepository.delete(id);
-    return `This action removes a #${id} chat`;
+    const chat = await this.findOne(id);
+    chat.messages.forEach(async (message) => {
+      await this.messageRepository.delete(message.id);
+    });
+    return await this.chatRepository.delete(id);
   }
   async removeMessage(id: number, currentUser: User) {
     const message = await this.messageRepository.findOne({
