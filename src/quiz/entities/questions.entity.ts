@@ -27,9 +27,7 @@ export class Questions {
     default: QuestionsType.SINGLE_CHOICE,
   })
   questionType: QuestionsType;
-  @ManyToOne(() => Quiz, (quiz) => quiz.questions, {
-    createForeignKeyConstraints: false,
-  })
+  @ManyToOne(() => Quiz, (quiz) => quiz.questions, { cascade: true })
   @JoinColumn()
   quiz: Quiz;
   @OneToMany(() => Choice, (choices) => choices.question)

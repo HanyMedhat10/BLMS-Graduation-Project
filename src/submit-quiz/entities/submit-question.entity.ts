@@ -15,7 +15,9 @@ export class SubmitQuestion {
   answer: string;
   @Column({ nullable: true })
   degree: number;
-  @ManyToOne(() => SubmitQuiz, (submitQuiz) => submitQuiz.submitQuestions)
+  @ManyToOne(() => SubmitQuiz, (submitQuiz) => submitQuiz.submitQuestions, {
+    cascade: true,
+  })
   @JoinColumn({ name: 'submitQuizId' })
   submitQuiz: SubmitQuiz;
   @ManyToOne(() => Questions, (questions) => questions.submitQuestions)

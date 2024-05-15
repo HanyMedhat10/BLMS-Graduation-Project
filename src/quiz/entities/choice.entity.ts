@@ -11,11 +11,13 @@ import { Questions } from './questions.entity';
 export class Choice {
   @PrimaryGeneratedColumn()
   id: number;
-  @Column({ type: 'int', generated: 'increment' })
-  counter: number;
+  // @Column({ type: 'int', generated: 'increment' })
+  // counter: number;
   @Column()
   option: string;
-  @ManyToOne(() => Questions, (questions) => questions.choices)
+  @ManyToOne(() => Questions, (questions) => questions.choices, {
+    cascade: true,
+  })
   @JoinColumn({ name: 'question_id' })
   question: Questions;
 }

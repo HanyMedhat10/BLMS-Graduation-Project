@@ -25,7 +25,7 @@ export class QuizService {
     private readonly courseService: CourseService,
   ) {}
   async createQuiz(createQuizDto: CreateQuizDto, currentUser: User) {
-    const quiz = new Quiz();
+    let quiz = new Quiz();
     // const questions =createQuizDto.questions.map(async (question) => {
     // return await this.createQuestionForQuiz(question);
     // });
@@ -64,8 +64,9 @@ export class QuizService {
     // delete questions['choices'];
     // quiz.questions = await Promise.all(questions);
     quiz.questions = questions;
-    console.log('quiz', quiz);
-    return await this.quizRepository.save(quiz);
+    // console.log('quiz', quiz);
+    quiz = await this.quizRepository.save(quiz);
+    return await this.findOneQuiz(quiz.id);
   }
   async createQuestion(createQuestionDto: CreateQuestionDto) {
     const Quiz = await this.findOneQuiz(createQuestionDto.quizId);
@@ -110,7 +111,7 @@ export class QuizService {
     question.degree = createQuestionDto.degree;
 
     // delete question.choices;
-    console.log('question', question);
+    // console.log('question', question);
     question = await this.questionsRepository.save(question);
     const choices: Choice[] = [];
     for (let index = 0; index < createQuestionDto.choices.length; index++) {
@@ -137,9 +138,9 @@ export class QuizService {
     return await this.quizRepository.findOne({
       where: { id },
       relations: {
-        // questions: {
-        //   choices: true,
-        // },
+        questions: {
+          choices: true,
+        },
       },
       select: {
         questions: {
@@ -196,7 +197,7 @@ export class QuizService {
           title: true,
         },
         choices: {
-          id: true,
+          // id: true,
           option: true,
         },
       },
@@ -221,7 +222,6 @@ export class QuizService {
           title: true,
         },
         choices: {
-          id: true,
           option: true,
         },
       },
@@ -293,6 +293,6 @@ export class QuizService {
     return await this.questionsRepository.delete(id);
   }
   async removeQuiz(id: number) {
-    return await this.questionsRepository.delete(id);
+    return await this.quizRepository.delete(id);
   }
 }

@@ -22,18 +22,15 @@ export class SubmitQuiz {
   @ManyToOne(() => User, (student) => student.submitQuizzes)
   @JoinColumn()
   solver: User;
-  @ManyToOne(() => User, (staff) => staff.correctQuiz)
+  @ManyToOne(() => User, (staff) => staff.correctQuiz, { cascade: true })
   @JoinColumn()
   correctBy: User;
-  @ManyToOne(() => Quiz, (quiz) => quiz.submits)
+  @ManyToOne(() => Quiz, (quiz) => quiz.submits, { cascade: true })
   @JoinColumn()
   quiz: Quiz;
   @OneToMany(
     () => SubmitQuestion,
     (submitQuestion) => submitQuestion.submitQuiz,
-    {
-      cascade: true,
-    },
   )
   submitQuestions: SubmitQuestion[];
 }
