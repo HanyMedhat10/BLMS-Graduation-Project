@@ -158,7 +158,7 @@ export class QuizService {
     });
   }
   async findAllQuiz() {
-    return await this.quizRepository.findOne({
+    return await this.quizRepository.find({
       relations: {
         questions: {
           choices: true,
