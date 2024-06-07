@@ -11,6 +11,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Degree } from './degree.entity';
 
 @Entity()
 export class Course {
@@ -30,4 +31,6 @@ export class Course {
   quizzes: Quiz[];
   @OneToMany(() => Material, (material) => material.course)
   materials: Material[];
+  @OneToMany(() => Degree, (degree) => degree.course)
+  degrees: Degree[];
 }

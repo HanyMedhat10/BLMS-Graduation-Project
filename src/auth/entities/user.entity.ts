@@ -23,6 +23,7 @@ import { Message } from 'src/chat/entities/message.entity';
 import { Quiz } from 'src/quiz/entities/quiz.entity';
 import { Material } from 'src/material/entities/material.entity';
 import { SubmitQuiz } from 'src/submit-quiz/entities/submit-quiz.entity';
+import { Degree } from 'src/course/entities/degree.entity';
 
 @Entity()
 export class User {
@@ -100,4 +101,7 @@ export class User {
   // if state Quiz student
   @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.solver)
   submitQuizzes: SubmitQuiz[];
+  // if state degree s/he work for a year and any other degree
+  @OneToMany(() => Degree, (degree) => degree.student)
+  degrees: Degree[];
 }
