@@ -15,6 +15,7 @@
         "PGPASSWORD",
         "PGPORT",
         "PGUSER",
+        "spreadsheetml",
         "Streamable",
         "STUDYMASTER",
         "Teacherassist",
