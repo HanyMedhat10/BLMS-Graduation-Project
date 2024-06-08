@@ -9,5 +9,6 @@ import { AssignmentModule } from 'src/assignment/assignment.module';
   imports: [TypeOrmModule.forFeature([SubmitAssignment]), AssignmentModule],
   controllers: [SubmitAssignmentController],
   providers: [SubmitAssignmentService],
+  exports: [SubmitAssignmentService],
 })
 export class SubmitAssignmentModule {}

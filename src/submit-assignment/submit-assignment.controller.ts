@@ -105,9 +105,18 @@ export class SubmitAssignmentController {
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get(':id')
+  @Get('oneSubmitAssignment/:id')
   findOne(@Param('id') id: string) {
     return this.submitAssignmentService.findOne(+id);
+  }
+  @ApiBearerAuth()
+  @ApiBody({
+    description: 'Put the Id of the Assignment to get all the submissions',
+  })
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('findSubmitAssignment/:id')
+  findSubmitAssignment(@Param('id') id: string) {
+    return this.submitAssignmentService.findSubmitAssignment(+id);
   }
 
   @ApiBearerAuth()

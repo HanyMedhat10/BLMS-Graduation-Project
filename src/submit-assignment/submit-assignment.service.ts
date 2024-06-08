@@ -51,6 +51,9 @@ export class SubmitAssignmentService {
       },
     });
   }
+  async findSubmitAssignment(assignmentId: number) {
+    return await this.assignmentService.findSubmitAssignment(assignmentId);
+  }
   async findSubmitAssignmentStudent(currentUser: User, courseId: number) {
     return await this.submitAssignmentRepository.find({
       where: {

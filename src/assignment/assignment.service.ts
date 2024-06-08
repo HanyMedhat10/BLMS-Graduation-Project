@@ -11,11 +11,14 @@ import { Repository } from 'typeorm';
 import * as fs from 'fs';
 import { CourseService } from 'src/course/course.service';
 import { User } from 'src/auth/entities/user.entity';
+import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignment.entity';
 @Injectable()
 export class AssignmentService {
   constructor(
     @InjectRepository(Assignment)
     private readonly assignmentRepository: Repository<Assignment>,
+    @InjectRepository(SubmitAssignment)
+    private readonly submitAssignmentRepository: Repository<SubmitAssignment>,
     private readonly courseService: CourseService,
   ) {}
   async create(
@@ -42,7 +45,27 @@ export class AssignmentService {
   async findOne(id: number): Promise<Assignment> {
     return await this.assignmentRepository.findOne({ where: { id } });
   }
-
+  async averageScoresOfOneAssignment(id: number): Promise<number> {
+    const submitAssignments = await this.findSubmitAssignment(id);
+    let sum = 0;
+    for (const submitAssignment of submitAssignments) {
+      if (submitAssignment.degree != null) {
+        sum += submitAssignment.degree;
+      }
+    }
+    return sum / submitAssignments.length;
+  }
+  async numberOfSubmitAssignment(id: number): Promise<number> {
+    const submitAssignments = await this.findSubmitAssignment(id);
+    return submitAssignments.length;
+  }
+  async percentageOfSubmitAssignment(id: number): Promise<number> {
+    const submitAssignments = await this.findSubmitAssignment(id);
+    const courseId = submitAssignments[0].assignment.course.id;
+    const totalEnrollmentsInCourse =
+      await this.courseService.numberOfUsersEnrolled(courseId);
+    return (submitAssignments.length / totalEnrollmentsInCourse) * 100;
+  }
   async update(
     id: number,
     updateAssignmentDto: UpdateAssignmentDto,
@@ -65,7 +88,12 @@ export class AssignmentService {
     }
     return await this.assignmentRepository.save(assignment);
   }
-
+  async findSubmitAssignment(assignmentId: number) {
+    return await this.submitAssignmentRepository.find({
+      where: { assignment: { id: assignmentId } },
+      relations: { assignment: true, solver: true },
+    });
+  }
   async remove(id: number) {
     const assignment = await this.findOne(id);
     try {
