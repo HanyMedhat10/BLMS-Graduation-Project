@@ -35,7 +35,7 @@ export class StudentService {
       where: { id: courseId },
     });
     // await student.student.courses.push(course);
-    await student.courses.push(course);
+    student.courses.push(course);
     await this.userRepository.save(student);
     // await this.studentRepository.save(student.student);
     return await this.findOne(id);
@@ -172,10 +172,12 @@ export class StudentService {
         // courses: { id: courseId },
         submitQuizzes: { quiz: { course: { id: courseId } } },
         submitsAssignments: { assignment: { course: { id: courseId } } },
+        degrees: { course: { id: courseId } },
       },
       relations: {
         submitQuizzes: { quiz: true },
         submitsAssignments: { assignment: true },
+        degrees: true,
       },
       select: {
         submitQuizzes: {
@@ -185,6 +187,7 @@ export class StudentService {
           },
         },
         submitsAssignments: { degree: true, assignment: { title: true } },
+        degrees: true,
       },
     });
   }

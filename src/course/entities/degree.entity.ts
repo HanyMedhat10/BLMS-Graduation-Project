@@ -15,6 +15,8 @@ export class Degree {
   title: string;
   @Column()
   degree: number;
+  @Column()
+  totalDegrees: number;
   @ManyToOne(() => Course, (course) => course.degrees)
   @JoinColumn()
   course: Course;

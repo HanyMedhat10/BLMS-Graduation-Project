@@ -41,6 +41,7 @@ export class CourseService {
       degree.course = course;
       degree.title = results[i].title;
       degree.degree = results[i].degree;
+      degree.totalDegrees = results[i].totalDegrees;
       const student = await this.userRepository.findOne({
         where: { id: results[i].student, courses: { id: course.id } },
       });
@@ -142,7 +143,12 @@ export class CourseService {
     // Iterate through the remaining lines
     for (let i = 1; i < lines.length - 1; i++) {
       const values = lines[i].split(',');
-      const obj = new DegreeClass(values[0], +values[1], +values[2]);
+      const obj = new DegreeClass(
+        values[0],
+        +values[1],
+        +values[2],
+        +values[3],
+      );
       data.push(obj);
     }
     return data;
