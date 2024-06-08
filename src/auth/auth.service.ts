@@ -53,7 +53,9 @@ export class AuthService {
     }
     return await this.createUser(createAuthDto, currentUser);
   }
-
+  async numberOfUsers() {
+    return await this.userRepository.count();
+  }
   async createTA(
     createTeacherassistDto: CreateTeacherAssistUserDto,
     currentUser: User,

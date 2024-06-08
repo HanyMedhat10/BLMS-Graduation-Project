@@ -72,6 +72,13 @@ export class AuthController {
     return this.authService.findAll();
   }
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('numberOfUser')
+  async numberOfUser() {
+    return await this.authService.numberOfUsers();
+  }
+
+  @ApiBearerAuth()
   @Get('singleUser/:id')
   findOne(@Param('id') id: string) {
     return this.authService.findOne(+id);
