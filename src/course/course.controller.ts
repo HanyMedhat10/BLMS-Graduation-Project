@@ -111,6 +111,12 @@ export class CourseController {
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('numberOfUsersEnrolled/:id')
+  async numberOfUsersEnrolled(@Param('id') id: string) {
+    return await this.courseService.numberOfUsersEnrolled(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('participants/:id')
   findAllParticipants(@Param('id') id: string) {
     return this.courseService.findAllParticipants(+id);

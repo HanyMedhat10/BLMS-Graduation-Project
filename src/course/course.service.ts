@@ -58,7 +58,9 @@ export class CourseService {
       return `All students are added successfully, but the following students with these ids do not exist: ${students.join(', ')}`;
     return 'All students are added successfully';
   }
-
+  async numberOfUsersEnrolled(id: number) {
+    return await this.userRepository.count({ where: { courses: { id } } });
+  }
   async findAll() {
     return await this.courseRepository.find({
       relations: { department: true, assignments: true, materials: true },
