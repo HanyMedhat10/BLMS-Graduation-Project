@@ -326,8 +326,17 @@ export class AuthService {
   anyUser(id: number) {
     return this.userRepository.findOne({ where: { id } });
   }
-  allAnyUser() {
-    return this.userRepository.find();
+  async allAnyUser() {
+    return await this.userRepository.find();
+  }
+
+  async numberOfEachRole() {
+    return await this.userRepository
+      .createQueryBuilder('users')
+      .select('users.role', 'role')
+      .addSelect('COUNT(users.role)', 'count')
+      .groupBy('users.role')
+      .getRawMany();
   }
   async update(
     id: number,
