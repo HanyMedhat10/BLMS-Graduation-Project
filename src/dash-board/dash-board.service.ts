@@ -6,6 +6,7 @@ import { User } from 'src/auth/entities/user.entity';
 import { CourseService } from 'src/course/course.service';
 import { Repository } from 'typeorm';
 import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignment.entity';
+import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class DashBoardService {
@@ -18,6 +19,8 @@ export class DashBoardService {
     private readonly submitAssignmentRepository: Repository<SubmitAssignment>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Course)
+    private readonly courseRepository: Repository<Course>,
     private readonly courseService: CourseService,
   ) {}
 
@@ -38,8 +41,7 @@ export class DashBoardService {
   async percentageOfSubmittedQuizzes(id: number) {
     const submittedQuizzes = await this.findSubmitQuiz(id);
     const courseId = submittedQuizzes[0].quiz.course.id;
-    const totalEnrollmentsInCourse =
-      await this.courseService.numberOfUsersEnrolled(courseId);
+    const totalEnrollmentsInCourse = await this.numberOfUsersEnrolled(courseId);
     return (submittedQuizzes.length / totalEnrollmentsInCourse) * 100;
   }
   async percentageOfPassedQuizzes(id: number) {
@@ -98,8 +100,7 @@ export class DashBoardService {
   async percentageOfSubmitAssignment(id: number): Promise<number> {
     const submitAssignments = await this.findSubmitAssignment(id);
     const courseId = submitAssignments[0].assignment.course.id;
-    const totalEnrollmentsInCourse =
-      await this.courseService.numberOfUsersEnrolled(courseId);
+    const totalEnrollmentsInCourse = await this.numberOfUsersEnrolled(courseId);
     return (submitAssignments.length / totalEnrollmentsInCourse) * 100;
   }
   async findSubmitAssignment(assignmentId: number) {
@@ -107,5 +108,21 @@ export class DashBoardService {
       where: { assignment: { id: assignmentId } },
       relations: { assignment: true, solver: true },
     });
+  }
+
+  async numberOfUsersEnrolled(id: number) {
+    return await this.userRepository.count({ where: { courses: { id } } });
+  }
+
+  async numberOfCourses() {
+    return await this.courseRepository.count();
+  }
+  async numberOfUsersForEachRole() {
+    return await this.userRepository
+      .createQueryBuilder('users')
+      .select('users.role', 'role')
+      .addSelect('COUNT(users.role)', 'count')
+      .groupBy('users.role')
+      .getRawMany();
   }
 }

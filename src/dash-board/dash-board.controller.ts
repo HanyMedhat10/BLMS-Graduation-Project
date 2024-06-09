@@ -1,11 +1,11 @@
 import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { DashBoardService } from './dash-board.service';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { RoleGuard } from 'src/auth/role/role.guard';
 import { Roles } from 'src/auth/roles/roles.decorator';
-
+@ApiTags('DashBoard Module')
 @Controller('dash-board')
 export class DashBoardController {
   constructor(private readonly dashBoardService: DashBoardService) {}
@@ -72,5 +72,24 @@ export class DashBoardController {
   @Get('percentageOfSubmitAssignment/:id')
   percentageOfSubmitAssignment(@Param('id') id: string) {
     return this.dashBoardService.percentageOfSubmitAssignment(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('numberOfUsersEnrolled/:id')
+  async numberOfUsersEnrolled(@Param('id') id: string) {
+    return await this.dashBoardService.numberOfUsersEnrolled(+id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('numberOfCourses')
+  async numberOfCourses() {
+    return await this.dashBoardService.numberOfCourses();
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('numberOfUsersForEachRole')
+  async numberOfUsersForEachRole() {
+    return await this.dashBoardService.numberOfUsersForEachRole();
   }
 }
