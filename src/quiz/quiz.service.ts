@@ -13,6 +13,7 @@ import { UpdateQuestionDto } from './dto/update-question.dto';
 import { CreateQuestionQuizDto } from './dto/create-question-multi.dto';
 import { CourseService } from 'src/course/course.service';
 import { SubmitQuiz } from 'src/submit-quiz/entities/submit-quiz.entity';
+import { SubmitQuestion } from 'src/submit-quiz/entities/submit-question.entity';
 
 @Injectable()
 export class QuizService {
@@ -25,6 +26,8 @@ export class QuizService {
     private readonly choiceRepository: Repository<Choice>,
     @InjectRepository(SubmitQuiz)
     private readonly submitQuizRepository: Repository<SubmitQuiz>,
+    @InjectRepository(SubmitQuestion)
+    private readonly submitQuestionRepository: Repository<SubmitQuestion>,
     private readonly courseService: CourseService,
   ) {}
   async createQuiz(createQuizDto: CreateQuizDto, currentUser: User) {
@@ -261,6 +264,26 @@ export class QuizService {
       }
     }
     return (numberOfPassedQuizzes / submittedQuizzes.length) * 100;
+  }
+  async percentageOfFullScoresQuestions(id: number) {
+    const submittedQuestions = await this.findSubmitQuestions(id);
+    let numberOfGetterFullScoresQuestions: number = 0;
+    for (const submittedQuestion of submittedQuestions) {
+      if (submittedQuestion.degree == submittedQuestion.question.degree) {
+        numberOfGetterFullScoresQuestions++;
+      }
+    }
+    return (
+      (numberOfGetterFullScoresQuestions / submittedQuestions.length) * 100
+    );
+  }
+  async findSubmitQuestions(id: number) {
+    return await this.submitQuestionRepository.find({
+      where: { question: { id: id } },
+      relations: {
+        question: true,
+      },
+    });
   }
   async findSubmitQuiz(id: number) {
     return await this.submitQuizRepository.find({

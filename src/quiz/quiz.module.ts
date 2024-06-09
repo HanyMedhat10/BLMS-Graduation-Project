@@ -7,10 +7,17 @@ import { Choice } from './entities/choice.entity';
 import { Questions } from './entities/questions.entity';
 import { CourseModule } from 'src/course/course.module';
 import { SubmitQuiz } from 'src/submit-quiz/entities/submit-quiz.entity';
+import { SubmitQuestion } from 'src/submit-quiz/entities/submit-question.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Quiz, Choice, Questions, SubmitQuiz]),
+    TypeOrmModule.forFeature([
+      Quiz,
+      Choice,
+      Questions,
+      SubmitQuiz,
+      SubmitQuestion,
+    ]),
     CourseModule,
   ],
   controllers: [QuizController],

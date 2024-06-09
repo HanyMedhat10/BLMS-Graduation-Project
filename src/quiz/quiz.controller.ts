@@ -100,6 +100,19 @@ export class QuizController {
     return this.quizService.findOneQuestion(+id);
   }
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('findSubmitQuestions/:id')
+  findSubmitQuestions(@Param('id') id: string) {
+    return this.quizService.findSubmitQuestions(+id);
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('percentageOfGetterFullScoresQuestion/:id')
+  percentageOfGetterFullScoresQuestion(@Param('id') id: string) {
+    return this.quizService.percentageOfFullScoresQuestions(+id);
+  }
+  @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Patch(':id')
