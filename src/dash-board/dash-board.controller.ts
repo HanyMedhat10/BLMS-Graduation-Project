@@ -1,34 +1,57 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { DashBoardService } from './dash-board.service';
-import { CreateDashBoardDto } from './dto/create-dash-board.dto';
-import { UpdateDashBoardDto } from './dto/update-dash-board.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { JwtAuthGuard } from 'src/auth/jwt.guard';
+import { Role } from 'src/auth/entities/enum/user.enum';
+import { RoleGuard } from 'src/auth/role/role.guard';
+import { Roles } from 'src/auth/roles/roles.decorator';
 
 @Controller('dash-board')
 export class DashBoardController {
   constructor(private readonly dashBoardService: DashBoardService) {}
 
-  @Post()
-  create(@Body() createDashBoardDto: CreateDashBoardDto) {
-    return this.dashBoardService.create(createDashBoardDto);
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('averageScoresOfOneQuiz/:id')
+  averageScoresOfOneQuiz(@Param('id') id: string) {
+    return this.dashBoardService.averageScoresOfOneQuiz(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('numberOfSubmittedQuizzes/:id')
+  numberOfSubmittedQuizzes(@Param('id') id: string) {
+    return this.dashBoardService.numberOfSubmittedQuizzes(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('percentageOfPassedQuizzes/:id')
+  percentageOfPassedQuizzes(@Param('id') id: string) {
+    return this.dashBoardService.percentageOfPassedQuizzes(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('percentageOfSubmittedQuizzes/:id')
+  percentageOfSubmittedQuizzes(@Param('id') id: string) {
+    return this.dashBoardService.percentageOfSubmittedQuizzes(+id);
+  }
+  @ApiBearerAuth()
+  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('findSubmitQuiz/:id')
+  findSubmitQuiz(@Param('id') id: string) {
+    return this.dashBoardService.findSubmitQuiz(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('findSubmitQuestions/:id')
+  findSubmitQuestions(@Param('id') id: string) {
+    return this.dashBoardService.findSubmitQuestions(+id);
   }
 
-  @Get()
-  findAll() {
-    return this.dashBoardService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.dashBoardService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDashBoardDto: UpdateDashBoardDto) {
-    return this.dashBoardService.update(+id, updateDashBoardDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.dashBoardService.remove(+id);
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('percentageOfGetterFullScoresQuestion/:id')
+  percentageOfGetterFullScoresQuestion(@Param('id') id: string) {
+    return this.dashBoardService.percentageOfFullScoresQuestions(+id);
   }
 }
