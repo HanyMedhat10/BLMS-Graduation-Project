@@ -8,6 +8,7 @@ import { SubmitQuiz } from 'src/submit-quiz/entities/submit-quiz.entity';
 import { SubmitQuestion } from 'src/submit-quiz/entities/submit-question.entity';
 import { CourseModule } from 'src/course/course.module';
 import { User } from 'src/auth/entities/user.entity';
+import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignment.entity';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { User } from 'src/auth/entities/user.entity';
       SubmitQuiz,
       SubmitQuestion,
       User,
+      SubmitAssignment,
     ]),
     CourseModule,
   ],

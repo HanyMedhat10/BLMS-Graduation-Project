@@ -5,6 +5,7 @@ import { SubmitQuestion } from 'src/submit-quiz/entities/submit-question.entity'
 import { User } from 'src/auth/entities/user.entity';
 import { CourseService } from 'src/course/course.service';
 import { Repository } from 'typeorm';
+import { SubmitAssignment } from 'src/submit-assignment/entities/submit-assignment.entity';
 
 @Injectable()
 export class DashBoardService {
@@ -13,6 +14,8 @@ export class DashBoardService {
     private readonly submitQuizRepository: Repository<SubmitQuiz>,
     @InjectRepository(SubmitQuestion)
     private readonly submitQuestionRepository: Repository<SubmitQuestion>,
+    @InjectRepository(SubmitAssignment)
+    private readonly submitAssignmentRepository: Repository<SubmitAssignment>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly courseService: CourseService,
@@ -76,6 +79,33 @@ export class DashBoardService {
       relations: {
         quiz: true,
       },
+    });
+  }
+  async averageScoresOfOneAssignment(id: number): Promise<number> {
+    const submitAssignments = await this.findSubmitAssignment(id);
+    let sum = 0;
+    for (const submitAssignment of submitAssignments) {
+      if (submitAssignment.degree != null) {
+        sum += submitAssignment.degree;
+      }
+    }
+    return sum / submitAssignments.length;
+  }
+  async numberOfSubmitAssignment(id: number): Promise<number> {
+    const submitAssignments = await this.findSubmitAssignment(id);
+    return submitAssignments.length;
+  }
+  async percentageOfSubmitAssignment(id: number): Promise<number> {
+    const submitAssignments = await this.findSubmitAssignment(id);
+    const courseId = submitAssignments[0].assignment.course.id;
+    const totalEnrollmentsInCourse =
+      await this.courseService.numberOfUsersEnrolled(courseId);
+    return (submitAssignments.length / totalEnrollmentsInCourse) * 100;
+  }
+  async findSubmitAssignment(assignmentId: number) {
+    return await this.submitAssignmentRepository.find({
+      where: { assignment: { id: assignmentId } },
+      relations: { assignment: true, solver: true },
     });
   }
 }

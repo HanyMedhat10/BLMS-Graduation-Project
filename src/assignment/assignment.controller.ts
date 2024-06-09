@@ -125,27 +125,9 @@ export class AssignmentController {
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('oneAssignment/:id')
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.assignmentService.findOne(+id);
-  }
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('averageScoresOfOneAssignment/:id')
-  averageScoresOfOneAssignment(@Param('id') id: string) {
-    return this.assignmentService.averageScoresOfOneAssignment(+id);
-  }
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('numberOfSubmitAssignment/:id')
-  numberOfSubmitAssignment(@Param('id') id: string) {
-    return this.assignmentService.numberOfSubmitAssignment(+id);
-  }
-  @ApiBearerAuth()
-  @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('percentageOfSubmitAssignment/:id')
-  percentageOfSubmitAssignment(@Param('id') id: string) {
-    return this.assignmentService.percentageOfSubmitAssignment(+id);
   }
 
   @ApiBearerAuth()

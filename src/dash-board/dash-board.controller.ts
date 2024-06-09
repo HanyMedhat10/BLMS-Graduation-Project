@@ -54,4 +54,23 @@ export class DashBoardController {
   percentageOfGetterFullScoresQuestion(@Param('id') id: string) {
     return this.dashBoardService.percentageOfFullScoresQuestions(+id);
   }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('averageScoresOfOneAssignment/:id')
+  averageScoresOfOneAssignment(@Param('id') id: string) {
+    return this.dashBoardService.averageScoresOfOneAssignment(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('numberOfSubmitAssignment/:id')
+  numberOfSubmitAssignment(@Param('id') id: string) {
+    return this.dashBoardService.numberOfSubmitAssignment(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('percentageOfSubmitAssignment/:id')
+  percentageOfSubmitAssignment(@Param('id') id: string) {
+    return this.dashBoardService.percentageOfSubmitAssignment(+id);
+  }
 }
