@@ -251,6 +251,17 @@ export class QuizService {
       await this.courseService.numberOfUsersEnrolled(courseId);
     return (submittedQuizzes.length / totalEnrollmentsInCourse) * 100;
   }
+  async percentageOfPassedQuizzes(id: number) {
+    const submittedQuizzes = await this.findSubmitQuiz(id);
+    const average = submittedQuizzes[0].quiz.degree / 2;
+    let numberOfPassedQuizzes = 0;
+    for (const submittedQuiz of submittedQuizzes) {
+      if (submittedQuiz.degree >= average) {
+        numberOfPassedQuizzes++;
+      }
+    }
+    return (numberOfPassedQuizzes / submittedQuizzes.length) * 100;
+  }
   async findSubmitQuiz(id: number) {
     return await this.submitQuizRepository.find({
       where: { quiz: { id: id } },

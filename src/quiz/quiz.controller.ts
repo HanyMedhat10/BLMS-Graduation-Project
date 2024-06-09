@@ -51,35 +51,36 @@ export class QuizController {
     return this.quizService.findAllQuiz();
   }
   @ApiBearerAuth()
-  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('questions')
   findAllQuestion() {
     return this.quizService.findAllQuestion();
   }
   @ApiBearerAuth()
-  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.quizService.findOneQuiz(+id);
   }
   @ApiBearerAuth()
-  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('averageScoresOfOneQuiz/:id')
   averageScoresOfOneQuiz(@Param('id') id: string) {
     return this.quizService.averageScoresOfOneQuiz(+id);
   }
   @ApiBearerAuth()
-  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('numberOfSubmittedQuizzes/:id')
   numberOfSubmittedQuizzes(@Param('id') id: string) {
     return this.quizService.numberOfSubmittedQuizzes(+id);
   }
   @ApiBearerAuth()
-  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('percentageOfPassedQuizzes/:id')
+  percentageOfPassedQuizzes(@Param('id') id: string) {
+    return this.quizService.percentageOfPassedQuizzes(+id);
+  }
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('percentageOfSubmittedQuizzes/:id')
   percentageOfSubmittedQuizzes(@Param('id') id: string) {
@@ -93,7 +94,6 @@ export class QuizController {
     return this.quizService.findSubmitQuiz(+id);
   }
   @ApiBearerAuth()
-  @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('questions/:id')
   findOneQuestion(@Param('id') id: string) {
