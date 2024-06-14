@@ -27,11 +27,18 @@ export class Questions {
     default: QuestionsType.SINGLE_CHOICE,
   })
   questionType: QuestionsType;
-  @ManyToOne(() => Quiz, (quiz) => quiz.questions, { cascade: true })
+  @ManyToOne(() => Quiz, (quiz) => quiz.questions)
   @JoinColumn()
   quiz: Quiz;
-  @OneToMany(() => Choice, (choices) => choices.question)
+  @OneToMany(() => Choice, (choices) => choices.question, { cascade: true })
   choices: Choice[];
-  @OneToMany(() => SubmitQuestion, (submitQuestion) => submitQuestion.question)
+  @OneToMany(
+    () => SubmitQuestion,
+    (submitQuestion) => submitQuestion.question,
+    {
+      cascade: true,
+      onDelete: 'CASCADE',
+    },
+  )
   submitQuestions: SubmitQuestion[];
 }

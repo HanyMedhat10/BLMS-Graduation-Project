@@ -29,11 +29,17 @@ export class Quiz {
   @ManyToOne(() => Course, (course) => course.quizzes)
   @JoinColumn()
   course: Course;
-  @ManyToOne(() => User, (user) => user.createQuizzes, { cascade: true })
+  @ManyToOne(() => User, (user) => user.createQuizzes)
   @JoinColumn()
   createBy: User;
-  @OneToMany(() => Questions, (questions) => questions.quiz)
+  @OneToMany(() => Questions, (questions) => questions.quiz, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   questions: Questions[];
-  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.quiz)
+  @OneToMany(() => SubmitQuiz, (submitQuiz) => submitQuiz.quiz, {
+    cascade: true,
+    onDelete: 'CASCADE',
+  })
   submits: SubmitQuiz[];
 }

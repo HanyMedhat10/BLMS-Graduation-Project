@@ -297,16 +297,16 @@ export class QuizService {
   }
   async removeQuestion(id: number) {
     const question = await this.findOneQuestion(id);
-    question.choices = question.choices.filter(async (choice) => {
-      return await this.choiceRepository.delete(choice.id);
-    });
+    question.choices = [];
+    // question.submitQuestions = [];
+    await this.questionsRepository.save(question);
     return await this.questionsRepository.delete(id);
   }
   async removeQuiz(id: number) {
     const quiz = await this.findOneQuiz(id);
-    quiz.questions = quiz.questions.filter(async (question) => {
-      return await this.removeQuestion(question.id);
-    });
+    for (let i = 0; i < quiz.questions.length; i++) {
+      await this.removeQuestion(quiz.questions[i].id);
+    }
     return await this.quizRepository.delete(id);
   }
 }

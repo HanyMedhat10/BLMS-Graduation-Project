@@ -15,9 +15,7 @@ export class Choice {
   // counter: number;
   @Column()
   option: string;
-  @ManyToOne(() => Questions, (questions) => questions.choices, {
-    cascade: true,
-  })
+  @ManyToOne(() => Questions, (questions) => questions.choices)
   @JoinColumn({ name: 'question_id' })
   question: Questions;
 }
