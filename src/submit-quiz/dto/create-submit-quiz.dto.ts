@@ -16,8 +16,7 @@ export class CreateSubmitQuizDto {
   @Min(1)
   quizId: number;
   @ApiProperty({ type: [Number] })
-  @IsInt()
-  @IsPositive()
+  @IsInt({ each: true })
   @IsNotEmpty()
   questionId: number[];
   @ApiProperty({ type: [String] })
