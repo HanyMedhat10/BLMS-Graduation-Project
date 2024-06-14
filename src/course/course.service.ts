@@ -110,7 +110,12 @@ export class CourseService {
   async findOne(id: number) {
     return await this.courseRepository.findOne({
       where: { id },
-      relations: { department: true, assignments: true, materials: true },
+      relations: {
+        department: true,
+        assignments: true,
+        materials: true,
+        quizzes: true,
+      },
     });
   }
 
