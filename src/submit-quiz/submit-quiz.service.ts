@@ -28,20 +28,31 @@ export class SubmitQuizService {
       quiz: quiz,
       solver: currentUser,
     });
-    await Promise.all(
-      createSubmitQuizDto.questionId.map(async (questionId) => {
-        await this.submitQuestionRepository.create({
-          answer: createSubmitQuizDto.answer[questionId],
-          submitQuiz: submitQuiz,
-          question: await this.questionRepository.findOne({
-            where: { id: questionId },
-          }),
-          // The above line is equivalent to the following one:
-          // question: await this.questionRepository.findOneOrFail({ id: questionId }),
-        });
-      }),
-    );
-    return submitQuiz;
+    // await Promise.all(
+    //   createSubmitQuizDto.questionId.map(async (questionId) => {
+    //     await this.submitQuestionRepository.create({
+    //       answer: createSubmitQuizDto.answer[questionId],
+    //       submitQuiz: submitQuiz,
+    //       question: await this.questionRepository.findOne({
+    //         where: { id: questionId },
+    //       }),
+    //       // The above line is equivalent to the following one:
+    //       // question: await this.questionRepository.findOneOrFail({ id: questionId }),
+    //     });
+    //   }),
+    // );
+    for (const question of createSubmitQuizDto.questions) {
+      const submitQuestion = this.submitQuestionRepository.create({
+        answer: question.answer,
+        submitQuiz: submitQuiz,
+        question: await this.questionRepository.findOne({
+          where: { id: question.questionId },
+        }),
+      });
+      await this.submitQuestionRepository.save(submitQuestion);
+    }
+
+    return await this.submitQuizRepository.save(submitQuiz);
   }
 
   async findAll() {
@@ -64,7 +75,6 @@ export class SubmitQuizService {
         },
       },
     });
-    return `This action returns a #${id} submitQuiz`;
   }
 
   async correctionAutomaticSubmitQuiz(id: number) {

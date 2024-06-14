@@ -4,9 +4,12 @@ import {
   IsInt,
   IsNotEmpty,
   IsPositive,
-  IsString,
   Min,
+  ValidateNested,
 } from 'class-validator';
+
+import { CreateSubmitQuestionDto } from './create-submit-question.dto';
+import { Type } from 'class-transformer';
 
 export class CreateSubmitQuizDto {
   @ApiProperty()
@@ -15,13 +18,9 @@ export class CreateSubmitQuizDto {
   @IsNotEmpty()
   @Min(1)
   quizId: number;
-  @ApiProperty({ type: [Number] })
-  @IsInt({ each: true })
-  @IsNotEmpty()
-  questionId: number[];
-  @ApiProperty({ type: [String] })
-  @IsString({ each: true })
-  @IsNotEmpty()
+  @ApiProperty({ type: [CreateSubmitQuestionDto] })
   @ArrayNotEmpty()
-  answer: string[];
+  @Type(() => CreateSubmitQuestionDto)
+  @ValidateNested({ each: true })
+  questions: CreateSubmitQuestionDto[];
 }
