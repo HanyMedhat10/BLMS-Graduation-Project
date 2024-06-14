@@ -20,7 +20,7 @@ export class CreateSubmitQuizDto {
   @IsNotEmpty()
   questionId: number[];
   @ApiProperty({ type: [String] })
-  @IsString({ always: true })
+  @IsString({ each: true })
   @IsNotEmpty()
   @ArrayNotEmpty()
   answer: string[];
