@@ -42,12 +42,13 @@ export class SubmitQuizService {
     //   }),
     // );
     for (const question of createSubmitQuizDto.questions) {
+      const questionId = await this.questionRepository.findOne({
+        where: { id: question.questionId },
+      });
       const submitQuestion = this.submitQuestionRepository.create({
         answer: question.answer,
         submitQuiz: submitQuiz,
-        question: await this.questionRepository.findOne({
-          where: { id: question.questionId },
-        }),
+        question: questionId,
       });
       await this.submitQuestionRepository.save(submitQuestion);
     }
