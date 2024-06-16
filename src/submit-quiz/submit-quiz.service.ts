@@ -24,10 +24,11 @@ export class SubmitQuizService {
     const quiz = await this.quizRepository.findOneBy({
       id: createSubmitQuizDto.quizId,
     });
-    const submitQuiz = this.submitQuizRepository.create({
+    let submitQuiz = this.submitQuizRepository.create({
       quiz: quiz,
       solver: currentUser,
     });
+    submitQuiz = await this.submitQuizRepository.save(submitQuiz);
     // await Promise.all(
     //   createSubmitQuizDto.questionId.map(async (questionId) => {
     //     await this.submitQuestionRepository.create({
