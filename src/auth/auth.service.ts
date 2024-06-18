@@ -7,7 +7,7 @@ import {
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { User } from './entities/user.entity';
-import { DeleteResult, Repository } from 'typeorm';
+import { DeleteResult, In, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
@@ -303,7 +303,7 @@ export class AuthService {
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { id, role: Role.ADMIN || Role.CLERK },
+      where: { id, role: In([Role.ADMIN, Role.CLERK]) },
       // where: { id, role: Or(Role.ADMIN, Role.CLERK) },
       select: {
         addedBy: {
