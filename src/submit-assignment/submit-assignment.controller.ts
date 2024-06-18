@@ -74,7 +74,7 @@ export class SubmitAssignmentController {
     }),
   )
   // handleMultiPartData(@Body() createAssignmentDto: CreateAssignmentDto)
-  create(
+  async create(
     // @Body() createAssignmentDto: CreateAssignmentDto,
     @UploadedFile(
       new ParseFilePipe({
@@ -91,7 +91,7 @@ export class SubmitAssignmentController {
     @Body('assignmentId') assignmentId: string,
     @CurrentUser() currentUser: User,
   ) {
-    return this.submitAssignmentService.create(
+    return await this.submitAssignmentService.create(
       +assignmentId,
       file,
       currentUser,
@@ -106,8 +106,8 @@ export class SubmitAssignmentController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('oneSubmitAssignment/:id')
-  findOne(@Param('id') id: string) {
-    return this.submitAssignmentService.findOne(+id);
+  async findOne(@Param('id') id: string) {
+    return await this.submitAssignmentService.findOne(+id);
   }
   @ApiBearerAuth()
   @ApiBody({
@@ -115,20 +115,20 @@ export class SubmitAssignmentController {
   })
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('findSubmitAssignment/:id')
-  findSubmitAssignment(@Param('id') id: string) {
-    return this.submitAssignmentService.findSubmitAssignment(+id);
+  async findSubmitAssignment(@Param('id') id: string) {
+    return await this.submitAssignmentService.findSubmitAssignment(+id);
   }
 
   @ApiBearerAuth()
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('correctionAssignment/:id')
-  update(
+  async update(
     @Param('id') id: string,
     @Query('degree') degree: string,
     @CurrentUser() currentUser: User,
   ) {
-    return this.submitAssignmentService.correctionAssignment(
+    return await this.submitAssignmentService.correctionAssignment(
       +id,
       +degree,
       currentUser,
@@ -138,8 +138,8 @@ export class SubmitAssignmentController {
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.submitAssignmentService.remove(+id);
+  async remove(@Param('id') id: string) {
+    return await this.submitAssignmentService.remove(+id);
   }
 
   @ApiBearerAuth()
