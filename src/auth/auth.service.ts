@@ -303,7 +303,8 @@ export class AuthService {
 
   async findOne(id: number): Promise<User> {
     const user = await this.userRepository.findOne({
-      where: { id, role: In([Role.ADMIN, Role.CLERK]) },
+      where: { id, role: Role.ADMIN || Role.CLERK },
+      // where: { id, role: In([Role.ADMIN, Role.CLERK]) },
       // where: { id, role: Or(Role.ADMIN, Role.CLERK) },
       select: {
         addedBy: {
@@ -470,8 +471,9 @@ export class AuthService {
     const id = currentUser.id;
     switch (currentUser.role) {
       case Role.ADMIN:
-      case Role.CLERK:
         return await this.findOne(currentUser.id);
+      case Role.CLERK:
+        return await this.findOneClerk(currentUser.id);
       case Role.STUDENT:
         return await this.userRepository.findOne({
           where: { id: id, role: Role.STUDENT },
@@ -741,5 +743,12 @@ export class AuthService {
 
     // Generate a random integer between min and max
     return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  async findOneClerk(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { id, role: Role.CLERK },
+    });
+    if (!user) throw new NotFoundException('User not found.');
+    return user;
   }
 }
