@@ -84,15 +84,30 @@ export class AuthController {
     return this.authService.findOne(+id);
   }
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('getAnyUser/:id')
   anyUser(@Param('id') id: string) {
     return this.authService.anyUser(+id);
   }
   @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
   @Get('allAnyUser/')
   allAnyUser() {
     return this.authService.allAnyUser();
   }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('getAnyUserWithoutAdmin/:id')
+  getAnyUserWithoutAdmin(@Param('id') id: string) {
+    return this.authService.getAnyUserWithoutAdmin(+id);
+  }
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard, RoleGuard)
+  @Get('allAnyUserWithoutAdmin')
+  async allAnyUserWithoutAdmin() {
+    return await this.authService.allAnyUserWithoutAdmin();
+  }
+
   @ApiBearerAuth()
   @Roles(Role.ADMIN)
   @UseGuards(JwtAuthGuard, RoleGuard)

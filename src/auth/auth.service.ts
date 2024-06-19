@@ -7,7 +7,7 @@ import {
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { User } from './entities/user.entity';
-import { DeleteResult, In, Repository } from 'typeorm';
+import { DeleteResult, Not, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import * as fs from 'fs';
@@ -517,6 +517,30 @@ export class AuthService {
         throw new NotFoundException('the User not found ');
     }
   }
+
+  async getAnyUserWithoutAdmin(id: number) {
+    return await this.userRepository.findOne({
+      where: { id, role: Not(Role.ADMIN) },
+      relations: {
+        college: true,
+        department: true,
+        teachingCourses: true,
+        courses: true,
+      },
+    });
+  }
+  async allAnyUserWithoutAdmin() {
+    return await this.userRepository.find({
+      where: { role: Not(Role.ADMIN) },
+      relations: {
+        college: true,
+        department: true,
+        teachingCourses: true,
+        courses: true,
+      },
+    });
+  }
+
   async changeProfileImage(file: Express.Multer.File, currentUser: User) {
     const user = await this.userRepository.findOne({
       where: { id: currentUser.id },
