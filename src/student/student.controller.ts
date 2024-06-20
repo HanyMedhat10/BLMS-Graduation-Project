@@ -63,7 +63,7 @@ export class StudentController {
     @Param('id') id: string,
     @CurrentUser() currentUser: User,
   ) {
-    // console.log(currentUser);
+    console.log(currentUser);
     return await this.studentService.getAllGradesInCourse(currentUser, +id);
   }
   @ApiBearerAuth()

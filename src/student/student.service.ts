@@ -1,4 +1,9 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
@@ -169,31 +174,36 @@ export class StudentService {
     return await this.userRepository.save(user);
   }
   async getAllGradesInCourse(currentUser: User, courseId: number) {
-    return await this.userRepository.findOne({
-      where: {
-        id: currentUser.id,
-        // role: Role.STUDENT,
-        // courses: { id: courseId },
-        submitQuizzes: { quiz: { course: { id: courseId } } },
-        submitsAssignments: { assignment: { course: { id: courseId } } },
-        degrees: { course: { id: courseId } },
-      },
-      relations: {
-        submitQuizzes: { quiz: true },
-        submitsAssignments: { assignment: true },
-        degrees: true,
-      },
-      select: {
-        submitQuizzes: {
-          degree: true,
-          quiz: {
-            title: true,
-          },
+    try {
+      return await this.userRepository.findOne({
+        where: {
+          id: currentUser.id,
+          // role: Role.STUDENT,
+          // courses: { id: courseId },
+          submitQuizzes: { quiz: { course: { id: courseId } } },
+          submitsAssignments: { assignment: { course: { id: courseId } } },
+          degrees: { course: { id: courseId } },
         },
-        submitsAssignments: { degree: true, assignment: { title: true } },
-        degrees: true,
-      },
-    });
+        relations: {
+          submitQuizzes: { quiz: true },
+          submitsAssignments: { assignment: true },
+          degrees: true,
+        },
+        select: {
+          submitQuizzes: {
+            degree: true,
+            quiz: {
+              title: true,
+            },
+          },
+          submitsAssignments: { degree: true, assignment: { title: true } },
+          degrees: true,
+        },
+      });
+    } catch (error) {
+      Logger.error(error);
+      throw new InternalServerErrorException();
+    }
   }
   async remove(id: number) {
     // const student = await this.findOne(id);
