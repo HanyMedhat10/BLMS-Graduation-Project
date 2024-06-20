@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { User } from 'src/auth/entities/user.entity';
@@ -9,6 +9,7 @@ import { UpdateStudentUserDto } from './dto/update-student-user-dto';
 import { CourseService } from 'src/course/course.service';
 import { DepartmentService } from 'src/department/department.service';
 import { Course } from 'src/course/entities/course.entity';
+import { StudentCourses } from './dto/student-courses.dto';
 
 @Injectable()
 export class StudentService {
@@ -29,13 +30,16 @@ export class StudentService {
       currentUser,
     );
   }
-  async addStudyCourse(id: number, courseId: number): Promise<User> {
+  async addStudyCourse(id: number, courses: StudentCourses): Promise<User> {
     const student = await this.findOne(id);
-    const course = await this.courseRepository.findOne({
-      where: { id: courseId },
+    const course = await this.courseRepository.find({
+      where: { id: In(courses.courses) },
     });
     // await student.student.courses.push(course);
-    student.courses.push(course);
+    for (let index = 0; index < course.length; index++) {
+      const element = course[index];
+      student.courses.push(element);
+    }
     await this.userRepository.save(student);
     // await this.studentRepository.save(student.student);
     return await this.findOne(id);

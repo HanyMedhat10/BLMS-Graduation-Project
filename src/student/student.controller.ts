@@ -19,6 +19,7 @@ import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { UpdateStudentUserDto } from './dto/update-student-user-dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Role } from 'src/auth/entities/enum/user.enum';
+import { StudentCourses } from './dto/student-courses.dto';
 @ApiTags('Student Module')
 @Controller('student')
 export class StudentController {
@@ -39,9 +40,9 @@ export class StudentController {
   @Post('addStudyCourse/:id')
   addStudyCourse(
     @Param('id') id: string,
-    @Query('courseId') courseId: string,
+    @Body() courses: StudentCourses,
   ): Promise<User> {
-    return this.studentService.addStudyCourse(+id, +courseId);
+    return this.studentService.addStudyCourse(+id, courses);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)

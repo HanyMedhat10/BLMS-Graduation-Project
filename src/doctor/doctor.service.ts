@@ -2,13 +2,15 @@ import { CreateDoctorDto } from './dto/create-doctor.dto';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/auth/entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { DepartmentService } from 'src/department/department.service';
 import { CourseService } from 'src/course/course.service';
 import { Course } from 'src/course/entities/course.entity';
+import { StudentCourses } from 'src/student/dto/student-courses.dto';
+import { TeachCourses } from './dto/teach-courses.dto';
 
 @Injectable()
 export class DoctorService {
@@ -24,12 +26,15 @@ export class DoctorService {
   async create(createDoctorDto: CreateDoctorDto, currentUser: User) {
     return await this.userService.createDR(createDoctorDto, currentUser);
   }
-  async addTeachingCourse(id: number, courseId: number): Promise<User> {
+  async addTeachingCourse(id: number, courses: TeachCourses): Promise<User> {
     const dr = await this.findOne(id);
-    const course = await this.courseRepository.findOne({
-      where: { id: courseId },
+    const course = await this.courseRepository.find({
+      where: { id: In(courses.courses) },
     });
-    dr.teachingCourses.push(course);
+    for (let index = 0; index < course.length; index++) {
+      const element = course[index];
+      dr.teachingCourses.push(element);
+    }
     await this.userRepository.save(dr);
     return dr;
   }
