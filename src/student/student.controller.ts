@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { StudentService } from './student.service';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
@@ -93,7 +92,7 @@ export class StudentController {
   @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('deleteCourse/:id')
-  removeCourse(@Param('id') id: string, @Query('courseId') courseId: string) {
-    return this.studentService.removeCourse(+id, +courseId);
+  removeCourse(@Param('id') id: string, @Body() courses: StudentCourses) {
+    return this.studentService.removeCourse(+id, courses);
   }
 }

@@ -200,11 +200,15 @@ export class StudentService {
     // await this.studentRepository.delete(student.student.id);
     return await this.userService.remove(id);
   }
-  async removeCourse(id: number, courseId: number) {
+  async removeCourse(id: number, courses: StudentCourses) {
     const student = await this.findOne(id);
-    student.courses = student.courses.filter((course) => {
-      return course.id !== courseId;
-    });
+    for (let index = 0; index < courses.courses.length; index++) {
+      const element = courses.courses[index];
+
+      student.courses = student.courses.filter((course) => {
+        return course.id !== element;
+      });
+    }
     await this.userRepository.save(student);
     return await this.findOne(id);
     // return await this.studentRepository.save(student);

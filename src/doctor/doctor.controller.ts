@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { DoctorService } from './doctor.service';
 import { CreateDoctorDto } from './dto/create-doctor.dto';
@@ -79,10 +78,7 @@ export class DoctorController {
   @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('deleteTeachingCourse/:id')
-  removeTeachingCourse(
-    @Param('id') id: string,
-    @Query('courseId') courseId: string,
-  ) {
-    return this.doctorService.removeCourse(+id, +courseId);
+  removeTeachingCourse(@Param('id') id: string, @Body() courses: TeachCourses) {
+    return this.doctorService.removeCourse(+id, courses);
   }
 }

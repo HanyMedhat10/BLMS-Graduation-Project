@@ -102,11 +102,14 @@ export class DoctorService {
     // }
     return await this.userRepository.delete(doctor.id);
   }
-  async removeCourse(id: number, courseId: number) {
+  async removeCourse(id: number, courses: TeachCourses) {
     const dr = await this.findOne(id);
-    dr.teachingCourses = dr.teachingCourses.filter((course) => {
-      return course.id !== courseId;
-    });
+    for (let index = 0; index < courses.courses.length; index++) {
+      const element = courses.courses[index];
+      dr.teachingCourses = dr.teachingCourses.filter((course) => {
+        return course.id !== element;
+      });
+    }
     return await this.userRepository.save(dr);
   }
 }

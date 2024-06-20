@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { TeacherassistService } from './teacherassist.service';
 import { CurrentUser } from 'src/utility/decorators/current-user.decorator';
@@ -109,10 +108,7 @@ export class TeacherassistController {
   @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('deleteTeachingCourse/:id')
-  removeTeachingCourse(
-    @Param('id') id: string,
-    @Query('courseId') courseId: string,
-  ) {
-    return this.doctorService.removeCourse(+id, +courseId);
+  removeTeachingCourse(@Param('id') id: string, @Body() courses: TeachCourses) {
+    return this.doctorService.removeCourse(+id, courses);
   }
 }

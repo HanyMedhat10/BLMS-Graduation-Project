@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
   UseGuards,
-  Query,
 } from '@nestjs/common';
 import { HeadOfDepartmentService } from './head-of-department.service';
 import { CreateHeadOfDepartmentDto } from './dto/create-head-of-department.dto';
@@ -88,10 +87,7 @@ export class HeadOfDepartmentController {
   @Roles(Role.ADMIN, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Delete('deleteTeachingCourse/:id')
-  removeTeachingCourse(
-    @Param('id') id: string,
-    @Query('courseId') courseId: string,
-  ) {
-    return this.doctorService.removeCourse(+id, +courseId);
+  removeTeachingCourse(@Param('id') id: string, @Body() courses: TeachCourses) {
+    return this.doctorService.removeCourse(+id, courses);
   }
 }
