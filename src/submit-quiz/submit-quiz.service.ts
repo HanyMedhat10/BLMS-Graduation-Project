@@ -82,6 +82,11 @@ export class SubmitQuizService {
   async correctionAutomaticSubmitQuiz(id: number) {
     const submitQuiz = await this.submitQuizRepository.findOne({
       where: { id },
+      relations: {
+        submitQuestions: {
+          question: true,
+        },
+      },
     });
     let sumDegree = 0;
     for (const submitQuestion of submitQuiz.submitQuestions) {
