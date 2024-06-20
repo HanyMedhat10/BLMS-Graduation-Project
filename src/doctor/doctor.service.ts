@@ -9,7 +9,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { DepartmentService } from 'src/department/department.service';
 import { CourseService } from 'src/course/course.service';
 import { Course } from 'src/course/entities/course.entity';
-import { StudentCourses } from 'src/student/dto/student-courses.dto';
 import { TeachCourses } from './dto/teach-courses.dto';
 
 @Injectable()

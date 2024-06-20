@@ -40,7 +40,7 @@ export class DoctorController {
   @Post('addTeachingCourse/:id')
   addTeachingCourse(
     @Param('id') id: string,
-    @Body()  courses: TeachCourses,
+    @Body() courses: TeachCourses,
   ): Promise<User> {
     return this.doctorService.addTeachingCourse(+id, courses);
   }

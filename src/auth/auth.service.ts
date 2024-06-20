@@ -332,6 +332,7 @@ export class AuthService {
       relations: {
         courses: true,
         teachingCourses: true,
+        department: true,
       },
     });
   }
