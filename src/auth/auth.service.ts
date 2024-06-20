@@ -328,7 +328,12 @@ export class AuthService {
     return this.userRepository.findOne({ where: { id } });
   }
   async allAnyUser() {
-    return await this.userRepository.find();
+    return await this.userRepository.find({
+      relations: {
+        courses: true,
+        teachingCourses: true,
+      },
+    });
   }
 
   async numberOfEachRole() {
