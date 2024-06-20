@@ -40,12 +40,14 @@ export class DashBoardService {
   }
   async percentageOfSubmittedQuizzes(id: number) {
     const submittedQuizzes = await this.findSubmitQuiz(id);
+    if (submittedQuizzes.length == 0) return 0;
     const courseId = submittedQuizzes[0].quiz.course.id;
     const totalEnrollmentsInCourse = await this.numberOfUsersEnrolled(courseId);
     return (submittedQuizzes.length / totalEnrollmentsInCourse) * 100;
   }
   async percentageOfPassedQuizzes(id: number) {
     const submittedQuizzes = await this.findSubmitQuiz(id);
+    if (submittedQuizzes.length == 0) return 0;
     const average = submittedQuizzes[0].quiz.degree / 2;
     let numberOfPassedQuizzes = 0;
     for (const submittedQuiz of submittedQuizzes) {
