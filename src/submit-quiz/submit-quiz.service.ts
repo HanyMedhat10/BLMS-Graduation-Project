@@ -84,20 +84,18 @@ export class SubmitQuizService {
       where: { id },
     });
     let sumDegree = 0;
-    await Promise.all(
-      submitQuiz.submitQuestions.map(async (submitQuestion) => {
-        if (submitQuestion.answer == submitQuestion.question.answer) {
-          const question = await this.questionRepository.findOne({
-            where: { id: submitQuestion.question.id },
-            select: ['degree'],
-          });
-          sumDegree += question?.degree;
-          submitQuestion.degree = question?.degree || 0;
-        } else {
-          submitQuestion.degree = 0;
-        }
-      }),
-    );
+    for (const submitQuestion of submitQuiz.submitQuestions) {
+      if (submitQuestion.answer == submitQuestion.question.answer) {
+        const question = await this.questionRepository.findOne({
+          where: { id: submitQuestion.question.id },
+          select: ['degree'],
+        });
+        sumDegree += question?.degree;
+        submitQuestion.degree = question?.degree || 0;
+      } else {
+        submitQuestion.degree = 0;
+      }
+    }
     submitQuiz.degree = sumDegree;
     return await this.submitQuizRepository.save(submitQuiz);
   }
