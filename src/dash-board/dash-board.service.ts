@@ -79,7 +79,9 @@ export class DashBoardService {
     return await this.submitQuizRepository.find({
       where: { quiz: { id: id } },
       relations: {
-        quiz: true,
+        quiz: {
+          course: true,
+        },
       },
     });
   }
