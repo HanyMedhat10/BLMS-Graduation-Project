@@ -15,6 +15,7 @@ import { CourseService } from 'src/course/course.service';
 import { DepartmentService } from 'src/department/department.service';
 import { Course } from 'src/course/entities/course.entity';
 import { StudentCourses } from './dto/student-courses.dto';
+import { Degree } from 'src/course/entities/degree.entity';
 
 @Injectable()
 export class StudentService {
@@ -175,14 +176,10 @@ export class StudentService {
   }
   async getAllGradesInCourse(currentUser: User, courseId: number) {
     try {
-      return await this.userRepository.findOne({
+      const student = await this.userRepository.findOne({
         where: {
           id: currentUser.id,
-          // role: Role.STUDENT,
-          // courses: { id: courseId },
-          submitQuizzes: { quiz: { course: { id: courseId } } },
-          submitsAssignments: { assignment: { course: { id: courseId } } },
-          degrees: { course: { id: courseId } },
+          role: Role.STUDENT,
         },
         relations: {
           submitQuizzes: { quiz: true },
@@ -200,6 +197,32 @@ export class StudentService {
           degrees: true,
         },
       });
+
+      if (!student) {
+        throw new NotFoundException('Student not found');
+      }
+      // TODO: filter by course id only (submitQuizzes and submitsAssignments)
+      // but filter on Assignments
+      const submitQuizzes = student.submitQuizzes.filter((x) => {
+        return x.quiz.course.id === courseId;
+      });
+
+      const submitAssignment = student.submitsAssignments.filter((x) => {
+        return x.assignment.course.id === courseId;
+      });
+      const degree = student.degrees.filter((x) => {
+        return x.course.id === courseId;
+      });
+      const grades = {
+        submitQuizzes,
+        submitAssignment,
+        degrees: degree,
+      };
+      return {
+        id: currentUser.id,
+        name: currentUser.name,
+        grades,
+      };
     } catch (error) {
       Logger.error(error);
       throw new InternalServerErrorException();
