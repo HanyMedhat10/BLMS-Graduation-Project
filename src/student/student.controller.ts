@@ -58,13 +58,10 @@ export class StudentController {
   @ApiBearerAuth()
   // @Roles(Role.STUDENT)
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('getAllGradesInCourse/:id')
-  async getAllGradesInCourse(
-    @Param('id') id: string,
-    @CurrentUser() currentUser: User,
-  ) {
+  @Get('getAllGradesUser/:id')
+  async getAllGradesUser(@CurrentUser() currentUser: User) {
     console.log(currentUser);
-    return await this.studentService.getAllGradesInCourse(currentUser, +id);
+    return await this.studentService.getAllGradesUser(currentUser);
   }
   @ApiBearerAuth()
   @Roles(Role.ADMIN)

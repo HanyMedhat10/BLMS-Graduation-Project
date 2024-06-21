@@ -168,27 +168,17 @@ export class StudentService {
     }
     return await this.userRepository.save(user);
   }
-  async getAllGradesInCourse(currentUser: User, courseId: number) {
+  async getAllGradesUser(currentUser: User) {
     try {
-      const student = await this.userRepository.findOne({
+      const student = await this.userRepository.find({
         where: {
           id: currentUser.id,
           role: Role.STUDENT,
         },
         relations: {
-          submitQuizzes: { quiz: true },
-          submitsAssignments: { assignment: true },
-          degrees: true,
-        },
-        select: {
-          submitQuizzes: {
-            degree: true,
-            quiz: {
-              title: true,
-            },
-          },
-          submitsAssignments: { degree: true, assignment: { title: true } },
-          degrees: true,
+          submitQuizzes: { quiz: { course: true } },
+          submitsAssignments: { assignment: { course: true } },
+          degrees: { course: true },
         },
       });
 
@@ -196,28 +186,6 @@ export class StudentService {
         throw new NotFoundException('Student not found');
       }
       return student;
-      // TODO: filter by course id only (submitQuizzes and submitsAssignments)
-      // but filter on Assignments
-      const submitQuizzes = student.submitQuizzes.filter((x) => {
-        return x.quiz.course.id === courseId;
-      });
-
-      const submitAssignment = student.submitsAssignments.filter((x) => {
-        return x.assignment.course.id === courseId;
-      });
-      const degree = student.degrees.filter((x) => {
-        return x.course.id === courseId;
-      });
-      const grades = {
-        submitQuizzes,
-        submitAssignment,
-        degrees: degree,
-      };
-      return {
-        id: currentUser.id,
-        name: currentUser.name,
-        grades,
-      };
     } catch (error) {
       Logger.error(error);
       return error;
