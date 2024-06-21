@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
 import { AuthService } from 'src/auth/auth.service';
@@ -15,7 +10,6 @@ import { CourseService } from 'src/course/course.service';
 import { DepartmentService } from 'src/department/department.service';
 import { Course } from 'src/course/entities/course.entity';
 import { StudentCourses } from './dto/student-courses.dto';
-import { Degree } from 'src/course/entities/degree.entity';
 
 @Injectable()
 export class StudentService {
@@ -201,6 +195,7 @@ export class StudentService {
       if (!student) {
         throw new NotFoundException('Student not found');
       }
+      return student;
       // TODO: filter by course id only (submitQuizzes and submitsAssignments)
       // but filter on Assignments
       const submitQuizzes = student.submitQuizzes.filter((x) => {
@@ -225,7 +220,7 @@ export class StudentService {
       };
     } catch (error) {
       Logger.error(error);
-      throw new InternalServerErrorException();
+      return error;
     }
   }
   async remove(id: number) {
