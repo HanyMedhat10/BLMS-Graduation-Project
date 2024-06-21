@@ -142,7 +142,7 @@ export class AuthController {
       properties: {
         file: {
           type: 'File', // Use 'File' for file uploads
-          format: '(jpeg|png)', // Specify Image format
+          format: '(jpeg|png|jpg)', // Specify Image format
         },
       },
     },
@@ -160,7 +160,7 @@ export class AuthController {
         },
       }),
       fileFilter: (req, file, callback) => {
-        const allowedMimeTypes = ['image/jpeg', 'image/png'];
+        const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/jpg'];
         if (allowedMimeTypes.includes(file.mimetype)) {
           callback(null, true);
         } else {
