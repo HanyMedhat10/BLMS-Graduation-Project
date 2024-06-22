@@ -147,6 +147,9 @@ export class QuizService {
         questions: {
           choices: true,
         },
+        submits: {
+          submitQuestions: true,
+        },
       },
       select: {
         questions: {
@@ -304,6 +307,15 @@ export class QuizService {
   }
   async removeQuiz(id: number) {
     const quiz = await this.findOneQuiz(id);
+    for (let index = 0; index < quiz.submits.length; index++) {
+      const element = quiz.submits[index];
+      for (let i = 0; i < element.submitQuestions.length; i++) {
+        await this.submitQuestionRepository.delete(
+          element.submitQuestions[i].id,
+        );
+      }
+      await this.submitQuizRepository.delete(element.id);
+    }
     for (let i = 0; i < quiz.questions.length; i++) {
       await this.removeQuestion(quiz.questions[i].id);
     }

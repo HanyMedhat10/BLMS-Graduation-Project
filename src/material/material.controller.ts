@@ -237,6 +237,9 @@ export class MaterialController {
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
   findAll(@Query('type') type: string) {
+    /* Req() req 
+    const type = req.query.type;
+    */
     return this.materialService.findAll(type);
   }
   @ApiBearerAuth()
