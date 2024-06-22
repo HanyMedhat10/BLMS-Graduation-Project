@@ -36,6 +36,22 @@ export class MaterialService {
     });
     return await this.materialRepository.save(material);
   }
+  async uploadBook(
+    file: Express.Multer.File,
+    title: string,
+    courseId: number,
+    currentUser: User,
+    materialType: MaterialType = MaterialType.Book,
+  ) {
+    const material = this.materialRepository.create({
+      title: title,
+      path: file.filename,
+      materialType: materialType,
+      course: { id: courseId },
+      createBy: currentUser,
+    });
+    return await this.materialRepository.save(material);
+  }
   async addLink(createMaterialDto: CreateMaterialDto, currentUser: User) {
     const material = this.materialRepository.create({
       title: createMaterialDto.title,
