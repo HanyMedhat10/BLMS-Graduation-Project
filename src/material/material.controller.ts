@@ -12,6 +12,7 @@ import {
   ParseFilePipe,
   MaxFileSizeValidator,
   FileTypeValidator,
+  Query,
 } from '@nestjs/common';
 import { MaterialService } from './material.service';
 import { CreateMaterialDto } from './dto/create-material.dto';
@@ -235,8 +236,8 @@ export class MaterialController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Get()
-  findAll() {
-    return this.materialService.findAll();
+  findAll(@Query('type') type: string) {
+    return this.materialService.findAll(type);
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)

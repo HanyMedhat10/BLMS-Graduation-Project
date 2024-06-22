@@ -65,7 +65,12 @@ export class MaterialService {
     material.course = course;
     return this.materialRepository.save(material);
   }
-  async findAll() {
+  async findAll(type: string) {
+    if (type == MaterialType.Book) {
+      return await this.materialRepository.find({
+        where: { materialType: MaterialType.Book },
+      });
+    }
     return await this.materialRepository.find();
   }
 
@@ -107,6 +112,5 @@ export class MaterialService {
       default:
         throw new NotFoundException('the material not found');
     }
-    return `This action removes a #${id} material`;
   }
 }
