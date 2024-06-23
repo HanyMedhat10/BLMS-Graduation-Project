@@ -58,7 +58,7 @@ export class StudentController {
   @ApiBearerAuth()
   // @Roles(Role.STUDENT)
   @UseGuards(JwtAuthGuard, RoleGuard)
-  @Get('getAllGradesUser/')
+  @Get('getAllGradesUser')
   async getAllGradesUser(@CurrentUser() currentUser: User) {
     console.log(currentUser);
     return await this.studentService.getAllGradesUser(currentUser);
