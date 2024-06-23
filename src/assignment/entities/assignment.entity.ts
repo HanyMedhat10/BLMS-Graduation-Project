@@ -19,6 +19,8 @@ export class Assignment {
   title: string;
   @Column()
   path: string;
+  @Column({ default: 100 })
+  degree: number;
   @CreateDateColumn()
   createdAt: Date;
   @Column({ type: 'date' })
