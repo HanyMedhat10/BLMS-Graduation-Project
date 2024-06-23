@@ -13,6 +13,10 @@ import { StudentCourses } from './dto/student-courses.dto';
 
 @Injectable()
 export class StudentService {
+  // });
+  // if (!student) throw new NotFoundException('the student not found');
+  // return await this.userService.findOne(id);
+  // return await this.userService.findOneUser(id, Role.STUDENT);
   constructor(
     // @InjectRepository(Student)
     // private readonly studentRepository: Repository<Student>,
@@ -168,6 +172,7 @@ export class StudentService {
     }
     return await this.userRepository.save(user);
   }
+
   async getAllGradesUser(currentUser: User) {
     try {
       const student = await this.userRepository.find({
@@ -186,6 +191,31 @@ export class StudentService {
         throw new NotFoundException('Student not found');
       }
       return student;
+    } catch (error) {
+      Logger.error(error);
+      return error;
+    }
+  }
+  getAllGradesUserInCourse(currentUser: User, id: number) {
+    try {
+      return this.userRepository.find({
+        where: {
+          id: currentUser.id,
+          role: Role.STUDENT,
+          courses: { id: id },
+        },
+        relations: {
+          courses: {
+            assignments: {
+              submits: true,
+            },
+            quizzes: {
+              submits: true,
+            },
+            degrees: true,
+          },
+        },
+      });
     } catch (error) {
       Logger.error(error);
       return error;
