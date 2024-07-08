@@ -65,7 +65,7 @@ export class MaterialService {
     material.course = course;
     return this.materialRepository.save(material);
   }
-  async findAll(type: string) {
+  async findAll(type?: string) {
     if (type == MaterialType.Book) {
       return await this.materialRepository.find({
         where: { materialType: MaterialType.Book },
