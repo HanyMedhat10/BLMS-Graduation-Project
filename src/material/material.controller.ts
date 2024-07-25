@@ -17,7 +17,13 @@ import {
 import { MaterialService } from './material.service';
 import { CreateMaterialDto } from './dto/create-material.dto';
 import { UpdateMaterialDto } from './dto/update-material.dto';
-import { ApiBearerAuth, ApiBody, ApiConsumes, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiQuery,
+  ApiTags,
+} from '@nestjs/swagger';
 import { Roles } from 'src/auth/roles/roles.decorator';
 import { JwtAuthGuard } from 'src/auth/jwt.guard';
 import { RoleGuard } from 'src/auth/role/role.guard';
@@ -36,7 +42,6 @@ export class MaterialController {
   @Roles(Role.ADMIN, Role.DR, Role.TA, Role.HOfDE, Role.CLERK)
   @UseGuards(JwtAuthGuard, RoleGuard)
   @Post('uploadDocs/')
-  @ApiConsumes('multipart/form-data')
   @ApiBody({
     schema: {
       type: 'object',
@@ -75,6 +80,7 @@ export class MaterialController {
       },
     }),
   )
+  @ApiConsumes('multipart/form-data')
   uploadDocs(
     @UploadedFile(
       new ParseFilePipe({
@@ -235,6 +241,12 @@ export class MaterialController {
   }
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard, RoleGuard)
+  @ApiQuery({
+    name: 'type',
+    type: String,
+    description: 'A parameter. Optional',
+    required: false,
+  })
   @Get()
   findAll(@Query('type') type?: string) {
     /* Req() req 
