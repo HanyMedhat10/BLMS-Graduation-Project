@@ -1,41 +1,15 @@
-import {
-  IsEmail,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsPositive,
-  IsString,
-  Min,
-  MinLength,
-} from 'class-validator';
+import { IsEnum, IsNumber, IsPositive } from 'class-validator';
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { ApiProperty } from '@nestjs/swagger';
+import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 
-export class CreateTeacherAssistUserDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  @MinLength(8)
-  @IsString()
-  password: string;
-  @ApiProperty({ enum: ['teacher assist'] })
+export class CreateTeacherAssistUserDto extends CreateUserDto {
   @IsEnum({ Role, default: Role.TA })
-  role: Role;
+  role = Role.TA;
   @IsPositive()
   @ApiProperty()
   @IsNumber({ maxDecimalPlaces: 0 })
   department: number;
-  @IsInt()
-  @Min(1)
-  college: number;
   @ApiProperty()
   @IsNumber({}, { each: true })
   teachingCourses: number[];

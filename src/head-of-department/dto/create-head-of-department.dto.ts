@@ -1,41 +1,15 @@
 import { ApiProperty } from '@nestjs/swagger';
-import {
-  IsEmail,
-  IsEnum,
-  IsInt,
-  IsNotEmpty,
-  IsNumber,
-  IsPositive,
-  IsString,
-  Min,
-  MinLength,
-} from 'class-validator';
+import { IsEnum, IsNumber, IsPositive } from 'class-validator';
+import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { Role } from 'src/auth/entities/enum/user.enum';
 
-export class CreateHeadOfDepartmentDto {
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsString()
-  name: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  @IsEmail()
-  email: string;
-  @ApiProperty()
-  @IsNotEmpty()
-  @MinLength(8)
-  @IsString()
-  password: string;
-  @ApiProperty({ enum: ['head Of Department'] })
+export class CreateHeadOfDepartmentDto extends CreateUserDto {
   @IsEnum({ Role, default: Role.HOfDE })
-  role: Role;
+  role = Role.HOfDE;
   @IsPositive()
   @ApiProperty()
   @IsNumber({ maxDecimalPlaces: 0 })
   department: number;
-  @IsInt()
-  @Min(1)
-  college: number;
   //   @IsPositive()
   @ApiProperty()
   @IsNumber({ maxDecimalPlaces: 0 }, { each: true })
