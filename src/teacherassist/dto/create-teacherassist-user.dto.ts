@@ -1,18 +1,10 @@
-import { IsEnum, IsNumber, IsPositive } from 'class-validator';
+import { IsEnum } from 'class-validator';
 import { Role } from 'src/auth/entities/enum/user.enum';
-import { ApiProperty } from '@nestjs/swagger';
-import { CreateUserDto } from 'src/auth/dto/create-user.dto';
+import { CreateStaffDto } from 'src/auth/dto/create-staff.dto';
 
-export class CreateTeacherAssistUserDto extends CreateUserDto {
+export class CreateTeacherAssistUserDto extends CreateStaffDto {
   @IsEnum({ Role, default: Role.TA })
   role = Role.TA;
-  @IsPositive()
-  @ApiProperty()
-  @IsNumber({ maxDecimalPlaces: 0 })
-  department: number;
-  @ApiProperty()
-  @IsNumber({}, { each: true })
-  teachingCourses: number[];
   // @ApiProperty()
   // @Type(() => UpdateTeacherassistDto)
   // @ValidateNested()
