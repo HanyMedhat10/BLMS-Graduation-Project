@@ -14,7 +14,7 @@ import * as fs from 'fs';
 import { sign } from 'jsonwebtoken';
 import { UserLoginDto } from './dto/user-login.dto';
 import { ChangePasswordDto } from './dto/change-password-user.dto';
-import { Role } from './entities/enum/user.enum';
+import { Role, Staff } from './entities/enum/user.enum';
 import { College } from '../college/entities/college.entity';
 import { CreateCollegeDto } from '../college/dto/create-college.dto';
 import { CourseService } from 'src/course/course.service';
@@ -27,6 +27,7 @@ import { CreateClerkDto } from 'src/clerk/dto/create-clerk.dto';
 import * as nodemailer from 'nodemailer';
 import { ConfigService } from '@nestjs/config';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -105,8 +106,11 @@ export class AuthService {
     delete user.password;
     return user;
   }
-  async createDRorTA(
-    createDoctorDto: CreateDoctorDto | CreateTeacherAssistUserDto,
+  async createStaff(
+    createDoctorDto:
+      | CreateDoctorDto
+      | CreateTeacherAssistUserDto
+      | CreateHeadOfDepartmentDto,
     currentUser: User,
   ) {
     const userExists = await this.findUserByEmail(createDoctorDto.email);
@@ -116,27 +120,23 @@ export class AuthService {
     const courses = await Promise.all(
       createDoctorDto.teachingCourses.map((x) => this.courseService.findOne(x)),
     );
-    createDoctorDto.password = await bcrypt.hash(createDoctorDto.password, 10);
-    const college = await this.preloadCollegeById(createDoctorDto.college);
     const department = await this.departmentRepository.findOne({
       where: { id: createDoctorDto.department },
     });
+    if (
+      department.headOfDepartment != null &&
+      createDoctorDto.role == Role.HOfDE
+    )
+      throw new BadRequestException(
+        `this Department is busy ${JSON.stringify(department)}`,
+      );
     // let normalUser = new User();
     // normalUser = Object.assign(normalUser, createDoctorDto);
     // normalUser.college = college;
     // normalUser.teachingCourses = courses;
     // normalUser.department = department;
-    let user = await this.userRepository.create({
-      ...createDoctorDto,
-      // teacherAssistant: ta,
-      college,
-      department: department,
-      teachingCourses: courses,
-    });
-    user.addedBy = currentUser;
-    user = await this.userRepository.save(user);
-    delete user.password;
-    return user;
+    const staff: Staff = { department, teachingCourses: courses };
+    return await this.createUser(createDoctorDto, currentUser, staff);
   }
   async createHOD(
     createDoctorDto: CreateHeadOfDepartmentDto,
@@ -172,18 +172,33 @@ export class AuthService {
   }
 
   private async createUser(
-    createAuthDto: CreateAdminDto | CreateClerkDto,
+    createUserDto:
+      | CreateAdminDto
+      | CreateClerkDto
+      | CreateTeacherAssistUserDto
+      | CreateDoctorDto
+      | CreateHeadOfDepartmentDto,
     currentUser: User,
+    staff?: Staff,
   ) {
-    createAuthDto.password = await bcrypt.hash(createAuthDto.password, 10);
-    const college = await this.preloadCollegeById(createAuthDto.college);
-    let normalUser = new User();
-    normalUser = Object.assign(normalUser, createAuthDto);
-    normalUser.college = college;
-    normalUser.addedBy = currentUser;
-    normalUser = await this.userRepository.save(normalUser);
-    delete normalUser.password;
-    return normalUser;
+    createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
+    const college = await this.preloadCollegeById(createUserDto.college);
+    // let normalUser = new User();
+    // normalUser = Object.assign(normalUser, createAuthDto);
+    // normalUser.college = college;
+    // normalUser.addedBy = currentUser;
+    // normalUser = await this.userRepository.save(normalUser);
+    let user = this.userRepository.create({
+      ...createUserDto,
+      // teacherAssistant: ta,
+      college,
+      department: staff?.department,
+      teachingCourses: staff?.teachingCourses,
+    });
+    user.addedBy = currentUser;
+    user = await this.userRepository.save(user);
+    delete user.password;
+    return user;
   }
 
   async findOneUser(id: number, role: Role) {

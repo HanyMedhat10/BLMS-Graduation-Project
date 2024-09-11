@@ -24,7 +24,7 @@ export class TeacherassistService {
     createTeacherassistDto: CreateTeacherAssistUserDto,
     currentUser: User,
   ) {
-    return await this.userService.createDRorTA(
+    return await this.userService.createStaff(
       createTeacherassistDto,
       currentUser,
     );
@@ -125,7 +125,6 @@ export class TeacherassistService {
     // const ta = await this.findOne(id);
     // await this.teacherAssistantRepository.delete(ta.teacherAssistant.id);
     return await this.userRepository.delete(id);
-    return `This action removes a #${id} teacherassist`;
   }
   // async removeCourse(id: number, courseId: number) {
   //   const ta = await this.findOne(id);

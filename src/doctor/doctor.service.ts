@@ -23,7 +23,7 @@ export class DoctorService {
     private readonly courseService: CourseService,
   ) {}
   async create(createDoctorDto: CreateDoctorDto, currentUser: User) {
-    return await this.userService.createDRorTA(createDoctorDto, currentUser);
+    return await this.userService.createStaff(createDoctorDto, currentUser);
   }
   async addTeachingCourse(id: number, courses: TeachCourses): Promise<User> {
     const dr = await this.findOne(id);

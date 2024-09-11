@@ -1,3 +1,6 @@
+import { Course } from 'src/course/entities/course.entity';
+import { Department } from 'src/department/entities/department.entity';
+
 export enum Role {
   ADMIN = 'admin',
   STUDENT = 'student',
@@ -15,7 +18,10 @@ type User = {
   updatedAt: TimeRanges;
   iat: number;
 };
-
+export interface Staff {
+  department: Department;
+  teachingCourses: Course[];
+}
 export interface IAuthenticate {
   token: string;
   user: User;
