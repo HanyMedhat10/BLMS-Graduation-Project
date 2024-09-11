@@ -8,7 +8,6 @@ import { UpdateTeacherAssistUserDto } from './dto/update-teacherassist-user.dto'
 import { Role } from 'src/auth/entities/enum/user.enum';
 import { CourseService } from 'src/course/course.service';
 import { DepartmentService } from 'src/department/department.service';
-import { Course } from 'src/course/entities/course.entity';
 
 @Injectable()
 export class TeacherassistService {
@@ -19,15 +18,16 @@ export class TeacherassistService {
     private readonly courseService: CourseService,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Course)
-    private readonly courseRepository: Repository<Course>,
     private readonly departmentService: DepartmentService,
   ) {}
   async create(
     createTeacherassistDto: CreateTeacherAssistUserDto,
     currentUser: User,
   ) {
-    return await this.userService.createTA(createTeacherassistDto, currentUser);
+    return await this.userService.createDRorTA(
+      createTeacherassistDto,
+      currentUser,
+    );
   }
   // async addStudyCourse(id: number, courseId: number): Promise<User> {
   //   const ta = await this.findOne(id);

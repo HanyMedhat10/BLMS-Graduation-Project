@@ -105,7 +105,10 @@ export class AuthService {
     delete user.password;
     return user;
   }
-  async createDR(createDoctorDto: CreateDoctorDto, currentUser: User) {
+  async createDRorTA(
+    createDoctorDto: CreateDoctorDto | CreateTeacherAssistUserDto,
+    currentUser: User,
+  ) {
     const userExists = await this.findUserByEmail(createDoctorDto.email);
     if (userExists) {
       throw new BadRequestException('Email is not available.');
@@ -118,15 +121,22 @@ export class AuthService {
     const department = await this.departmentRepository.findOne({
       where: { id: createDoctorDto.department },
     });
-    let normalUser = new User();
-    normalUser = Object.assign(normalUser, createDoctorDto);
-    normalUser.college = college;
-    normalUser.teachingCourses = courses;
-    normalUser.department = department;
-    normalUser.addedBy = currentUser;
-    normalUser = await this.userRepository.save(normalUser);
-    delete normalUser.password;
-    return normalUser;
+    // let normalUser = new User();
+    // normalUser = Object.assign(normalUser, createDoctorDto);
+    // normalUser.college = college;
+    // normalUser.teachingCourses = courses;
+    // normalUser.department = department;
+    let user = await this.userRepository.create({
+      ...createDoctorDto,
+      // teacherAssistant: ta,
+      college,
+      department: department,
+      teachingCourses: courses,
+    });
+    user.addedBy = currentUser;
+    user = await this.userRepository.save(user);
+    delete user.password;
+    return user;
   }
   async createHOD(
     createDoctorDto: CreateHeadOfDepartmentDto,
