@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  OnApplicationBootstrap,
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -29,7 +30,7 @@ import { ConfigService } from '@nestjs/config';
 import { ForgetPasswordDto } from './dto/forget-password.dto';
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnApplicationBootstrap {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
@@ -44,6 +45,29 @@ export class AuthService {
     // private readonly teacherAssistantRepository: Repository<TeacherAssistant>,
     private readonly configService: ConfigService,
   ) {}
+  async onApplicationBootstrap() {
+    await this.initializeAdminAccount();
+  }
+
+  private async initializeAdminAccount() {
+    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
+    const adminPassword = process.env.ADMIN_PASSWORD || 'adminPassword';
+    const adminEmail = process.env.ADMIN_EMAIL || 'admin@gmail.com';
+    const existingAdmin = await this.findUserByEmail(adminEmail);
+    if (!existingAdmin) {
+      const admin = this.userRepository.create({
+        name: adminUsername,
+        email: adminEmail,
+        password: await bcrypt.hash(adminPassword, 10),
+        role: Role.ADMIN,
+      });
+      await this.userRepository.save(admin);
+      console.log('Admin account created successfully');
+    } else {
+      console.log('Admin account already exists');
+    }
+  }
+
   async create(
     createAuthDto: CreateAdminDto,
     currentUser: User,
@@ -107,10 +131,7 @@ export class AuthService {
     return user;
   }
   async createStaff(
-    createDoctorDto:
-      | CreateDoctorDto
-      | CreateTeacherAssistUserDto
-      | CreateHeadOfDepartmentDto,
+    createDoctorDto: CreateDoctorDto | CreateTeacherAssistUserDto,
     currentUser: User,
   ) {
     const userExists = await this.findUserByEmail(createDoctorDto.email);
@@ -123,13 +144,6 @@ export class AuthService {
     const department = await this.departmentRepository.findOne({
       where: { id: createDoctorDto.department },
     });
-    if (
-      department.headOfDepartment != null &&
-      createDoctorDto.role == Role.HOfDE
-    )
-      throw new BadRequestException(
-        `this Department is busy ${JSON.stringify(department)}`,
-      );
     // let normalUser = new User();
     // normalUser = Object.assign(normalUser, createDoctorDto);
     // normalUser.college = college;
@@ -176,8 +190,7 @@ export class AuthService {
       | CreateAdminDto
       | CreateClerkDto
       | CreateTeacherAssistUserDto
-      | CreateDoctorDto
-      | CreateHeadOfDepartmentDto,
+      | CreateDoctorDto,
     currentUser: User,
     staff?: Staff,
   ) {
