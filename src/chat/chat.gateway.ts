@@ -1,16 +1,16 @@
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import {
-  WebSocketGateway,
-  SubscribeMessage,
-  MessageBody,
-  WebSocketServer,
   ConnectedSocket,
+  MessageBody,
+  SubscribeMessage,
+  WebSocketGateway,
+  WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { ChatService } from './chat.service';
-import { CreateChatDto } from './dto/create-chat.dto';
-import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { User } from 'src/auth/entities/user.entity';
 import { CurrentUserSocket } from 'src/utility/decorators/current-user-Socket.decorator';
+import { ChatService } from './chat.service';
+import { CreateChatDto } from './dto/create-chat.dto';
 import { CreateMessageDto } from './dto/create-message.dto';
 import { UpdateMessageDto } from './dto/update-message.dto';
 // import { UpdateMessageDto } from './dto/update-message.dto';
@@ -88,14 +88,14 @@ export class ChatGateway {
       updateChatDto,
       currentUser,
     );
-    this.server.emit('updateMessage', message);
+    this.server.to(message.chat.id.toString()).emit('updateMessage', message);
     return message;
   }
   @ApiBearerAuth()
   @SubscribeMessage('removeChat')
   async remove(@MessageBody() id: number) {
     await this.chatService.remove(id);
-    this.server.emit('removeChat', null);
+    this.server.emit('removeChat', id);
   }
   @ApiBearerAuth()
   @SubscribeMessage('removeMessage')
@@ -103,8 +103,17 @@ export class ChatGateway {
     @MessageBody() id: number,
     @CurrentUserSocket() currentUser: User,
   ) {
-    await this.chatService.removeMessage(id, currentUser);
-    this.server.emit('removeMessage id:', id);
+    const message = await this.chatService.removeMessage(id, currentUser);
+    this.server.to(message.chat.id.toString()).emit('removeMessage id:', id);
+  }
+  @ApiBearerAuth()
+  @SubscribeMessage('disconnect')
+  async disconnect(
+    @CurrentUserSocket() currentUser: User,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log(currentUser);
+    client.disconnect();
   }
   // @SubscribeMessage('message')
   // handleMessage(@MessageBody() data: any, client: any) {

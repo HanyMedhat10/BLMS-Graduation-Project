@@ -3,14 +3,14 @@ import {
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { CreateChatDto } from './dto/create-chat.dto';
 import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/auth/entities/user.entity';
+import { In, Repository } from 'typeorm';
+import { CreateChatDto } from './dto/create-chat.dto';
+import { CreateMessageDto } from './dto/create-message.dto';
+import { UpdateMessageDto } from './dto/update-message.dto';
 import { Chat } from './entities/chat.entity';
 import { Message } from './entities/message.entity';
-import { In, Repository } from 'typeorm';
-import { User } from 'src/auth/entities/user.entity';
-import { UpdateMessageDto } from './dto/update-message.dto';
-import { CreateMessageDto } from './dto/create-message.dto';
 
 @Injectable()
 export class ChatService {
@@ -151,6 +151,7 @@ export class ChatService {
     if (currentUser.id != message.sender.id) {
       throw new UnauthorizedException();
     }
-    return await this.messageRepository.remove(message);
+    await this.messageRepository.remove(message);
+    return message;
   }
 }
