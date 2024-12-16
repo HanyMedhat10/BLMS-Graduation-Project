@@ -1,73 +1,236 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# BLMS (Blended Learning Management System)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## Project Overview
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+BLMS is a comprehensive e-learning platform built with NestJS on the backend, designed to enhance the online learning experience by providing a robust set of features for students, instructors, and administrators.
 
-## Description
+## Technologies Used
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **Backend**:
+  - NestJS (Node.js framework)
+  - TypeScript
+- **Frontend**:
+  - ReactJS / Flutter
+- **Database**:
+  - PostgreSQL
+- **ORM**:
+  - TypeORM
+- **Authentication**:
+  - Passport.js
+  - JWT
+- **Real-time Communication**:
+  - Socket.IO
+  - WebSocket
+
+## Prerequisites
+
+- Node.js (v16+ recommended)
+- npm or yarn
+- NestJS CLI
+- [Any specific database requirements]
 
 ## Installation
 
-```bash
-$ npm install
-```
-
-## Running the app
+### 1. Install NestJS CLI Globally
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+npm install -g @nestjs/cli
 ```
 
-## Test
+### 2. Clone the Repository
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+git clone https://github.com/HanyMedhat10/BLMS-Graduation-Project.git
+cd blms-project
 ```
 
-## Support
+### 3. Install Backend Dependencies
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+```bash
+cd backend
+npm install
+```
 
-## Stay in touch
+### 4. Environment Configuration
 
-- Author - [Kamil Myśliwiec](https://kamilmysliwiec.com)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+Create a `.env` file in the backend directory with the following variables:
+
+```
+# Database Configuration
+PGHOST=
+PGPORT=
+PGUSER=
+PGPASSWORD=
+PGDATABASE=
+
+# Mail Configuration
+MAIL_HOST=
+MAIL_PORT=
+MAIL_USER=
+MAIL_PASSWORD=
+DEFAULT_MAIL_FROM=
+
+# Email Admin Configuration
+ADMIN_USERNAME=
+ADMIN_EMAIL=
+ADMIN_PASSWORD=
+
+# Application Configuration
+PORT=3000
+
+# Application Name
+APP_NAME=
+```
+
+### 5. Database Setup
+
+```bash
+# Run migrations
+npm run migration:run
+
+# (Optional) Seed database
+npm run seed
+```
+
+### 6. Running the Application
+
+```bash
+# Development mode
+npm run start:dev
+
+# Production mode
+npm run start:prod
+```
+
+## Project Structure
+
+```
+blms-project/
+│
+├── backend/
+│   ├── src/
+│   │   ├── modules/
+│   │   │   ├── auth/
+│   │   │   ├── chat/
+│   │   │   ├── clerk/
+│   │   │   ├── college/
+│   │   │   ├── course/
+│   │   │   ├── dash-board/
+│   │   │   ├── department/
+│   │   │   ├── doctor/
+│   │   │   ├── head-of-department/
+│   │   │   ├── material/
+│   │   │   ├── quiz/
+│   │   │   ├── student/
+│   │   │   ├── submit-assignment/
+│   │   │   ├── submit-quiz/
+│   │   │   └── assignments/
+│   │   ├── common/
+│   │   │   ├── guards/
+│   │   │   ├── interceptors/
+│   │   │   └── decorators/
+│   │   ├── config/
+│   │   └── app.module.ts
+│   ├── migrations/
+│   ├── seeds/
+│   └── test/
+│
+├── frontend/
+└── docs/
+```
+
+## NestJS Key Modules
+
+### Authentication Module
+
+- Implements JWT authentication
+- User registration and login
+- Role-based access control
+
+### Quiz Module
+
+- CRUD operations for quizzes
+- Question management
+- Result tracking
+
+### Assignment Module
+
+- Assignment creation and management
+- Submission handling
+- Grading system
+
+## Testing
+
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+
+# Test coverage
+npm run test:cov
+```
+
+## API Documentation
+<!-- [Specify how to access API documentation, e.g., Swagger] -->
+$baseURl/api
+
+```bash
+# Run Swagger
+npm run start:swagger
+```
+
+## Deployment Considerations
+
+- Use `npm run build` to create a production build
+- Configure environment-specific settings
+- Consider containerization with Docker
+
+## Future Enhancements
+
+- [ ] Implement advanced quiz analytics
+- [ ] Add more interactive learning features
+- [ ] Enhance real-time communication
+- [ ] Implement comprehensive reporting system
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+
+   ```bash
+   git checkout -b feature/amazing-nestjs-feature
+   ```
+
+3. Commit changes
+
+   ```bash
+   git commit -m 'Add some amazing feature'
+   ```
+
+4. Push to the branch
+
+   ```bash
+   git push origin feature/amazing-nestjs-feature
+   ```
+
+5. Open a Pull Request
 
 ## License
 
-Nest is [MIT licensed](LICENSE).
+[Specify your project's license]
+
+## Contact
+
+- Your Name
+- Project Repository: <https://github.com/HanyMedhat10/BLMS-Graduation-Project.git>
+- LinkedIn: <https://www.linkedin.com/in/hany-medhat-74452520a/>
+- Email: <hany.medhat24@gmail.com>
+
+## Acknowledgments
+
+- NestJS Community
+- [Any other resources or inspirations]
+
+```
