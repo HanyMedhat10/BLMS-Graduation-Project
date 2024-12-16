@@ -27,7 +27,7 @@ BLMS is a comprehensive e-learning platform built with NestJS on the backend, de
 - Node.js (v16+ recommended)
 - npm or yarn
 - NestJS CLI
-- [Any specific database requirements]
+- PostgreSQL
 
 ## Installation
 
@@ -233,4 +233,3 @@ BLMS is [MIT licensed](LICENSE)
 - NestJS Community
 - <https://github.com/nestjs/nest>
 
-```
