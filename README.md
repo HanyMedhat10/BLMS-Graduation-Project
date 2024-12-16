@@ -223,7 +223,7 @@ npm run start:swagger
 
 ## Contact
 
-- Your Name
+- Hany Medhat
 - Project Repository: <https://github.com/HanyMedhat10/BLMS-Graduation-Project.git>
 - LinkedIn: <https://www.linkedin.com/in/hany-medhat-74452520a/>
 - Email: <hany.medhat24@gmail.com>
@@ -231,6 +231,6 @@ npm run start:swagger
 ## Acknowledgments
 
 - NestJS Community
-- [Any other resources or inspirations]
+- <https://github.com/nestjs/nest>
 
 ```
