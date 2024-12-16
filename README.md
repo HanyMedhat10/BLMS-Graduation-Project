@@ -219,7 +219,7 @@ npm run start:swagger
 
 ## License
 
-[Specify your project's license]
+BLMS is [MIT licensed](LICENSE)
 
 ## Contact
 
